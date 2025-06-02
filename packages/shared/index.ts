@@ -1,1 +1,1 @@
-console.log("Hello via Bun!");
+export { exampleSchema } from "./schemas/example-schema";

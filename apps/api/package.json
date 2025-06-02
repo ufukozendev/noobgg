@@ -8,7 +8,8 @@
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.44.1",
     "hono": "^4.7.11",
-    "pg": "^8.16.0"
+    "pg": "^8.16.0",
+    "@repo/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest",
