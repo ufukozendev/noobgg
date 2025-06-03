@@ -1,11 +1,11 @@
 import { Hono } from "hono";
 import {
-  anyRouteGETControler,
-  anyRoutePOSTControler,
+  anyRouteGetController,
+  anyRoutePostController,
 } from "../controllers/any-route.controller";
 
 const anyRoute = new Hono().basePath("/any-route");
-anyRoute.get("/", anyRouteGETControler);
-anyRoute.post("/", anyRoutePOSTControler);
+anyRoute.get("/", anyRouteGetController);
+anyRoute.post("/", anyRoutePostController);
 
 export default anyRoute;
