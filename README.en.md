@@ -86,3 +86,5 @@ A big thank you to all our friends who participated in our streams and supported
 
 <a href="https://github.com/altudev"><img width="60px" alt="altudev" src="https://github.com/altudev.png"/></a>
 <a href="https://github.com/furkanczay"><img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png"/></a>
+<a href="https://github.com/apps/google-labs-jules">Jules (Google Labs AI)</a>
+<a href="https://github.com/apps/devin-ai-integration">DevinAI Integration</a>
