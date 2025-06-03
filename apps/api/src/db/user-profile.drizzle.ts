@@ -1,4 +1,4 @@
-import { pgTable, bigint, timestamp, text, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, bigint, timestamp, text, pgEnum,varchar } from 'drizzle-orm/pg-core';
 
 // Enums
 export const genderEnum = pgEnum('gender', ['male', 'female', 'unknown']);
@@ -9,17 +9,17 @@ export const regionTypeEnum = pgEnum('region_type', ['north_america','south_amer
 export const userProfiles = pgTable('user_profiles', {
   
   id: bigint('id', { mode: 'bigint' }).primaryKey().generatedAlwaysAsIdentity(),
-  userKeycloakId: text('user_keycloak_id').notNull().unique(),
+  userKeycloakId: varchar('user_keycloak_id', { length: 100 }).notNull().unique(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
   
   birthDate: timestamp('birth_date', { withTimezone: true }),
-  userName: text('user_name').notNull().unique(),
-  firstName: text('first_name'),
-  lastName: text('last_name'),
-  profileImageUrl: text('profile_image_url'),
-  bannerImageUrl: text('banner_image_url'),
+  userName: varchar('user_name', { length: 50 }).notNull().unique(),
+  firstName: varchar('first_name', { length: 60 }),
+  lastName: varchar('last_name', { length: 60 }),
+  profileImageUrl: varchar('profile_image_url', { length: 255 }),
+  bannerImageUrl: varchar('banner_image_url', { length: 255 }),
   bio: text('bio'),
   
   // Enums
