@@ -79,3 +79,10 @@ Contributions are welcome! Please review the contributing guidelines (if availab
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
+## Contributors
+
+A big thank you to all our friends who participated in our streams and supported us during the development process! 🙏
+
+<a href="https://github.com/altudev"><img width="60px" alt="altudev" src="https://github.com/altudev.png"/></a>
+<a href="https://github.com/furkanczay"><img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png"/></a>
