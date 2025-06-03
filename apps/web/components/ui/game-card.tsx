@@ -11,6 +11,8 @@ interface GameCardProps {
 }
 
 function GameCard({ game, className, onClick }: GameCardProps) {
+  const [imageError, setImageError] = React.useState(false);
+
   return (
     <div
       className={cn(
@@ -22,32 +24,24 @@ function GameCard({ game, className, onClick }: GameCardProps) {
     >
       {/* Glow effect */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
-      
+
       {/* Card content */}
       <div className="relative bg-card rounded-lg p-6 h-full flex flex-col">
         {/* Game logo/image */}
         <div className="mb-4 flex items-center justify-center h-20 w-20 mx-auto rounded-lg bg-muted/50 border border-border/50 group-hover:border-primary/30 transition-colors duration-300">
-          {game.logo ? (
+          {game.logo && !imageError ? (
             <img
               src={game.logo}
               alt={`${game.name} logo`}
               className="h-16 w-16 object-contain rounded-md"
-              onError={(e) => {
-                // Fallback to placeholder if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.style.display = "none";
-                target.nextElementSibling?.classList.remove("hidden");
-              }}
+              onError={() => setImageError(true)}
             />
-          ) : null}
-          
-          {/* Fallback placeholder */}
-          <div className={cn(
-            "flex items-center justify-center h-16 w-16 rounded-md bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-bold text-xl",
-            game.logo && "hidden"
-          )}>
-            {game.name.charAt(0).toUpperCase()}
-          </div>
+          ) : (
+            // Fallback placeholder
+            <div className="flex items-center justify-center h-16 w-16 rounded-md bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-bold text-xl">
+              {game.name.charAt(0).toUpperCase()}
+            </div>
+          )}
         </div>
 
         {/* Game name */}
