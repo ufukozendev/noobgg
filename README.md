@@ -1,4 +1,7 @@
 # noob.gg
+<p align="center">
+  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="120" />
+</p>
 
 Welcome to the project!
 

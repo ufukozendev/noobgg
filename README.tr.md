@@ -1,4 +1,7 @@
 # noob.gg
+<p align="center">
+  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="120" />
+</p>
 
 Bu proje, bir Hono.js backend API ve bir Next.js 15 frontend uygulamasından oluşmaktadır. Geliştirme ortamını başlatmak ve proje üzerinde çalışmak için aşağıdaki talimatları izleyin.
 
