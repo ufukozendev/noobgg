@@ -29,10 +29,10 @@ async function GamesGrid() {
             <span className="text-2xl">🎮</span>
           </div>
           <h3 className="text-lg font-semibold text-foreground mb-2">
-            Henüz oyun bulunamadı
+            No games found yet
           </h3>
           <p className="text-muted-foreground max-w-md">
-            Oyun listesi şu anda boş görünüyor. Yeni oyunlar eklendiğinde burada görünecek.
+            The game list appears to be empty right now. New games will appear here when they are added.
           </p>
         </div>
       );
@@ -54,17 +54,17 @@ async function GamesGrid() {
     );
   } catch (error) {
     console.error("Error loading games:", error);
-    
+
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div className="h-16 w-16 rounded-full bg-destructive/20 flex items-center justify-center mb-4">
           <span className="text-2xl text-destructive">⚠️</span>
         </div>
         <h3 className="text-lg font-semibold text-foreground mb-2">
-          Oyunlar yüklenirken hata oluştu
+          Error loading games
         </h3>
         <p className="text-muted-foreground max-w-md">
-          Oyun listesi yüklenirken bir sorun yaşandı. Lütfen sayfayı yenileyin veya daha sonra tekrar deneyin.
+          There was a problem loading the game list. Please refresh the page or try again later.
         </p>
       </div>
     );
@@ -81,13 +81,13 @@ export default function GamesPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Oyunlar
+                Games
               </h1>
               <p className="text-muted-foreground">
-                Mevcut tüm oyunları keşfedin ve favorilerinizi bulun
+                Discover all available games and find your favorites
               </p>
             </div>
-            
+
             {/* Future: Add search/filter controls here */}
             <div className="hidden md:flex items-center space-x-2">
               <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
