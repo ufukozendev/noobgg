@@ -1,4 +1,4 @@
-# Proje Adı
+# noob.gg
 
 Bu proje, bir Hono.js backend API ve bir Next.js 15 frontend uygulamasından oluşmaktadır. Geliştirme ortamını başlatmak ve proje üzerinde çalışmak için aşağıdaki talimatları izleyin.
 
@@ -15,8 +15,8 @@ Bu proje bir monorepo yapısındadır ve [Turborepo](https://turbo.build/repo) k
 
 1.  Proje dosyalarını klonlayın:
     ```bash
-    git clone https://github.com/kullanici/proje-adiniz.git
-    cd proje-adiniz
+    git clone https://github.com/kullanici/noob.gg.git
+    cd noob.gg
     ```
 2.  Gerekli bağımlılıkları yükleyin:
     ```bash

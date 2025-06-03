@@ -1,4 +1,4 @@
-# Project Name
+# noob.gg
 
 Welcome to the project!
 

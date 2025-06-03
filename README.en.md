@@ -1,4 +1,4 @@
-# Project Name
+# noob.gg
 
 This project consists of a Hono.js backend API and a Next.js 15 frontend application. Follow the instructions below to set up the development environment and start working on the project.
 
@@ -17,8 +17,8 @@ This project is a monorepo managed using [Turborepo](https://turbo.build/repo). 
 
 1.  Clone the project repository:
     ```bash
-    git clone https://github.com/username/project-name.git
-    cd project-name
+    git clone https://github.com/username/noob.gg.git
+    cd noob.gg
     ```
 2.  Install the dependencies:
     ```bash
