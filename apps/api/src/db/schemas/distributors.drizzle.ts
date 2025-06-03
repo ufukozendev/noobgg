@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, text, index } from "drizzle-orm/pg-core";
 
 export const distributorsTable = pgTable("distributors", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -6,4 +6,7 @@ export const distributorsTable = pgTable("distributors", {
   description: text(),
   website: varchar({ length: 255 }),
   logo: varchar({ length: 255 }),
-}); 
+},
+(table) => ({
+  nameIndex: index("distributors_name_idx").on(table.name),
+})); 
