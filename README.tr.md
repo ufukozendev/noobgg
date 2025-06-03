@@ -18,7 +18,7 @@ Bu proje bir monorepo yapısındadır ve [Turborepo](https://turbo.build/repo) k
 
 1.  Proje dosyalarını klonlayın:
     ```bash
-    git clone https://github.com/kullanici/noob.gg.git
+    git clone https://github.com/altudev/noob.gg.git
     cd noob.gg
     ```
 2.  Gerekli bağımlılıkları yükleyin:
