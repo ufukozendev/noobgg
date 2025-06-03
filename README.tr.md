@@ -77,3 +77,9 @@ Katkılarınız için teşekkür ederiz! Lütfen katkıda bulunma rehberini (eğ
 ## Lisans
 
 Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına bakın.
+
+## Katkıda Bulunanlar
+
+Yayınlarımıza katılan ve geliştirme sürecimizde bize destek olan tüm arkadaşlarımıza çok teşekkür ederiz! 🙏
+
+<a href="https://github.com/altudev"><img width="60px" alt="altudev" src="https://github.com/altudev.png"/></a>
