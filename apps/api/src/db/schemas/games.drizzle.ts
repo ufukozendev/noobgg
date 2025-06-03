@@ -5,4 +5,4 @@ export const gamesTable = pgTable("games", {
   name: varchar({ length: 150 }).notNull(),
   description: text(),
   logo: varchar({ length: 255 }),
-}); 
+});
