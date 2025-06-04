@@ -132,7 +132,7 @@ Contributions are welcome! Please review the contributing guidelines (if availab
 
 ## 📄 License
 
-This project is licensed under the Apache License. See the `[LICENSE](../LICENSE.md)` file for more details.
+This project is licensed under the Apache License. See the [`LICENSE`](../LICENSE.md) file for more details.
 
 ## 👥 Contributors
 

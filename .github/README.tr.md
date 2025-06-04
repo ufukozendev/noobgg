@@ -130,7 +130,7 @@ Katkılarınız için teşekkür ederiz! Lütfen katkıda bulunma rehberini (eğ
 
 ## 📄 Lisans
 
-Bu proje Apache Lisansı altında lisanslanmıştır. Daha fazla bilgi için `[LICENSE](../LICENSE.md)` dosyasına bakın.
+Bu proje Apache Lisansı altında lisanslanmıştır. Daha fazla bilgi için [`LICENSE`](../LICENSE.md) dosyasına bakın.
 
 ## 👥 Katkıda Bulunanlar
 
