@@ -46,53 +46,29 @@ export const updateDistributorController = async (c: Context) => {
     if (isNaN(id)) return c.json({ error: "Invalid id" }, 400);
 
     const data = await c.req.json();
-    
+    const result = updateDistributorSchema.safeParse(data);
 
-    if (!data || Object.keys(data).length === 0) {
-      return c.json({ error: "No data provided" }, 400);
+    if (!result.success) {
+      return c.json({ error: result.error.flatten().fieldErrors }, 400);
     }
 
-
-    if (data.name !== undefined) {
-      if (typeof data.name !== 'string' || data.name.trim().length === 0) {
-        return c.json({ error: "Name must be a non-empty string" }, 400);
-      }
-      if (data.name.length > 255) {
-        return c.json({ error: "Name must be 255 characters or less" }, 400);
-      }
-    }
-
-    if (data.website !== undefined && data.website !== null) {
-      if (typeof data.website !== 'string') {
-        return c.json({ error: "Website must be a string" }, 400);
-      }
-      if (data.website.length > 255) {
-        return c.json({ error: "Website must be 255 characters or less" }, 400);
-      }
-    }
-
-    if (data.logo !== undefined && data.logo !== null) {
-      if (typeof data.logo !== 'string') {
-        return c.json({ error: "Logo must be a string" }, 400);
-      }
-      if (data.logo.length > 255) {
-        return c.json({ error: "Logo must be 255 characters or less" }, 400);
-      }
-    }
-
-    if (data.description !== undefined && data.description !== null) {
-      if (typeof data.description !== 'string') {
-        return c.json({ error: "Description must be a string" }, 400);
-      }
+    if (Object.keys(result.data).length === 0) {
+      // Return a specific message if all fields were optional and none were provided,
+      // or if provided fields were stripped out by Zod due to not being in the schema.
+      return c.json({ error: "No valid fields provided for update" }, 400);
     }
 
     const [distributor] = await db
       .update(distributorsTable)
-      .set(data)
+      .set(result.data) // Drizzle expects the actual data object for .set()
       .where(eq(distributorsTable.id, id))
-      .returning();    if (!distributor) return c.json({ error: "Distributor not found" }, 404);
+      .returning();
+
+    if (!distributor) return c.json({ error: "Distributor not found" }, 404);
     return c.json(distributor);
   } catch (error) {
+    // Log the error for server-side inspection if needed
+    console.error("Error in updateDistributorController:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
 };
@@ -105,7 +81,9 @@ export const deleteDistributorController = async (c: Context) => {
     const [distributor] = await db
       .delete(distributorsTable)
       .where(eq(distributorsTable.id, id))
-      .returning();    if (!distributor) return c.json({ error: "Distributor not found" }, 404);
+      .returning();
+
+    if (!distributor) return c.json({ error: "Distributor not found" }, 404);
     return c.json(distributor);
   } catch (error) {
     return c.json({ error: "Internal server error" }, 500);
