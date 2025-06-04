@@ -41,6 +41,9 @@ Meet our amazing contributors:
   <a href="https://github.com/ravidulundu">
     <img width="60px" alt="Ravi DULUNDU" src="https://github.com/ravidulundu.png" style="border-radius: 50%;"/>
   </a>
+  <a href="https://github.com/ufukozendev">
+    <img width="60px" alt="Ufuk Özen" src="https://github.com/ufukozendev.png" style="border-radius: 50%;"/>
+  </a>
   <a href="https://github.com/apps/google-labs-jules">
     <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>
   </a>
