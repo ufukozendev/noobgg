@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { createGameSchema, updateGameSchema } from '@repo/shared';
+import { createGameSchema } from '@repo/shared';
 import { useCreateGame, useUpdateGame } from '@/features/games/api/use-games';
 import type { Game } from '@/types/game';
 
@@ -21,7 +21,7 @@ export function GameForm({
   const mutation = game ? updateMutation : createMutation;
 
   const form = useForm<z.infer<typeof createGameSchema>>({
-    resolver: zodResolver(game ? updateGameSchema : createGameSchema),
+    resolver: zodResolver(createGameSchema),
     defaultValues: {
       name: game?.name ?? '',
       description: game?.description ?? '',
@@ -48,7 +48,7 @@ export function GameForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -61,7 +61,7 @@ export function GameForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,7 +74,7 @@ export function GameForm({
             <FormItem>
               <FormLabel>Logo</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
