@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { getAllGames } from "@/lib/api/games";
-import { GameCard } from "@/components/ui/game-card";
-import type { Game } from "@/lib/types/game";
+import { getAllGames } from "@/features/games/api/use-games";
+import { GameCard } from "@/components/games/game-card";
+import type { Game } from "@/types/game";
 
 // Loading component for the games grid
 function GamesGridSkeleton() {
