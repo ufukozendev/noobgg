@@ -4,7 +4,8 @@ export const createPlatformSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Name is required" })
-    .max(100, { message: "Name must be 100 characters or less" }),
+    .max(100, { message: "Name must be 100 characters or less" })
+    .trim(),
 });
 
 export const updatePlatformSchema = z.object({
@@ -12,5 +13,6 @@ export const updatePlatformSchema = z.object({
     .string()
     .min(1, { message: "Name cannot be empty" })
     .max(100, { message: "Name must be 100 characters or less" })
+    .trim()
     .optional(),
 });
