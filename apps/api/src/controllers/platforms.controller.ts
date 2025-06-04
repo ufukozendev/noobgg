@@ -15,8 +15,11 @@ export const getAllPlatformsController = async (c: Context) => {
 
 export const getPlatformByIdController = async (c: Context) => {
   try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) return c.json({ error: 'Invalid id' }, 400);
+    const idParam = c.req.param('id');
+    if (!idParam || !/^\d+$/.test(idParam)) {
+      return c.json({ error: 'Invalid id' }, 400);
+    }
+    const id = BigInt(idParam);
 
     const result = await db.select().from(platforms).where(eq(platforms.id, id));
     if (result.length === 0) return c.json({ error: 'Platform not found' }, 404);
@@ -43,8 +46,11 @@ export const createPlatformController = async (c: Context) => {
 
 export const updatePlatformController = async (c: Context) => {
   try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) return c.json({ error: 'Invalid id' }, 400);
+    const idParam = c.req.param('id');
+    if (!idParam || !/^\d+$/.test(idParam)) {
+      return c.json({ error: 'Invalid id' }, 400);
+    }
+    const id = BigInt(idParam);
 
     const data = await c.req.json();
     const result = updatePlatformSchema.safeParse(data);
@@ -70,8 +76,11 @@ export const updatePlatformController = async (c: Context) => {
 
 export const deletePlatformController = async (c: Context) => {
   try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) return c.json({ error: 'Invalid id' }, 400);
+    const idParam = c.req.param('id');
+    if (!idParam || !/^\d+$/.test(idParam)) {
+      return c.json({ error: 'Invalid id' }, 400);
+    }
+    const id = BigInt(idParam);
 
     const [platform] = await db
       .delete(platforms)
