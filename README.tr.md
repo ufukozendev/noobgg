@@ -1,63 +1,62 @@
-# noob.gg
-<p align="center">
-  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="120" />
-</p>
+# noob.gg 🎮
+
+<div align="center">
+  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="150" />
+  
+  [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/repo)
+  [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+  [![Hono.js](https://img.shields.io/badge/Hono.js-00A3FF?style=for-the-badge&logo=hono&logoColor=white)](https://hono.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh/)
+</div>
 
 Bu proje, bir Hono.js backend API ve bir Next.js 15 frontend uygulamasından oluşmaktadır. Geliştirme ortamını başlatmak ve proje üzerinde çalışmak için aşağıdaki talimatları izleyin.
 
-## Başlarken
+## 🚀 Başlarken
 
 Bu proje bir monorepo yapısındadır ve [Turborepo](https://turbo.build/repo) kullanılarak yönetilmektedir. Paket yöneticisi olarak [Bun](https://bun.sh/) kullanılmaktadır.
 
-**Gereksinimler:**
+### 📋 Gereksinimler
 
 *   Node.js (önerilen sürüm için ana `package.json` dosyasındaki `engines` bölümüne bakın)
 *   Bun ([Kurulum Talimatları](https://bun.sh/docs/installation))
 *   Docker (PostgreSQL veritabanı için gerekli)
 
-### PostgreSQL Docker Konteyner Kurulum Adımları
+### 🐳 PostgreSQL Docker Konteyner Kurulum Adımları
 
-Bu dokümanda, PostgreSQL veritabanını Docker konteyner olarak nasıl kuracağımızı adım adım açıklayacağız.
-
-#### 1. PostgreSQL Docker İmajının İndirilmesi
-
-İlk adım olarak PostgreSQL'in Alpine Linux tabanlı hafif versiyonunu indiriyoruz:
+#### 1️⃣ PostgreSQL Docker İmajının İndirilmesi
 
 ```bash
 docker pull postgres:16.9-alpine3.22
 ```
 
-Bu komut, Docker Hub'dan PostgreSQL'in 16.9 versiyonunu Alpine Linux 3.22 tabanlı imajını indirir. Alpine Linux tabanlı imajlar, boyut olarak daha küçük ve daha güvenlidir.
-
-#### 2. PostgreSQL Konteynerinin Oluşturulması ve Çalıştırılması
-
-İndirilen imajı kullanarak yeni bir konteyner oluşturup çalıştırmak için aşağıdaki komutu kullanıyoruz:
+#### 2️⃣ PostgreSQL Konteynerinin Oluşturulması ve Çalıştırılması
 
 ```bash
 docker run -p 1453:5432 --name noobgg-postgres -e POSTGRES_PASSWORD=123noobgg123++ -d postgres:16.9-alpine3.22
 ```
 
-##### Komut Parametrelerinin Açıklaması:
+##### 🔧 Komut Parametrelerinin Açıklaması:
 
-- `-p 1453:5432`: Port yönlendirmesi. Host makinedeki 1453 portunu, konteynerin içindeki PostgreSQL'in varsayılan portu olan 5432'ye yönlendirir.
-- `--name noobgg-postgres`: Konteynere verilen isim. Bu isim ile konteyneri daha sonra kolayca yönetebiliriz.
-- `-e POSTGRES_PASSWORD=123noobgg123++`: PostgreSQL root kullanıcısının (postgres) şifresini belirler.
-- `-d`: Konteyneri arka planda (detached mode) çalıştırır.
-- `postgres:16.9-alpine3.22`: Kullanılacak Docker imajının adı ve versiyonu.
+| Parametre | Açıklama |
+|-----------|----------|
+| `-p 1453:5432` | Port yönlendirmesi. Host makinedeki 1453 portunu, konteynerin içindeki PostgreSQL'in varsayılan portu olan 5432'ye yönlendirir. |
+| `--name noobgg-postgres` | Konteynere verilen isim. Bu isim ile konteyneri daha sonra kolayca yönetebiliriz. |
+| `-e POSTGRES_PASSWORD=123noobgg123++` | PostgreSQL root kullanıcısının (postgres) şifresini belirler. |
+| `-d` | Konteyneri arka planda (detached mode) çalıştırır. |
+| `postgres:16.9-alpine3.22` | Kullanılacak Docker imajının adı ve versiyonu. |
 
-#### Bağlantı Bilgileri
+#### 🔌 Bağlantı Bilgileri
 
-PostgreSQL veritabanına bağlanmak için aşağıdaki bilgileri kullanabilirsiniz:
+| Parametre | Değer |
+|-----------|-------|
+| Host | localhost |
+| Port | 1453 |
+| Kullanıcı Adı | postgres |
+| Şifre | 123noobgg123++ |
+| Varsayılan Veritabanı | postgres |
 
-- Host: localhost
-- Port: 1453
-- Kullanıcı Adı: postgres
-- Şifre: 123noobgg123++
-- Varsayılan Veritabanı: postgres
-
-#### Önemli Docker Komutları
-
-Konteyner yönetimi için kullanabileceğiniz bazı faydalı komutlar:
+#### 📝 Önemli Docker Komutları
 
 ```bash
 docker ps                # Çalışan konteynerleri listeler
@@ -66,21 +65,19 @@ docker start noobgg-postgres  # Konteyneri başlatır
 docker logs noobgg-postgres   # Konteyner loglarını gösterir
 ```
 
-**Kurulum:**
+### 💻 Kurulum
 
 1.  Proje dosyalarını klonlayın:
     ```bash
-    git clone https://github.com/altudev/noob.gg.git
-    cd noob.gg
+    git clone https://github.com/altudev/noobgg.git
+    cd noobgg
     ```
 2.  Gerekli bağımlılıkları yükleyin:
     ```bash
     bun install
     ```
 
-**Geliştirme Sunucularını Başlatma:**
-
-Geliştirme sunucularını (backend ve frontend) aynı anda başlatmak için aşağıdaki komutu çalıştırın:
+### 🚀 Geliştirme Sunucularını Başlatma
 
 ```bash
 turbo dev
@@ -90,56 +87,75 @@ Bu komut:
 *   Backend API'sini `http://localhost:3000` adresinde başlatır.
 *   Frontend Next.js uygulamasını `http://localhost:3001` adresinde başlatır.
 
-## Proje Yapısı
+## 📁 Proje Yapısı
 
-Proje aşağıdaki gibi bir klasör yapısına sahiptir:
+```
+noob.gg/
+├── apps/
+│   ├── api/     # Hono.js tabanlı backend API
+│   └── web/     # Next.js tabanlı frontend uygulaması
+├── packages/    # Paylaşılan paketler ve kütüphaneler
+├── package.json # Ana proje bağımlılıkları
+└── turbo.json   # Turborepo yapılandırması
+```
 
-*   `apps/`: Uygulama kodlarını içerir.
-    *   `api/`: Hono.js tabanlı backend API.
-    *   `web/`: Next.js tabanlı frontend uygulaması.
-*   `packages/`: Paylaşılan paketleri ve kütüphaneleri içerir (örneğin, UI bileşenleri, paylaşılan TypeScript yapılandırmaları, ESLint kuralları vb.).
-*   `package.json`: Ana proje bağımlılıklarını ve `turbo` komutlarını tanımlar.
-*   `turbo.json`: Turborepo yapılandırma dosyası.
-
-## Kullanılan Teknolojiler
+## 🛠️ Kullanılan Teknolojiler
 
 ### Backend (API)
 
-*   **Framework**: [Hono.js](https://hono.dev/) - Hızlı ve hafif bir web framework'ü.
-*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - TypeScript tabanlı modern bir SQL query builder.
-*   **Veritabanı**: PostgreSQL 16 (Drizzle ORM ile entegre).
+*   **Framework**: [Hono.js](https://hono.dev/) - Hızlı ve hafif bir web framework'ü
+*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - TypeScript tabanlı modern bir SQL query builder
+*   **Veritabanı**: PostgreSQL 16 (Drizzle ORM ile entegre)
 *   **Diğer Kütüphaneler**:
-    *   `@aws-sdk/client-s3`: AWS S3 ile etkileşim için (eğer kullanılıyorsa).
-    *   `dotenv`: Ortam değişkenlerini yönetmek için.
+    *   `@aws-sdk/client-s3`: AWS S3 ile etkileşim için
+    *   `dotenv`: Ortam değişkenlerini yönetmek için
 
 ### Frontend (Web)
 
-*   **Framework**: [Next.js 15](https://nextjs.org/) - React tabanlı, sunucu tarafı renderlama (SSR) ve statik site oluşturma (SSG) yeteneklerine sahip bir framework.
+*   **Framework**: [Next.js 15](https://nextjs.org/) - React tabanlı, SSR ve SSG yeteneklerine sahip framework
 *   **UI Kütüphanesi**: [React](https://react.dev/)
-*   **Stil**: [Tailwind CSS](https://tailwindcss.com/) (muhtemelen `apps/web/tailwind.config.js` veya benzeri bir dosyada yapılandırılmıştır).
+*   **Stil**: [Tailwind CSS](https://tailwindcss.com/)
 
-### Geliştirme Araçları
+### 🛠️ Geliştirme Araçları
 
 *   **Monorepo Yönetimi**: [Turborepo](https://turbo.build/repo)
 *   **Paket Yöneticisi**: [Bun](https://bun.sh/)
-*   **TypeScript**: Statik tipleme için.
-*   **ESLint**: Kod kalitesini ve tutarlılığını sağlamak için.
+*   **TypeScript**: Statik tipleme için
+*   **ESLint**: Kod kalitesini ve tutarlılığını sağlamak için
 
-## Katkıda Bulunma
+## 🤝 Katkıda Bulunma
 
 Katkılarınız için teşekkür ederiz! Lütfen katkıda bulunma rehberini (eğer varsa) inceleyin veya bir issue açarak ya da pull request göndererek projeye destek olun.
 
-## Lisans
+## 📄 Lisans
 
 Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına bakın.
 
-## Katkıda Bulunanlar
+## 👥 Katkıda Bulunanlar
 
 Yayınlarımıza katılan ve geliştirme sürecimizde bize destek olan tüm arkadaşlarımıza çok teşekkür ederiz! 🙏
 
-<a href="https://github.com/altudev"><img width="60px" alt="altudev" src="https://github.com/altudev.png"/></a>
-<a href="https://github.com/furkanczay"><img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png"/></a>
-<a href="https://github.com/HikmetMelikk"><img width="60px" alt="Hikmet Melik" src="https://github.com/HikmetMelikk.png"/></a>
-<a href="https://github.com/gurgenufuk12"><img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png"/></a>
-<a href="https://github.com/apps/google-labs-jules"><img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4"/></a>
-<a href="https://github.com/apps/devin-ai-integration"><img width="60px" alt="DevinAI Integration" src="https://avatars.githubusercontent.com/in/811515?s=41&u=22ae8177548c8cd6cccb497ac571937d080c80bc&v=4"/></a>
+<div align="center">
+  <a href="https://github.com/altudev">
+    <img width="60px" alt="altudev" src="https://github.com/altudev.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/furkanczay">
+    <img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/HikmetMelikk">
+    <img width="60px" alt="Hikmet Melik" src="https://github.com/HikmetMelikk.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/gurgenufuk12">
+    <img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/apps/google-labs-jules">
+    <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/apps/devin-ai-integration">
+    <img width="60px" alt="DevinAI Integration" src="https://avatars.githubusercontent.com/in/811515?s=41&u=22ae8177548c8cd6cccb497ac571937d080c80bc&v=4" style="border-radius: 50%;"/>
+  </a>
+</div>
+
+<div align="center">
+  <sub>noob.gg ekibi tarafından ❤️ ile geliştirildi</sub>
+</div>

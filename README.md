@@ -1,30 +1,51 @@
-# noob.gg
-<p align="center">
-  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="120" />
-</p>
+# noob.gg 🎮
 
-Welcome to the project!
+<div align="center">
+  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="150" />
+  
+  [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/repo)
+  [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+  [![Hono.js](https://img.shields.io/badge/Hono.js-00A3FF?style=for-the-badge&logo=hono&logoColor=white)](https://hono.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh/)
+</div>
 
-This project uses Turborepo with a Hono.js backend and a Next.js 15 frontend.
-
-## Documentation
+## 📚 Documentation
 
 The primary documentation for this project is in Turkish. An English version is also available.
 
-- **Türkçe Dokümanlar (Primary):** [README.tr.md](./README.tr.md)
-- **English Documentation (Secondary):** [README.en.md](./README.en.md)
+- **🇹🇷 Turkish Documentation (Primary):** [README.tr.md](./README.tr.md)
+- **🇬🇧 English Documentation (Secondary):** [README.en.md](./README.en.md)
 
 Please refer to these files for information on project setup, development workflow, technologies used, and contribution guidelines.
 
 ---
 
-## Contributors
+## 👥 Contributors
 
 Meet our amazing contributors:
 
-<a href="https://github.com/altudev"><img width="60px" alt="altudev" src="https://github.com/altudev.png"/></a>
-<a href="https://github.com/furkanczay"><img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png"/></a>
-<a href="https://github.com/HikmetMelikk"><img width="60px" alt="Hikmet Melik" src="https://github.com/HikmetMelikk.png"/></a>
-<a href="https://github.com/gurgenufuk12"><img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png"/></a>
-<a href="https://github.com/apps/google-labs-jules"><img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4"/></a>
-<a href="https://github.com/apps/devin-ai-integration"><img width="60px" alt="DevinAI Integration" src="https://avatars.githubusercontent.com/in/811515?s=41&u=22ae8177548c8cd6cccb497ac571937d080c80bc&v=4"/></a>
+<div align="center">
+  <a href="https://github.com/altudev">
+    <img width="60px" alt="altudev" src="https://github.com/altudev.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/furkanczay">
+    <img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/HikmetMelikk">
+    <img width="60px" alt="Hikmet Melik" src="https://github.com/HikmetMelikk.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/gurgenufuk12">
+    <img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/apps/google-labs-jules">
+    <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/apps/devin-ai-integration">
+    <img width="60px" alt="DevinAI Integration" src="https://avatars.githubusercontent.com/in/811515?s=41&u=22ae8177548c8cd6cccb497ac571937d080c80bc&v=4" style="border-radius: 50%;"/>
+  </a>
+</div>
+
+<div align="center">
+  <sub>Built with ❤️ by the noob.gg team</sub>
+</div>

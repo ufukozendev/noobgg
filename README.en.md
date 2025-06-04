@@ -1,36 +1,85 @@
-# noob.gg
-<p align="center">
-  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="120" />
-</p>
+# noob.gg 🎮
+
+<div align="center">
+  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="150" />
+  
+  [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/repo)
+  [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+  [![Hono.js](https://img.shields.io/badge/Hono.js-00A3FF?style=for-the-badge&logo=hono&logoColor=white)](https://hono.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh/)
+</div>
 
 This project consists of a Hono.js backend API and a Next.js 15 frontend application. Follow the instructions below to set up the development environment and start working on the project.
 
 **Note:** The primary documentation for this project is in Turkish and can be found in [README.tr.md](./README.tr.md). This document provides an English overview.
 
-## Getting Started
+## 🚀 Getting Started
 
 This project is a monorepo managed using [Turborepo](https://turbo.build/repo). The package manager is [Bun](https://bun.sh/).
 
-**Prerequisites:**
+### 📋 Prerequisites
 
 *   Node.js (see the `engines` section in the main `package.json` for the recommended version)
 *   Bun ([Installation Guide](https://bun.sh/docs/installation))
+*   Docker (required for PostgreSQL database)
 
-**Installation:**
+### 🐳 PostgreSQL Docker Container Setup Steps
+
+#### 1️⃣ Download PostgreSQL Docker Image
+
+```bash
+docker pull postgres:16.9-alpine3.22
+```
+
+#### 2️⃣ Create and Run PostgreSQL Container
+
+```bash
+docker run -p 1453:5432 --name noobgg-postgres -e POSTGRES_PASSWORD=123noobgg123++ -d postgres:16.9-alpine3.22
+```
+
+##### 🔧 Command Parameters Explanation:
+
+| Parameter | Description |
+|-----------|-------------|
+| `-p 1453:5432` | Port mapping. Maps host machine's port 1453 to PostgreSQL's default port 5432 inside the container. |
+| `--name noobgg-postgres` | Container name. This name can be used to manage the container later. |
+| `-e POSTGRES_PASSWORD=123noobgg123++` | Sets the password for PostgreSQL root user (postgres). |
+| `-d` | Runs the container in detached mode (background). |
+| `postgres:16.9-alpine3.22` | Docker image name and version to use. |
+
+#### 🔌 Connection Information
+
+| Parameter | Value |
+|-----------|-------|
+| Host | localhost |
+| Port | 1453 |
+| Username | postgres |
+| Password | 123noobgg123++ |
+| Default Database | postgres |
+
+#### 📝 Important Docker Commands
+
+```bash
+docker ps                # List running containers
+docker stop noobgg-postgres   # Stop the container
+docker start noobgg-postgres  # Start the container
+docker logs noobgg-postgres   # Show container logs
+```
+
+### 💻 Installation
 
 1.  Clone the project repository:
     ```bash
-    git clone https://github.com/altudev/noob.gg.git
-    cd noob.gg
+    git clone https://github.com/altudev/noobgg.git
+    cd noobgg
     ```
 2.  Install the dependencies:
     ```bash
     bun install
     ```
 
-**Starting the Development Servers:**
-
-To start both the backend and frontend development servers simultaneously, run:
+### 🚀 Starting the Development Servers
 
 ```bash
 turbo dev
@@ -40,56 +89,75 @@ This command will:
 *   Start the backend API on `http://localhost:3000`.
 *   Start the frontend Next.js application on `http://localhost:3001`.
 
-## Project Structure
+## 📁 Project Structure
 
-The project has the following folder structure:
+```
+noob.gg/
+├── apps/
+│   ├── api/     # Hono.js based backend API
+│   └── web/     # Next.js based frontend application
+├── packages/    # Shared packages and libraries
+├── package.json # Main project dependencies
+└── turbo.json   # Turborepo configuration
+```
 
-*   `apps/`: Contains the application code.
-    *   `api/`: Hono.js based backend API.
-    *   `web/`: Next.js based frontend application.
-*   `packages/`: Contains shared packages and libraries (e.g., UI components, shared TypeScript configurations, ESLint rules, etc.).
-*   `package.json`: Defines main project dependencies and `turbo` scripts.
-*   `turbo.json`: Turborepo configuration file.
-
-## Technologies Used
+## 🛠️ Technologies Used
 
 ### Backend (API)
 
-*   **Framework**: [Hono.js](https://hono.dev/) - A fast and lightweight web framework.
-*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - A modern TypeScript-based SQL query builder.
-*   **Database**: PostgreSQL 16 (integrated with Drizzle ORM).
+*   **Framework**: [Hono.js](https://hono.dev/) - A fast and lightweight web framework
+*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - A modern TypeScript-based SQL query builder
+*   **Database**: PostgreSQL 16 (integrated with Drizzle ORM)
 *   **Other Libraries**:
-    *   `@aws-sdk/client-s3`: For interacting with AWS S3 (if used).
-    *   `dotenv`: For managing environment variables.
+    *   `@aws-sdk/client-s3`: For interacting with AWS S3
+    *   `dotenv`: For managing environment variables
 
 ### Frontend (Web)
 
-*   **Framework**: [Next.js 15](https://nextjs.org/) - A React-based framework with server-side rendering (SSR) and static site generation (SSG) capabilities.
+*   **Framework**: [Next.js 15](https://nextjs.org/) - A React-based framework with SSR and SSG capabilities
 *   **UI Library**: [React](https://react.dev/)
-*   **Styling**: [Tailwind CSS](https://tailwindcss.com/) (likely configured in `apps/web/tailwind.config.js` or a similar file).
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 
-### Development Tools
+### 🛠️ Development Tools
 
 *   **Monorepo Management**: [Turborepo](https://turbo.build/repo)
 *   **Package Manager**: [Bun](https://bun.sh/)
-*   **TypeScript**: For static typing.
-*   **ESLint**: For maintaining code quality and consistency.
+*   **TypeScript**: For static typing
+*   **ESLint**: For maintaining code quality and consistency
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please review the contributing guidelines (if available) or support the project by opening an issue or submitting a pull request.
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
-## Contributors
+## 👥 Contributors
 
 A big thank you to all our friends who participated in our streams and supported us during the development process! 🙏
 
-<a href="https://github.com/altudev"><img width="60px" alt="altudev" src="https://github.com/altudev.png"/></a>
-<a href="https://github.com/furkanczay"><img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png"/></a>
-<a href="https://github.com/HikmetMelikk"><img width="60px" alt="Hikmet Melik" src="https://github.com/HikmetMelikk.png"/></a>
-<a href="https://github.com/gurgenufuk12"><img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png"/></a>
-<a href="https://github.com/apps/google-labs-jules"><img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4"/></a>
-<a href="https://github.com/apps/devin-ai-integration"><img width="60px" alt="DevinAI Integration" src="https://avatars.githubusercontent.com/in/811515?s=41&u=22ae8177548c8cd6cccb497ac571937d080c80bc&v=4"/></a>
+<div align="center">
+  <a href="https://github.com/altudev">
+    <img width="60px" alt="altudev" src="https://github.com/altudev.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/furkanczay">
+    <img width="60px" alt="Furkan Özay" src="https://github.com/furkanczay.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/HikmetMelikk">
+    <img width="60px" alt="Hikmet Melik" src="https://github.com/HikmetMelikk.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/gurgenufuk12">
+    <img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/apps/google-labs-jules">
+    <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/apps/devin-ai-integration">
+    <img width="60px" alt="DevinAI Integration" src="https://avatars.githubusercontent.com/in/811515?s=41&u=22ae8177548c8cd6cccb497ac571937d080c80bc&v=4" style="border-radius: 50%;"/>
+  </a>
+</div>
+
+<div align="center">
+  <sub>Built with ❤️ by the noob.gg team</sub>
+</div>
