@@ -13,3 +13,8 @@ export {
   createGameSchema,
   updateGameSchema,
 } from "./schemas/game.schema";
+
+export {
+  createGameRankSchema,
+  updateGameRankSchema,
+} from "./schemas/gamerank.schema";
