@@ -2,6 +2,7 @@ import { Context } from "hono";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { distributorsTable } from "../db/schemas/distributors.drizzle";
+import { createDistributorSchema, updateDistributorSchema } from "../lib/zod-schemas/distributors";
 
 export const getAllDistributorsController = async (c: Context) => {  try {
     const distributors = await db.select().from(distributorsTable);
@@ -26,29 +27,13 @@ export const getDistributorByIdController = async (c: Context) => {
 export const createDistributorController = async (c: Context) => {
   try {
     const data = await c.req.json();
-    
+    const result = createDistributorSchema.safeParse(data);
 
-    if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
-      return c.json({ error: "Name is required and must be a non-empty string" }, 400);
+    if (!result.success) {
+      return c.json({ error: result.error.flatten().fieldErrors }, 400);
     }
     
-    if (data.name.length > 255) {
-      return c.json({ error: "Name must be 255 characters or less" }, 400);
-    }
-
-
-    if (data.website && (typeof data.website !== 'string' || data.website.length > 255)) {
-      return c.json({ error: "Website must be a string with 255 characters or less" }, 400);
-    }
-
-    if (data.logo && (typeof data.logo !== 'string' || data.logo.length > 255)) {
-      return c.json({ error: "Logo must be a string with 255 characters or less" }, 400);
-    }
-
-    if (data.description && typeof data.description !== 'string') {
-      return c.json({ error: "Description must be a string" }, 400);
-    }   
-    const [distributor] = await db.insert(distributorsTable).values(data).returning();
+    const [distributor] = await db.insert(distributorsTable).values(result.data).returning();
     return c.json(distributor, 201);
   } catch (error) {
     return c.json({ error: "Internal server error" }, 500);
