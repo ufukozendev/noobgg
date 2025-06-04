@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getAllPlatforms,
+  getPlatform,
   createPlatform,
   updatePlatform,
   deletePlatform,
@@ -9,6 +10,14 @@ import type { Platform } from '@/types/platform';
 
 export function usePlatforms() {
   return useQuery({ queryKey: ['platforms'], queryFn: getAllPlatforms });
+}
+
+export function usePlatform(id: number) {
+  return useQuery({
+    queryKey: ['platform', id],
+    queryFn: () => getPlatform(id),
+    enabled: !!id,
+  });
 }
 
 export function useCreatePlatform() {

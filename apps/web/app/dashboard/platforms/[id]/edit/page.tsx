@@ -1,21 +1,13 @@
 "use client";
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { PlatformForm } from '@/components/platforms/platform-form';
-import { getPlatform } from '@/features/platforms/api/actions';
-import type { Platform } from '@/types/platform';
+import { usePlatform } from '@/features/platforms/api/use-platforms';
 
 export default function EditPlatformPage() {
   const router = useRouter();
   const params = useParams();
-  const [platform, setPlatform] = useState<Platform | null>(null);
-
-  useEffect(() => {
-    const id = Number(params?.id);
-    if (!isNaN(id)) {
-      getPlatform(id).then(setPlatform);
-    }
-  }, [params]);
+  const id = Number(params?.id);
+  const { data: platform } = usePlatform(isNaN(id) ? 0 : id);
 
   if (!platform) return <div>Loading...</div>;
 

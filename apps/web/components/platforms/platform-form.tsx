@@ -26,7 +26,12 @@ export function PlatformForm({
   });
 
   function onSubmit(values: z.infer<typeof createPlatformSchema>) {
-    mutation.mutate(values, { onSuccess });
+    mutation.mutate(values, {
+      onSuccess: () => {
+        form.reset();
+        onSuccess?.();
+      },
+    });
   }
 
   return (
