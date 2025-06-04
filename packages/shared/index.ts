@@ -8,3 +8,8 @@ export {
   createDistributorSchema,
   updateDistributorSchema,
 } from "./schemas/distributor.schema";
+
+export {
+  createGameSchema,
+  updateGameSchema,
+} from "./schemas/game.schema";
