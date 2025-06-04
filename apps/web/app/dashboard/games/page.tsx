@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getAllGames } from "@/features/games/api/use-games";
+import { getAllGames } from "@/features/games/api/actions";
 import { GameCard } from "@/components/games/game-card";
 import type { Game } from "@/types/game";
 
