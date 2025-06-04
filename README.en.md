@@ -20,9 +20,9 @@ This project is a monorepo managed using [Turborepo](https://turbo.build/repo). 
 
 ### 📋 Prerequisites
 
-*   Node.js (see the `engines` section in the main `package.json` for the recommended version)
-*   Bun ([Installation Guide](https://bun.sh/docs/installation))
-*   Docker (required for PostgreSQL database)
+- Node.js (see the `engines` section in the main `package.json` for the recommended version)
+- Bun ([Installation Guide](https://bun.sh/docs/installation))
+- Docker (required for PostgreSQL database)
 
 ### 🐳 PostgreSQL Docker Container Setup Steps
 
@@ -40,23 +40,23 @@ docker run -p 1453:5432 --name noobgg-postgres -e POSTGRES_PASSWORD=123noobgg123
 
 ##### 🔧 Command Parameters Explanation:
 
-| Parameter | Description |
-|-----------|-------------|
-| `-p 1453:5432` | Port mapping. Maps host machine's port 1453 to PostgreSQL's default port 5432 inside the container. |
-| `--name noobgg-postgres` | Container name. This name can be used to manage the container later. |
-| `-e POSTGRES_PASSWORD=123noobgg123++` | Sets the password for PostgreSQL root user (postgres). |
-| `-d` | Runs the container in detached mode (background). |
-| `postgres:16.9-alpine3.22` | Docker image name and version to use. |
+| Parameter                             | Description                                                                                         |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `-p 1453:5432`                        | Port mapping. Maps host machine's port 1453 to PostgreSQL's default port 5432 inside the container. |
+| `--name noobgg-postgres`              | Container name. This name can be used to manage the container later.                                |
+| `-e POSTGRES_PASSWORD=123noobgg123++` | Sets the password for PostgreSQL root user (postgres).                                              |
+| `-d`                                  | Runs the container in detached mode (background).                                                   |
+| `postgres:16.9-alpine3.22`            | Docker image name and version to use.                                                               |
 
 #### 🔌 Connection Information
 
-| Parameter | Value |
-|-----------|-------|
-| Host | localhost |
-| Port | 1453 |
-| Username | postgres |
-| Password | 123noobgg123++ |
-| Default Database | postgres |
+| Parameter        | Value          |
+| ---------------- | -------------- |
+| Host             | localhost      |
+| Port             | 1453           |
+| Username         | postgres       |
+| Password         | 123noobgg123++ |
+| Default Database | postgres       |
 
 #### 📝 Important Docker Commands
 
@@ -86,8 +86,9 @@ turbo dev
 ```
 
 This command will:
-*   Start the backend API on `http://localhost:3000`.
-*   Start the frontend Next.js application on `http://localhost:3001`.
+
+- Start the backend API on `http://localhost:3000`.
+- Start the frontend Next.js application on `http://localhost:3001`.
 
 ## 📁 Project Structure
 
@@ -105,25 +106,25 @@ noob.gg/
 
 ### Backend (API)
 
-*   **Framework**: [Hono.js](https://hono.dev/) - A fast and lightweight web framework
-*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - A modern TypeScript-based SQL query builder
-*   **Database**: PostgreSQL 16 (integrated with Drizzle ORM)
-*   **Other Libraries**:
-    *   `@aws-sdk/client-s3`: For interacting with AWS S3
-    *   `dotenv`: For managing environment variables
+- **Framework**: [Hono.js](https://hono.dev/) - A fast and lightweight web framework
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - A modern TypeScript-based SQL query builder
+- **Database**: PostgreSQL 16 (integrated with Drizzle ORM)
+- **Other Libraries**:
+  - `@aws-sdk/client-s3`: For interacting with AWS S3
+  - `dotenv`: For managing environment variables
 
 ### Frontend (Web)
 
-*   **Framework**: [Next.js 15](https://nextjs.org/) - A React-based framework with SSR and SSG capabilities
-*   **UI Library**: [React](https://react.dev/)
-*   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Framework**: [Next.js 15](https://nextjs.org/) - A React-based framework with SSR and SSG capabilities
+- **UI Library**: [React](https://react.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 
 ### 🛠️ Development Tools
 
-*   **Monorepo Management**: [Turborepo](https://turbo.build/repo)
-*   **Package Manager**: [Bun](https://bun.sh/)
-*   **TypeScript**: For static typing
-*   **ESLint**: For maintaining code quality and consistency
+- **Monorepo Management**: [Turborepo](https://turbo.build/repo)
+- **Package Manager**: [Bun](https://bun.sh/)
+- **TypeScript**: For static typing
+- **ESLint**: For maintaining code quality and consistency
 
 ## 🤝 Contributing
 
@@ -149,6 +150,9 @@ A big thank you to all our friends who participated in our streams and supported
   </a>
   <a href="https://github.com/gurgenufuk12">
     <img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png" style="border-radius: 50%;"/>
+  </a>
+   <a href="https://github.com/ravidulundu">
+    <img width="60px" alt="Ravi DULUNDU" src="https://github.com/ravidulundu.png" style="border-radius: 50%;"/>
   </a>
   <a href="https://github.com/apps/google-labs-jules">
     <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>

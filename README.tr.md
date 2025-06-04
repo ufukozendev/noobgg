@@ -18,9 +18,9 @@ Bu proje bir monorepo yapısındadır ve [Turborepo](https://turbo.build/repo) k
 
 ### 📋 Gereksinimler
 
-*   Node.js (önerilen sürüm için ana `package.json` dosyasındaki `engines` bölümüne bakın)
-*   Bun ([Kurulum Talimatları](https://bun.sh/docs/installation))
-*   Docker (PostgreSQL veritabanı için gerekli)
+- Node.js (önerilen sürüm için ana `package.json` dosyasındaki `engines` bölümüne bakın)
+- Bun ([Kurulum Talimatları](https://bun.sh/docs/installation))
+- Docker (PostgreSQL veritabanı için gerekli)
 
 ### 🐳 PostgreSQL Docker Konteyner Kurulum Adımları
 
@@ -38,23 +38,23 @@ docker run -p 1453:5432 --name noobgg-postgres -e POSTGRES_PASSWORD=123noobgg123
 
 ##### 🔧 Komut Parametrelerinin Açıklaması:
 
-| Parametre | Açıklama |
-|-----------|----------|
-| `-p 1453:5432` | Port yönlendirmesi. Host makinedeki 1453 portunu, konteynerin içindeki PostgreSQL'in varsayılan portu olan 5432'ye yönlendirir. |
-| `--name noobgg-postgres` | Konteynere verilen isim. Bu isim ile konteyneri daha sonra kolayca yönetebiliriz. |
-| `-e POSTGRES_PASSWORD=123noobgg123++` | PostgreSQL root kullanıcısının (postgres) şifresini belirler. |
-| `-d` | Konteyneri arka planda (detached mode) çalıştırır. |
-| `postgres:16.9-alpine3.22` | Kullanılacak Docker imajının adı ve versiyonu. |
+| Parametre                             | Açıklama                                                                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `-p 1453:5432`                        | Port yönlendirmesi. Host makinedeki 1453 portunu, konteynerin içindeki PostgreSQL'in varsayılan portu olan 5432'ye yönlendirir. |
+| `--name noobgg-postgres`              | Konteynere verilen isim. Bu isim ile konteyneri daha sonra kolayca yönetebiliriz.                                               |
+| `-e POSTGRES_PASSWORD=123noobgg123++` | PostgreSQL root kullanıcısının (postgres) şifresini belirler.                                                                   |
+| `-d`                                  | Konteyneri arka planda (detached mode) çalıştırır.                                                                              |
+| `postgres:16.9-alpine3.22`            | Kullanılacak Docker imajının adı ve versiyonu.                                                                                  |
 
 #### 🔌 Bağlantı Bilgileri
 
-| Parametre | Değer |
-|-----------|-------|
-| Host | localhost |
-| Port | 1453 |
-| Kullanıcı Adı | postgres |
-| Şifre | 123noobgg123++ |
-| Varsayılan Veritabanı | postgres |
+| Parametre             | Değer          |
+| --------------------- | -------------- |
+| Host                  | localhost      |
+| Port                  | 1453           |
+| Kullanıcı Adı         | postgres       |
+| Şifre                 | 123noobgg123++ |
+| Varsayılan Veritabanı | postgres       |
 
 #### 📝 Önemli Docker Komutları
 
@@ -84,8 +84,9 @@ turbo dev
 ```
 
 Bu komut:
-*   Backend API'sini `http://localhost:3000` adresinde başlatır.
-*   Frontend Next.js uygulamasını `http://localhost:3001` adresinde başlatır.
+
+- Backend API'sini `http://localhost:3000` adresinde başlatır.
+- Frontend Next.js uygulamasını `http://localhost:3001` adresinde başlatır.
 
 ## 📁 Proje Yapısı
 
@@ -103,25 +104,25 @@ noob.gg/
 
 ### Backend (API)
 
-*   **Framework**: [Hono.js](https://hono.dev/) - Hızlı ve hafif bir web framework'ü
-*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - TypeScript tabanlı modern bir SQL query builder
-*   **Veritabanı**: PostgreSQL 16 (Drizzle ORM ile entegre)
-*   **Diğer Kütüphaneler**:
-    *   `@aws-sdk/client-s3`: AWS S3 ile etkileşim için
-    *   `dotenv`: Ortam değişkenlerini yönetmek için
+- **Framework**: [Hono.js](https://hono.dev/) - Hızlı ve hafif bir web framework'ü
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - TypeScript tabanlı modern bir SQL query builder
+- **Veritabanı**: PostgreSQL 16 (Drizzle ORM ile entegre)
+- **Diğer Kütüphaneler**:
+  - `@aws-sdk/client-s3`: AWS S3 ile etkileşim için
+  - `dotenv`: Ortam değişkenlerini yönetmek için
 
 ### Frontend (Web)
 
-*   **Framework**: [Next.js 15](https://nextjs.org/) - React tabanlı, SSR ve SSG yeteneklerine sahip framework
-*   **UI Kütüphanesi**: [React](https://react.dev/)
-*   **Stil**: [Tailwind CSS](https://tailwindcss.com/)
+- **Framework**: [Next.js 15](https://nextjs.org/) - React tabanlı, SSR ve SSG yeteneklerine sahip framework
+- **UI Kütüphanesi**: [React](https://react.dev/)
+- **Stil**: [Tailwind CSS](https://tailwindcss.com/)
 
 ### 🛠️ Geliştirme Araçları
 
-*   **Monorepo Yönetimi**: [Turborepo](https://turbo.build/repo)
-*   **Paket Yöneticisi**: [Bun](https://bun.sh/)
-*   **TypeScript**: Statik tipleme için
-*   **ESLint**: Kod kalitesini ve tutarlılığını sağlamak için
+- **Monorepo Yönetimi**: [Turborepo](https://turbo.build/repo)
+- **Paket Yöneticisi**: [Bun](https://bun.sh/)
+- **TypeScript**: Statik tipleme için
+- **ESLint**: Kod kalitesini ve tutarlılığını sağlamak için
 
 ## 🤝 Katkıda Bulunma
 
@@ -147,6 +148,9 @@ Yayınlarımıza katılan ve geliştirme sürecimizde bize destek olan tüm arka
   </a>
   <a href="https://github.com/gurgenufuk12">
     <img width="60px" alt="Ufuk Gürgen" src="https://github.com/gurgenufuk12.png" style="border-radius: 50%;"/>
+  </a>
+   <a href="https://github.com/ravidulundu">
+    <img width="60px" alt="Ravi DULUNDU" src="https://github.com/ravidulundu.png" style="border-radius: 50%;"/>
   </a>
   <a href="https://github.com/apps/google-labs-jules">
     <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>
