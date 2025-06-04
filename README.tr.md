@@ -70,7 +70,7 @@ docker logs noobgg-postgres   # Konteyner loglarını gösterir
 1.  Proje dosyalarını klonlayın:
     ```bash
     git clone https://github.com/altudev/noobgg.git
-    cd noob.gg
+    cd noobgg
     ```
 2.  Gerekli bağımlılıkları yükleyin:
     ```bash

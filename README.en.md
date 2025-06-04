@@ -72,7 +72,7 @@ docker logs noobgg-postgres   # Show container logs
 1.  Clone the project repository:
     ```bash
     git clone https://github.com/altudev/noobgg.git
-    cd noob.gg
+    cd noobgg
     ```
 2.  Install the dependencies:
     ```bash
