@@ -82,8 +82,10 @@ function SidebarProvider({
         _setOpen(openState)
       }
 
-      // This sets the cookie to keep the sidebar state with security flags.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; secure; samesite=strict`
+      // This sets the cookie to keep the sidebar state with security flags (secure only in production).
+      const isProduction = process.env.NODE_ENV === "production"
+      const secureFlag = isProduction ? "; secure" : ""
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}${secureFlag}; samesite=strict`
     },
     [setOpenProp, open]
   )
