@@ -18,3 +18,8 @@ export {
   createGameRankSchema,
   updateGameRankSchema,
 } from "./schemas/gamerank.schema";
+
+export { 
+  createUserProfileSchema,
+  updateUserProfileSchema
+} from "./schemas/user-profile.schema";
