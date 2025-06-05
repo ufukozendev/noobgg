@@ -32,7 +32,7 @@ vi.mock('../db', () => ({
 const mockJson = vi.fn();
 const mockReqJson = vi.fn();
 
-const mockContext = (body?: any, params?: Record<string, string>) => ({
+const mockContext = (body?: Record<string, unknown>, params?: Record<string, string>) => ({
   req: {
     json: mockReqJson.mockResolvedValue(body || {}),
     param: (key: string) => params?.[key]
