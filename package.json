@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@hono/swagger-ui": "^0.5.1",
+    "@hono/zod-openapi": "^0.19.8"
+  }
 }
