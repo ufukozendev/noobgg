@@ -329,7 +329,9 @@ export const getAllGamesController = async (c: Context) => {
 export const getGameByIdController = async (c: Context) => {
   try {
     const id = Number(c.req.param("id"));
-    if (Number.isNaN(id)) return c.json({ error: "Invalid id" }, 400);
+    if (!Number.isInteger(id) || id <= 0) {
+      return c.json({ error: "Invalid id" }, 400);
+    }
 
     const game = await db.select().from(gamesTable).where(eq(gamesTable.id, id));
 
@@ -359,13 +361,19 @@ export const createGameController = async (c: Context) => {
 export const updateGameController = async (c: Context) => {
   try {
     const id = Number(c.req.param("id"));
-    if (Number.isNaN(id)) return c.json({ error: "Invalid id" }, 400);
+    if (!Number.isInteger(id) || id <= 0) {
+      return c.json({ error: "Invalid id" }, 400);
+    }
 
     const data = await c.req.json();
     const result = updateGameSchema.safeParse(data);
 
     if (!result.success) {
       return c.json({ error: result.error.flatten().fieldErrors }, 400);
+    }
+
+    if (Object.keys(result.data).length === 0) {
+      return c.json({ error: "No valid fields provided for update" }, 400);
     }
 
     const [game] = await db
@@ -384,7 +392,9 @@ export const updateGameController = async (c: Context) => {
 export const deleteGameController = async (c: Context) => {
   try {
     const id = Number(c.req.param("id"));
-    if (Number.isNaN(id)) return c.json({ error: "Invalid id" }, 400);
+    if (!Number.isInteger(id) || id <= 0) {
+      return c.json({ error: "Invalid id" }, 400);
+    }
 
     const [game] = await db
       .delete(gamesTable)

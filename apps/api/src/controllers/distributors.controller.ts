@@ -335,7 +335,9 @@ export const getAllDistributorsController = async (c: Context) => {
 export const getDistributorByIdController = async (c: Context) => {
   try {
     const id = Number(c.req.param("id"));
-    if (isNaN(id)) return c.json({ error: "Invalid id" }, 400);
+    if (!Number.isInteger(id) || id <= 0) {
+      return c.json({ error: "Invalid id" }, 400);
+    }
 
     const distributor = await db
       .select()
@@ -371,7 +373,9 @@ export const createDistributorController = async (c: Context) => {
 export const updateDistributorController = async (c: Context) => {
   try {
     const id = Number(c.req.param("id"));
-    if (isNaN(id)) return c.json({ error: "Invalid id" }, 400);
+    if (!Number.isInteger(id) || id <= 0) {
+      return c.json({ error: "Invalid id" }, 400);
+    }
 
     const data = await c.req.json();
     const result = updateDistributorSchema.safeParse(data);
@@ -404,7 +408,9 @@ export const updateDistributorController = async (c: Context) => {
 export const deleteDistributorController = async (c: Context) => {
   try {
     const id = Number(c.req.param("id"));
-    if (isNaN(id)) return c.json({ error: "Invalid id" }, 400);
+    if (!Number.isInteger(id) || id <= 0) {
+      return c.json({ error: "Invalid id" }, 400);
+    }
 
     const [distributor] = await db
       .delete(distributorsTable)
