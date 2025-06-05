@@ -1,5 +1,10 @@
-import { Hono } from "hono";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import {
+  getAllDistributorsRoute,
+  getDistributorByIdRoute,
+  createDistributorRoute,
+  updateDistributorRoute,
+  deleteDistributorRoute,
   getAllDistributorsController,
   getDistributorByIdController,
   createDistributorController,
@@ -7,12 +12,13 @@ import {
   deleteDistributorController,
 } from "../controllers/distributors.controller";
 
-const distributors = new Hono().basePath("/distributors");
+const distributors = new OpenAPIHono().basePath("/distributors");
 
-distributors.get("/", getAllDistributorsController);
-distributors.get("/:id", getDistributorByIdController);
-distributors.post("/", createDistributorController);
-distributors.put("/:id", updateDistributorController);
-distributors.delete("/:id", deleteDistributorController);
+// Use OpenAPI routes with existing controllers
+distributors.openapi(getAllDistributorsRoute, getAllDistributorsController);
+distributors.openapi(getDistributorByIdRoute, getDistributorByIdController);
+distributors.openapi(createDistributorRoute, createDistributorController);
+distributors.openapi(updateDistributorRoute, updateDistributorController);
+distributors.openapi(deleteDistributorRoute, deleteDistributorController);
 
 export default distributors;

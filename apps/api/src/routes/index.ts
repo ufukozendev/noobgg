@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import { homeController } from "../controllers/main.controller";
 import anyRoutes from "./any-route";
 import gamesRoutes from "./games";
@@ -8,7 +8,7 @@ import gameRanksRoutes from "./game-ranks";
 import userProfile from "./user-profiles";
 
 
-const router = new Hono();
+const router = new OpenAPIHono();
 
 router.get("/", homeController);
 router.route("/", anyRoutes);
