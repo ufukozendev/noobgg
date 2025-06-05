@@ -1,7 +1,7 @@
 # noob.gg 🎮
 
 <div align="center">
-  <img src="docs/noobgg-logo.png" alt="noob.gg logo" height="150" />
+  <img src="../docs/noobgg-logo.png" alt="noob.gg logo" height="150" />
   
   [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/repo)
   [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -130,7 +130,7 @@ Katkılarınız için teşekkür ederiz! Lütfen katkıda bulunma rehberini (eğ
 
 ## 📄 Lisans
 
-Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına bakın.
+Bu proje Apache Lisansı altında lisanslanmıştır. Daha fazla bilgi için [`LICENSE`](../LICENSE) dosyasına bakın.
 
 ## 👥 Katkıda Bulunanlar
 
@@ -151,6 +151,15 @@ Yayınlarımıza katılan ve geliştirme sürecimizde bize destek olan tüm arka
   </a>
    <a href="https://github.com/ravidulundu">
     <img width="60px" alt="Ravi DULUNDU" src="https://github.com/ravidulundu.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/ufukozendev">
+    <img width="60px" alt="Ufuk Özen" src="https://github.com/ufukozendev.png" style="border-radius: 50%;"/>
+  </a>
+   <a href="https://github.com/Taiizor">
+    <img width="60px" alt="Taiizor" src="https://github.com/Taiizor.png" style="border-radius: 50%;"/>
+  </a>
+    <a href="https://github.com/Alsond5">
+    <img width="60px" alt="Ahmet" src="https://github.com/Alsond5.png" style="border-radius: 50%;"/>
   </a>
   <a href="https://github.com/apps/google-labs-jules">
     <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>

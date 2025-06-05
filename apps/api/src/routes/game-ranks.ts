@@ -7,12 +7,12 @@ import {
   deleteGameRankController,
 } from "../controllers/game-ranks.controller";
 
-const gameRanks = new Hono().basePath("/game-ranks");
+const gameRanksRoutes = new Hono();
 
-gameRanks.get("/", getAllGameRanksController);
-gameRanks.get("/:id", getGameRankByIdController);
-gameRanks.post("/", createGameRankController);
-gameRanks.put("/:id", updateGameRankController);
-gameRanks.delete("/:id", deleteGameRankController);
+gameRanksRoutes.get("/game-ranks", getAllGameRanksController);
+gameRanksRoutes.get("/game-ranks/:id", getGameRankByIdController);
+gameRanksRoutes.post("/game-ranks", createGameRankController);
+gameRanksRoutes.put("/game-ranks/:id", updateGameRankController);
+gameRanksRoutes.delete("/game-ranks/:id", deleteGameRankController);
 
-export default gameRanks;
+export default gameRanksRoutes;

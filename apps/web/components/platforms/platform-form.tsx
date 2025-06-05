@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { createPlatformSchema, updatePlatformSchema } from '@repo/shared';
+import { createPlatformSchema } from '@repo/shared';
 import { useCreatePlatform, useUpdatePlatform } from '@/features/platforms/api/use-platforms';
 import type { Platform } from '@/types/platform';
 
@@ -21,7 +21,7 @@ export function PlatformForm({
   const mutation = platform ? updateMutation : createMutation;
 
   const form = useForm<z.infer<typeof createPlatformSchema>>({
-    resolver: zodResolver(platform ? updatePlatformSchema : createPlatformSchema),
+    resolver: zodResolver(createPlatformSchema),
     defaultValues: { name: platform?.name ?? '' },
   });
 

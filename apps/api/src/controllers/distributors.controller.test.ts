@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, mock, beforeEach } from 'bun:test';
 import { Context } from 'hono';
 import { db } from '../db';
 import {
@@ -8,31 +8,34 @@ import {
   // getAllDistributorsController, // Not tested in this suite
   // deleteDistributorController   // Not tested in this suite
 } from './distributors.controller';
-// Removed unused imports for untested controllers to clean up.
-// If tests for them were added, these would be re-introduced.
-// import { createDistributorSchema, updateDistributorSchema } from '../lib/zod-schemas/distributors';
-// Schemas are used by the controller, not directly by these tests after refactor.
 
 // Mock the db module
-vi.mock('../db', () => ({
+mock.module('../db', () => ({
   db: {
-    select: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    values: vi.fn().mockReturnThis(),
-    returning: vi.fn(),
-    update: vi.fn().mockReturnThis(),
-    set: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
+    select: mock().mockReturnThis(),
+    from: mock().mockReturnThis(),
+    where: mock().mockReturnThis(),
+    insert: mock().mockImplementation(() => ({
+      values: mock().mockImplementation(() => ({
+        returning: mock()
+      }))
+    })),
+    update: mock().mockImplementation(() => ({
+      set: mock().mockImplementation(() => ({
+        where: mock().mockImplementation(() => ({
+          returning: mock()
+        }))
+      }))
+    })),
+    delete: mock().mockReturnThis(),
   }
 }));
 
 // Mock Hono's context
-const mockJson = vi.fn();
-const mockReqJson = vi.fn();
+const mockJson = mock();
+const mockReqJson = mock();
 
-const mockContext = (body?: any, params?: Record<string, string>) => ({
+const mockContext = (body?: Record<string, unknown>, params?: Record<string, string>) => ({
   req: {
     json: mockReqJson.mockResolvedValue(body || {}),
     param: (key: string) => params?.[key]
@@ -42,21 +45,26 @@ const mockContext = (body?: any, params?: Record<string, string>) => ({
 
 describe('Distributors Controller', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockJson.mockClear();
+    mockReqJson.mockClear();
   });
 
   describe('createDistributorController', () => {
     it('should create a distributor successfully', async () => {
       const newDistributor = { name: 'Test Distributor', website: 'http://test.com' };
       const createdDistributor = { id: 1, ...newDistributor };
-      (db.insert(expect.anything()).values(expect.anything()).returning as vi.Mock).mockResolvedValue([createdDistributor]);
+      
+      const returningMock = mock().mockResolvedValue([createdDistributor]);
+      const valuesMock = mock().mockReturnValue({ returning: returningMock });
+      const insertMock = db.insert as any;
+      insertMock.mockReturnValue({ values: valuesMock });
 
       const c = mockContext(newDistributor);
       await createDistributorController(c);
 
       expect(db.insert).toHaveBeenCalledWith(expect.anything());
-      expect(db.values).toHaveBeenCalledWith(newDistributor);
-      expect(db.returning).toHaveBeenCalled();
+      expect(valuesMock).toHaveBeenCalledWith(newDistributor);
+      expect(returningMock).toHaveBeenCalled();
       expect(mockJson).toHaveBeenCalledWith(createdDistributor, 201);
     });
 
@@ -65,9 +73,9 @@ describe('Distributors Controller', () => {
       const c = mockContext(invalidData);
       await createDistributorController(c);
 
-      expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
-        error: { name: expect.arrayContaining(["Required"]) }, // Adjusted to actual Zod default output
-      }), 400);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: { name: ["Required"] }
+      }, 400);
     });
 
     it('should return 400 if name is too long', async () => {
@@ -96,15 +104,20 @@ describe('Distributors Controller', () => {
     it('should update a distributor successfully', async () => {
       const updateData = { name: 'Updated Distributor' };
       const updatedDistributor = { id: 1, name: 'Updated Distributor' };
-      (db.update(expect.anything()).set(expect.anything()).where(expect.anything()).returning as vi.Mock).mockResolvedValue([updatedDistributor]);
+      
+      const returningMock = mock().mockResolvedValue([updatedDistributor]);
+      const whereMock = mock().mockReturnValue({ returning: returningMock });
+      const setMock = mock().mockReturnValue({ where: whereMock });
+      const updateMock = db.update as any;
+      updateMock.mockReturnValue({ set: setMock });
 
       const c = mockContext(updateData, { id: '1' });
       await updateDistributorController(c);
 
       expect(db.update).toHaveBeenCalledWith(expect.anything());
-      expect(db.set).toHaveBeenCalledWith(updateData);
-      expect(db.where).toHaveBeenCalledWith(expect.anything());
-      expect(db.returning).toHaveBeenCalled();
+      expect(setMock).toHaveBeenCalledWith(updateData);
+      expect(whereMock).toHaveBeenCalledWith(expect.anything());
+      expect(returningMock).toHaveBeenCalled();
       expect(mockJson).toHaveBeenCalledWith(updatedDistributor);
     });
 
@@ -136,7 +149,12 @@ describe('Distributors Controller', () => {
 
     it('should return 404 if distributor not found', async () => {
       const updateData = { name: 'Test' };
-      (db.update(expect.anything()).set(expect.anything()).where(expect.anything()).returning as vi.Mock).mockResolvedValue([]);
+      
+      const returningMock = mock().mockResolvedValue([]);
+      const whereMock = mock().mockReturnValue({ returning: returningMock });
+      const setMock = mock().mockReturnValue({ where: whereMock });
+      const updateMock = db.update as any;
+      updateMock.mockReturnValue({ set: setMock });
 
       const c = mockContext(updateData, { id: '999' });
       await updateDistributorController(c);

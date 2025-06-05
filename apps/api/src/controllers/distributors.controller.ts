@@ -2,9 +2,10 @@ import { Context } from "hono";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { distributorsTable } from "../db/schemas/distributors.drizzle";
-import { createDistributorSchema, updateDistributorSchema } from "../lib/zod-schemas/distributors";
+import { createDistributorSchema, updateDistributorSchema } from "@repo/shared";
 
-export const getAllDistributorsController = async (c: Context) => {  try {
+export const getAllDistributorsController = async (c: Context) => {
+  try {
     const distributors = await db.select().from(distributorsTable);
     return c.json(distributors);
   } catch (error) {
@@ -17,7 +18,12 @@ export const getDistributorByIdController = async (c: Context) => {
     const id = Number(c.req.param("id"));
     if (isNaN(id)) return c.json({ error: "Invalid id" }, 400);
 
-    const distributor = await db.select().from(distributorsTable).where(eq(distributorsTable.id, id));    if (distributor.length === 0) return c.json({ error: "Distributor not found" }, 404);
+    const distributor = await db
+      .select()
+      .from(distributorsTable)
+      .where(eq(distributorsTable.id, id));
+    if (distributor.length === 0)
+      return c.json({ error: "Distributor not found" }, 404);
     return c.json(distributor[0]);
   } catch (error) {
     return c.json({ error: "Internal server error" }, 500);
@@ -32,8 +38,11 @@ export const createDistributorController = async (c: Context) => {
     if (!result.success) {
       return c.json({ error: result.error.flatten().fieldErrors }, 400);
     }
-    
-    const [distributor] = await db.insert(distributorsTable).values(result.data).returning();
+
+    const [distributor] = await db
+      .insert(distributorsTable)
+      .values(result.data)
+      .returning();
     return c.json(distributor, 201);
   } catch (error) {
     return c.json({ error: "Internal server error" }, 500);
