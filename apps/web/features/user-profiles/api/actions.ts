@@ -53,4 +53,55 @@ export async function getAllUserProfiles(): Promise<UserProfileResponse> {
   }
 }
 
- 
+export async function createUserProfile(data: unknown): Promise<UserProfile> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/user-profiles`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to create user profile: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error creating user profile:", error);
+    throw error;
+  }
+}
+
+export async function updateUserProfile(
+  id: string,
+  data: unknown,
+): Promise<UserProfile> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/user-profiles/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to update user profile: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    throw error;
+  }
+}
+
+export async function deleteUserProfile(id: string): Promise<UserProfile> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/user-profiles/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to delete user profile: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error deleting user profile:", error);
+    throw error;
+  }
+}

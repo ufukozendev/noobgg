@@ -19,6 +19,11 @@ export {
   updateGameRankSchema,
 } from "./schemas/gamerank.schema";
 
+export {
+  createUserProfileSchema,
+  updateUserProfileSchema,
+} from "./schemas/user-profile.schema";
+
 // OpenAPI Response Schemas
 export {
   ErrorResponseSchema,
