@@ -9,36 +9,57 @@ import {
   ErrorResponseSchema,
   DistributorResponseSchema,
   DistributorsListResponseSchema,
+  DistributorsPaginatedResponseSchema,
+  paginationQuerySchema,
   IdParamSchema,
 } from "@repo/shared";
+import { BaseService } from "../services/base.service";
+import { extractPaginationParams } from "../utils/pagination";
+
+// Create service instance
+const distributorsService = new BaseService(distributorsTable);
 
 // OpenAPI Route Definitions
 export const getAllDistributorsRoute = createRoute({
   method: "get",
   path: "/",
   tags: ["Distributors"],
-  summary: "Get all distributors",
-  description: "Retrieve a list of all game distributors in the platform. This endpoint returns all distributors that are not soft-deleted.",
+  summary: "Get all distributors with pagination",
+  description: "Retrieve a paginated list of all game distributors in the platform. This endpoint returns all distributors that are not soft-deleted with pagination support.",
+  request: {
+    query: paginationQuerySchema,
+  },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: DistributorsListResponseSchema,
-          example: [
-            {
-              id: 1,
-              name: "Steam",
-              description: "Digital distribution platform for PC gaming",
-              website: "https://store.steampowered.com",
-              logo: "https://example.com/steam-logo.png",
-              createdAt: "2024-01-01T00:00:00Z",
-              updatedAt: "2024-01-15T10:30:00Z",
-              deletedAt: null,
+          schema: DistributorsPaginatedResponseSchema,
+          example: {
+            success: true,
+            data: [
+              {
+                id: 1,
+                name: "Steam",
+                description: "Digital distribution platform for PC gaming",
+                website: "https://store.steampowered.com",
+                logo: "https://example.com/steam-logo.png",
+                createdAt: "2024-01-01T00:00:00Z",
+                updatedAt: "2024-01-15T10:30:00Z",
+                deletedAt: null,
+              },
+            ],
+            meta: {
+              currentPage: 1,
+              totalPages: 3,
+              totalItems: 45,
+              itemsPerPage: 20,
+              hasNextPage: true,
+              hasPreviousPage: false,
             },
-          ],
+          },
         },
       },
-      description: "List of distributors retrieved successfully",
+      description: "Paginated list of distributors retrieved successfully",
     },
     500: {
       content: {
@@ -325,10 +346,12 @@ export const deleteDistributorRoute = createRoute({
 // Controller Functions
 export const getAllDistributorsController = async (c: Context) => {
   try {
-    const distributors = await db.select().from(distributorsTable);
-    return c.json(distributors);
+    const params = extractPaginationParams(c);
+    const result = await distributorsService.findAllPaginated(params);
+    return c.json(result);
   } catch (error) {
-    return c.json({ error: "Internal server error" }, 500);
+    console.error('Error fetching distributors:', error);
+    return c.json({ success: false, error: "Internal server error" }, 500);
   }
 };
 

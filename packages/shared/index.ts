@@ -24,17 +24,36 @@ export {
   updateUserProfileSchema,
 } from "./schemas/user-profile.schema";
 
+// Pagination Schemas
+export {
+  paginationQuerySchema,
+  paginationMetaSchema,
+  createPaginatedResponseSchema,
+  type PaginationParams,
+  type PaginationMeta,
+  type PaginatedResponse,
+  type PaginationQueryInput,
+  type PaginationMetaOutput,
+} from "./schemas/pagination.schema";
+
 // OpenAPI Response Schemas
 export {
   ErrorResponseSchema,
   GameResponseSchema,
   GamesListResponseSchema,
+  GamesPaginatedResponseSchema,
   DistributorResponseSchema,
   DistributorsListResponseSchema,
+  DistributorsPaginatedResponseSchema,
   PlatformResponseSchema,
   PlatformsListResponseSchema,
+  PlatformsPaginatedResponseSchema,
   GameRankResponseSchema,
   GameRanksListResponseSchema,
+  GameRanksPaginatedResponseSchema,
+  UserProfileResponseSchema,
+  UserProfilesListResponseSchema,
+  UserProfilesPaginatedResponseSchema,
   IdParamSchema,
   SuccessResponseSchema,
 } from "./schemas/openapi-responses.schema";

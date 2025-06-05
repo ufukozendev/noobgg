@@ -3,18 +3,21 @@ import { eq, isNull, or, and } from "drizzle-orm";
 import { db } from "../db";
 import { userProfiles } from "../db/schemas/user-profile.drizzle";
 import { createUserProfileSchema, updateUserProfileSchema } from "@repo/shared";
+import { BaseService } from "../services/base.service";
+import { extractPaginationParams } from "../utils/pagination";
+
+// Create service instance
+const userProfilesService = new BaseService(userProfiles);
 
 export const getAllUserProfilesController = async (c: Context) => {
   try {
-    const result = await db
-      .select()
-      .from(userProfiles)
-      .where(isNull(userProfiles.deletedAt));
-
+    const params = extractPaginationParams(c);
+    // BaseService already handles soft-delete filtering by default
+    const result = await userProfilesService.findAllPaginated(params);
     return c.json(result);
   } catch (error) {
     console.error("Error in getAllUserProfilesController:", error);
-    return c.json({ error: "Internal server error" }, 500);
+    return c.json({ success: false, error: "Internal server error" }, 500);
   }
 };
 

@@ -1,11 +1,28 @@
-import { createGameSchema, updateGameSchema } from "@repo/shared";
+import { createGameSchema, updateGameSchema, type PaginatedResponse } from "@repo/shared";
 import type { Game, GamesResponse } from "@/types/game";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-export async function getAllGames(): Promise<GamesResponse> {
+// Pagination parameters interface
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export async function getAllGames(params?: PaginationParams): Promise<PaginatedResponse<Game>> {
   try {
-    const response = await fetch(`${API_BASE_URL}/games`, {
+    const searchParams = new URLSearchParams();
+
+    if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.limit) searchParams.append('limit', params.limit.toString());
+    if (params?.sortBy) searchParams.append('sortBy', params.sortBy);
+    if (params?.sortOrder) searchParams.append('sortOrder', params.sortOrder);
+
+    const url = `${API_BASE_URL}/games${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -17,12 +34,18 @@ export async function getAllGames(): Promise<GamesResponse> {
       throw new Error(`Failed to fetch games: ${response.status}`);
     }
 
-    const games = await response.json();
-    return games;
+    const result = await response.json();
+    return result;
   } catch (error) {
     console.error("Error fetching games:", error);
     throw error;
   }
+}
+
+// Legacy function for backward compatibility
+export async function getAllGamesLegacy(): Promise<GamesResponse> {
+  const result = await getAllGames();
+  return result.data;
 }
 
 export async function getGame(id: number): Promise<Game> {

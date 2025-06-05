@@ -3,13 +3,20 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { platforms } from "../db/schemas/platforms.drizzle";
 import { createPlatformSchema, updatePlatformSchema } from "@repo/shared";
+import { BaseService } from "../services/base.service";
+import { extractPaginationParams } from "../utils/pagination";
+
+// Create service instance
+const platformsService = new BaseService(platforms);
 
 export const getAllPlatformsController = async (c: Context) => {
   try {
-    const result = await db.select().from(platforms);
+    const params = extractPaginationParams(c);
+    const result = await platformsService.findAllPaginated(params);
     return c.json(result);
-  } catch {
-    return c.json({ error: "Internal server error" }, 500);
+  } catch (error) {
+    console.error('Error fetching platforms:', error);
+    return c.json({ success: false, error: "Internal server error" }, 500);
   }
 };
 
