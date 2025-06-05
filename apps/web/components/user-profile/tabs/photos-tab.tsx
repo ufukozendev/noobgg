@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, Grid3X3, List, Calendar, Download, Heart, MessageCircle } from 'lucide-react';
 import type { Photo } from '@/types/user-profile';
+import { getUserLocale } from '@/lib/utils';
 
 interface PhotosTabProps {
   photos: Photo[];
@@ -26,12 +27,19 @@ export function PhotosTab({
   onCommentPhoto,
   onDownloadPhoto,
   isOwnProfile = false,
-  locale = 'en-US'
+  locale
 }: PhotosTabProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [userLocale, setUserLocale] = useState<string>('en-US');
+
+  useEffect(() => {
+    // Get user locale dynamically
+    const dynamicLocale = locale || getUserLocale();
+    setUserLocale(dynamicLocale);
+  }, [locale]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
+    return new Date(dateString).toLocaleDateString(userLocale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -153,32 +161,67 @@ export function PhotosTab({
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2">
-                      {onLikePhoto && (
+                      {onLikePhoto ? (
                         <Button 
                           variant="ghost" 
                           size="sm"
                           onClick={() => onLikePhoto(photo)}
                           title="Like photo"
+                          className="hover:text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          <Heart className="w-4 h-4" />
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          disabled
+                          title="Like functionality not available"
+                          className="opacity-50 cursor-not-allowed"
                         >
                           <Heart className="w-4 h-4" />
                         </Button>
                       )}
-                      {onCommentPhoto && (
+                      
+                      {onCommentPhoto ? (
                         <Button 
                           variant="ghost" 
                           size="sm"
                           onClick={() => onCommentPhoto(photo)}
                           title="Comment on photo"
+                          className="hover:text-blue-500 hover:bg-blue-50 transition-colors"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          disabled
+                          title="Comment functionality not available"
+                          className="opacity-50 cursor-not-allowed"
                         >
                           <MessageCircle className="w-4 h-4" />
                         </Button>
                       )}
-                      {onDownloadPhoto && (
+                      
+                      {onDownloadPhoto ? (
                         <Button 
                           variant="ghost" 
                           size="sm"
                           onClick={() => onDownloadPhoto(photo)}
                           title="Download photo"
+                          className="hover:text-green-500 hover:bg-green-50 transition-colors"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          disabled
+                          title="Download functionality not available"
+                          className="opacity-50 cursor-not-allowed"
                         >
                           <Download className="w-4 h-4" />
                         </Button>

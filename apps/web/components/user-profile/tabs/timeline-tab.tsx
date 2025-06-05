@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { 
@@ -10,12 +10,12 @@ import {
   MoreHorizontal,
   Filter,
   Users,
-  Users2,
+  Shield,
   Hash,
   AtSign
 } from 'lucide-react';
 import type { Post } from '@/types/user-profile';
-import { formatTimeAgo } from '@/lib/utils';
+import { formatTimeAgo, getUserLocale } from '@/lib/utils';
 
 interface TimelineTabProps {
   posts: Post[];
@@ -31,14 +31,25 @@ const filters = [
   { id: 'all' as FilterType, label: 'All Updates', icon: Hash },
   { id: 'mentions' as FilterType, label: 'Mentions', icon: AtSign },
   { id: 'friends' as FilterType, label: 'Friends', icon: Users },
-  { id: 'groups' as FilterType, label: 'Groups', icon: Users2 },
+  { id: 'groups' as FilterType, label: 'Groups', icon: Shield },
 ];
 
 export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = false, locale }: TimelineTabProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [userLocale, setUserLocale] = useState<string>('en-US');
+
+  useEffect(() => {
+    // Get user locale dynamically
+    const dynamicLocale = locale || getUserLocale();
+    setUserLocale(dynamicLocale);
+  }, [locale]);
 
   const getInitials = (userName: string) => {
     return userName[0]?.toUpperCase() || 'U';
+  };
+
+  const formatPostStats = (count: number) => {
+    return count.toLocaleString(userLocale);
   };
 
   return (
@@ -91,7 +102,7 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
                   </Avatar>
                   <div>
                     <p className="font-medium">{post.userName}</p>
-                    <p className="text-sm text-muted-foreground">{formatTimeAgo(post.createdAt, locale)}</p>
+                    <p className="text-sm text-muted-foreground">{formatTimeAgo(post.createdAt, userLocale)}</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="sm">
@@ -136,15 +147,15 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
                 <div className="flex items-center space-x-6">
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-muted-foreground hover:text-red-500">
                     <Heart className="w-4 h-4" />
-                    <span>{post.likes.toLocaleString()}</span>
+                    <span>{formatPostStats(post.likes)}</span>
                   </Button>
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-muted-foreground hover:text-blue-500">
                     <MessageCircle className="w-4 h-4" />
-                    <span>{post.comments.toLocaleString()}</span>
+                    <span>{formatPostStats(post.comments)}</span>
                   </Button>
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-muted-foreground hover:text-green-500">
                     <Share className="w-4 h-4" />
-                    <span>{post.shares.toLocaleString()}</span>
+                    <span>{formatPostStats(post.shares)}</span>
                   </Button>
                 </div>
               </div>

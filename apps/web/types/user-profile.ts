@@ -44,6 +44,7 @@ export type Group = {
   name: string;
   iconUrl: string | null;
   memberCount: number;
+  lastActivity?: string | null;
 };
 
 export type Post = {

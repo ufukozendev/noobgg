@@ -4,6 +4,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Users2, ExternalLink, Crown, Shield, User } from 'lucide-react';
 import type { Group } from '@/types/user-profile';
+import { formatTimeAgo } from '@/lib/utils';
 
 interface GroupsTabProps {
   groups: Group[];
@@ -167,6 +168,13 @@ export function GroupsTab({
                     Active in <span className="font-medium text-foreground">{group.name}</span>
                   </p>
                 </div>
+                {group.lastActivity && (
+                  <div className="flex-shrink-0">
+                    <span className="text-xs text-muted-foreground">
+                      {formatTimeAgo(group.lastActivity)}
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
