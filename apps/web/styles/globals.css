@@ -120,7 +120,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-poppins), var(--font-sans);
+    font-family: var(--font-poppins), sans-serif;
   }
 }
 
