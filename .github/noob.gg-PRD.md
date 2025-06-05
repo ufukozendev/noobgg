@@ -272,84 +272,9 @@ fun, social, and memorable.
 
 ### User-Centric Metrics
 
-<table style="min-width: 50px">
-<tbody>
-<tr>
-<th><p>Metric</p></th>
-<th><p>Measurement Method</p></th>
-</tr>
-&#10;<tr>
-<td><p>Weekly Active Users (WAU)</p></td>
-<td><p>Unique users who log in at least once per week</p></td>
-</tr>
-<tr>
-<td><p>Lobby Creation Rate</p></td>
-<td><p>Number of lobbies created per day/week</p></td>
-</tr>
-<tr>
-<td><p>Average Lobby Join Success</p></td>
-<td><p>Ratio of successful joins/requests to attempts</p></td>
-</tr>
-<tr>
-<td><p>Messages Sent per User</p></td>
-<td><p>How many chat messages sent per active user</p></td>
-</tr>
-<tr>
-<td><p>Friend Requests Sent/Accepted</p></td>
-<td><p>Daily/weekly count per user and as a global total</p></td>
-</tr>
-</tbody>
-</table>
-
 ### Business Metrics
 
-<table style="min-width: 50px">
-<tbody>
-<tr>
-<th><p>Metric</p></th>
-<th><p>Measurement Method</p></th>
-</tr>
-&#10;<tr>
-<td><p>Total Registrations</p></td>
-<td><p>New user accounts per week/month</p></td>
-</tr>
-<tr>
-<td><p>User Engagement</p></td>
-<td><p>DAU/WAU/MAU ratios, session duration</p></td>
-</tr>
-<tr>
-<td><p>Churn Rate</p></td>
-<td><p>Percentage of users inactive after 30 days</p></td>
-</tr>
-</tbody>
-</table>
-
 ### Technical Metrics
-
-<table style="min-width: 50px">
-<tbody>
-<tr>
-<th><p>Metric</p></th>
-<th><p>Target/Description</p></th>
-</tr>
-&#10;<tr>
-<td><p>App Uptime</p></td>
-<td><p>99.5% or higher during launch week</p></td>
-</tr>
-<tr>
-<td><p>Join/Chat Latency</p></td>
-<td><p>&lt; 1 second per action</p></td>
-</tr>
-<tr>
-<td><p>Error Rate</p></td>
-<td><p>&lt; 2% failures on lobby/chat operations</p></td>
-</tr>
-<tr>
-<td><p>International Support</p></td>
-<td><p>100% Unicode for usernames, chat, etc.</p></td>
-</tr>
-</tbody>
-</table>
 
 ### Tracking Plan
 
@@ -482,3 +407,327 @@ fun, social, and memorable.
 - Dependencies: All features complete, test accounts
 
 ------------------------------------------------------------------------
+
+## 📁 Project Structure
+
+------------------------------------------------------------------------
+
+## 🧑‍💻 Tech Stack Overview
+
+Welcome to the noob.gg project. This section introduces the core
+technologies we use and explains why each one was chosen. If you are
+starting out or new to any of these tools, don’t worry—this overview
+will help you understand where to focus and how to get up to speed as a
+contributor.
+
+### Frontend
+
+**Next.js 15:**  
+Our main frontend framework is Next.js version 15. This lets us build
+the website using React, and also gives us performance features like
+server-side rendering and easy routing. Most user interface work will be
+done here.
+
+**React 19:**  
+We use React 19 as the underlying library for building user interfaces.
+Understanding React is essential. If you are new, start by reading the
+React documentation and experiment with components in our codebase.
+
+**Tailwind CSS 4:**  
+For styling, we use Tailwind CSS version 4. Tailwind makes designing
+pages quicker because you apply style classes directly in your JSX code.
+This keeps our CSS maintainable and consistent.
+
+**shadcn:**  
+shadcn provides ready-to-use UI components designed for use with
+Tailwind and React. When you need modals, dropdowns, or other UI pieces,
+check here first before building your own.
+
+**TanStack Query and TanStack Table:**  
+TanStack Query handles data fetching and caching from our backend.
+TanStack Table is used for building tables and managing how we display
+lists of data. Both help simplify complex state management around server
+data.
+
+**react-hook-form, zod, and @hookform/resolvers:**  
+These libraries make it simple and reliable to build forms, capture
+input, and validate data. Use them for any user input experiences to
+ensure data is checked before processing.
+
+**TRPC:**  
+TRPC allows our frontend and backend to communicate using TypeScript,
+without writing separate REST API endpoints. This keeps our code
+type-safe and productive, and is a key part of how server logic connects
+to the UI.
+
+**motion:**  
+motion is used to create simple and efficient animations. If you need to
+make UI elements move, fade, or transition, use this library.
+
+**lucide-icons:**  
+We use lucide-icons for all consistent SVG iconography in the
+application.
+
+**next-intl:**  
+next-intl handles internationalization and translations for our
+frontend. This supports our global user base and makes it easy to update
+text in multiple languages.
+
+### Backend
+
+**Turborepo:**  
+We structure our repository as a monorepo using Turborepo. This allows
+us to manage the frontend, backend, and any shared packages in one
+place. It simplifies dependency management and makes collaboration
+smooth.
+
+**Node.js (Bun runtime):**  
+We run our backend on Node.js, but with the Bun runtime, which is faster
+and modern. Most backend scripts, API logic, and server code run in this
+environment. If you are already familiar with Node.js, you are in the
+right place.
+
+**PostgreSQL 16:**  
+All persistent data is stored in a PostgreSQL database. We use version
+16, chosen for its robustness and reliability.
+
+**Drizzle ORM:**  
+Drizzle ORM lets us write type-safe queries and manage the database in
+TypeScript. This makes our backend safer, less prone to error, and more
+maintainable.
+
+**RabbitMQ:**  
+RabbitMQ is included for future background jobs and messaging. It will
+help us scale features such as notifications or complex data processing
+as the app grows.
+
+**Redis:**  
+Redis is used for caching and managing real-time data like sessions,
+making frequently accessed information fast and easy to handle.
+
+**Socket.IO:**  
+To support real-time features like chat or lobby updates, we use
+Socket.IO for real-time communication between users.
+
+**R2 Object Storage (S3 compatible):**  
+All image uploads and large files are stored in Cloudflare R2, which is
+compatible with Amazon S3 tools. This gives us flexible, reliable
+storage for user avatars and any media content.
+
+**Keycloak:**  
+Keycloak provides authentication and user management. This means it
+manages logins, registrations, and permissions, and works well with
+different identity providers.
+
+**Auth.js 5:**  
+Auth.js is the library that connects authentication into our Next.js
+frontend. It handles user sessions and login integration, working
+together with Keycloak where needed.
+
+### How This Stack Supports Development
+
+- Real-time interactions, lobby features, and chat are built using
+  Socket.IO, PostgreSQL, and our modern frontend tools.
+
+- User profiles and friend systems rely on our secure authentication
+  with Keycloak and Auth.js, and data is managed with Drizzle and
+  PostgreSQL.
+
+- UI pieces are easy to develop and maintain using the combination of
+  Next.js, React, Tailwind, shadcn components, and supporting libraries
+  for forms, tables, and data fetching.
+
+- Internationalization, performance, and code maintainability are baked
+  in from the start.
+
+### Advice for Junior Developers
+
+1.  Start by learning React and Next.js. Practice reading and writing
+    simple components, then move to more complex features.
+
+2.  Experiment with Tailwind CSS in any of the UI files to get used to
+    how styles are written in this project.
+
+3.  If you are interested in backend work, look at how we use Drizzle
+    ORM to interact with the database, and read up on how Bun works.
+
+4.  Use the provided code examples and existing patterns before
+    inventing new ones. Consistency helps the team move faster together.
+
+5.  When in doubt, check the documentation linked above, or ask
+    questions in issues or discussions—help is always available.
+
+------------------------------------------------------------------------
+
+## 🛠️ Technologies Used
+
+### Backend (API)
+
+- **Framework**: <a href="https://hono.dev/" target="_blank"
+  rel="noopener noreferrer nofollow">Hono.js</a> - A fast and
+  lightweight web framework
+
+- **ORM**: <a href="https://orm.drizzle.team/" target="_blank"
+  rel="noopener noreferrer nofollow">Drizzle ORM</a> - A modern
+  TypeScript-based SQL query builder
+
+- **Database**: PostgreSQL 16 (integrated with Drizzle ORM)
+
+- **Other Libraries**:
+
+  - @aws-sdk/client-s3: For interacting with AWS S3
+
+  - dotenv: For managing environment variables
+
+### Frontend (Web)
+
+- **Framework**: <a href="https://nextjs.org/" target="_blank"
+  rel="noopener noreferrer nofollow">Next.js 15</a> - A React-based
+  framework with SSR and SSG capabilities
+
+- **UI Library**: <a href="https://react.dev/" target="_blank"
+  rel="noopener noreferrer nofollow">React</a>
+
+- **Styling**: <a href="https://tailwindcss.com/" target="_blank"
+  rel="noopener noreferrer nofollow">Tailwind CSS</a>
+
+### 🛠️ Development Tools
+
+- **Monorepo Management**:
+  <a href="https://turbo.build/repo" target="_blank"
+  rel="noopener noreferrer nofollow">Turborepo</a>
+
+- **Package Manager**: <a href="https://bun.sh/" target="_blank"
+  rel="noopener noreferrer nofollow">Bun</a>
+
+- **TypeScript**: For static typing
+
+- **ESLint**: For maintaining code quality and consistency
+
+------------------------------------------------------------------------
+
+## 🚀 Getting Started
+
+This project is a monorepo managed using
+<a href="https://turbo.build/repo" target="_blank"
+rel="noopener noreferrer nofollow">Turborepo</a>. The package manager is
+<a href="https://bun.sh/" target="_blank"
+rel="noopener noreferrer nofollow">Bun</a>.
+
+### 📋 Prerequisites
+
+- Node.js (see the engines section in the main package.json for the
+  recommended version)
+
+- Bun (<a href="https://bun.sh/docs/installation" target="_blank"
+  rel="noopener noreferrer nofollow">Installation Guide</a>)
+
+- Docker (required for PostgreSQL database)
+
+### 🐳 PostgreSQL Docker Container Setup Steps
+
+1️⃣ Download PostgreSQL Docker Image
+
+2️⃣ Create and Run PostgreSQL Container
+
+🔧 Command Parameters Explanation:
+
+<table style="min-width: 50px">
+<tbody>
+<tr>
+<th><p>Parameter</p></th>
+<th><p>Description</p></th>
+</tr>
+&#10;<tr>
+<td><p>-p 1453:5432</p></td>
+<td><p>Port mapping. Maps host machine's port 1453 to PostgreSQL's
+default port 5432 inside the container.</p></td>
+</tr>
+<tr>
+<td><p>--name noobgg-postgres</p></td>
+<td><p>Container name. This name can be used to manage the container
+later.</p></td>
+</tr>
+<tr>
+<td><p>-e POSTGRES_PASSWORD=123noobgg123++</p></td>
+<td><p>Sets the password for PostgreSQL root user (postgres).</p></td>
+</tr>
+<tr>
+<td><p>-d</p></td>
+<td><p>Runs the container in detached mode (background).</p></td>
+</tr>
+<tr>
+<td><p>postgres:16.9-alpine3.22</p></td>
+<td><p>Docker image name and version to use.</p></td>
+</tr>
+</tbody>
+</table>
+
+🔌 Connection Information
+
+<table style="min-width: 50px">
+<tbody>
+<tr>
+<th><p>Parameter</p></th>
+<th><p>Value</p></th>
+</tr>
+&#10;<tr>
+<td><p>Host</p></td>
+<td><p>localhost</p></td>
+</tr>
+<tr>
+<td><p>Port</p></td>
+<td><p>1453</p></td>
+</tr>
+<tr>
+<td><p>Username</p></td>
+<td><p>postgres</p></td>
+</tr>
+<tr>
+<td><p>Password</p></td>
+<td><p>123noobgg123++</p></td>
+</tr>
+<tr>
+<td><p>Default Database</p></td>
+<td><p>postgres</p></td>
+</tr>
+</tbody>
+</table>
+
+📝 Important Docker Commands
+
+### 💻 Installation
+
+1.  Clone the project repository:
+
+2.  Install the dependencies:
+
+### 🚀 Starting the Development Servers
+
+This command will:
+
+- Start the backend API on http://localhost:3000.
+
+- Start the frontend Next.js application on http://localhost:3001.
+
+------------------------------------------------------------------------
+
+## 🤝 Contributing
+
+Contributions are welcome! Please review the contributing guidelines (if
+available) or support the project by opening an issue or submitting a
+pull request.
+
+------------------------------------------------------------------------
+
+## 📄 License
+
+This project is licensed under the Apache License. See the LICENSE file
+for more details.
+
+------------------------------------------------------------------------
+
+## 👥 Contributors
+
+A big thank you to all our friends who participated in our streams and
+supported us during the development process! 🙏
