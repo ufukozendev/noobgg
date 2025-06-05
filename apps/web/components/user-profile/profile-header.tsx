@@ -76,143 +76,168 @@ export function ProfileHeader({
   };
 
   return (
-    <div className="relative">
-      {/* Banner */}
-      <div className="h-48 md:h-64 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg overflow-hidden">
-        {profile.bannerImageUrl ? (
-          <img
-            src={profile.bannerImageUrl}
-            alt="Profile banner"
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-r from-blue-600 to-purple-600" />
-        )}
-      </div>
-
-      {/* Profile Info */}
-      <div className="px-6 pb-6">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 relative z-10">
-          {/* Avatar and Basic Info */}
-          <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
-            <div className="relative">
-              <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
-                <AvatarImage 
-                  src={profile.profileImageUrl || undefined} 
-                  alt={profile.userName}
-                />
-                <AvatarFallback className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                  {getInitials(profile.firstName, profile.lastName, profile.userName)}
-                </AvatarFallback>
-              </Avatar>
-              {/* Online Status */}
-              {(() => {
-                const statusConfig = getOnlineStatusConfig(profile.lastOnline);
-                return (
-                  <div 
-                    className={`absolute bottom-2 right-2 w-6 h-6 ${statusConfig.statusColor} border-2 border-white rounded-full`}
-                    title={statusConfig.statusTitle}
+    <div className="relative bg-card">
+      {/* Main Profile Section */}
+      <div className="flex items-start justify-between p-6">
+        {/* Left Side - Avatar and Info */}
+        <div className="flex items-start space-x-6">
+          {/* Hexagon Avatar */}
+          <div className="relative">
+            <div className="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg">
+              <div className="w-28 h-28 rounded-xl overflow-hidden transform -rotate-12">
+                {profile.profileImageUrl ? (
+                  <img
+                    src={profile.profileImageUrl}
+                    alt={profile.userName}
+                    className="w-full h-full object-cover"
                   />
-                );
-              })()}
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                    <span className="text-white text-2xl font-bold">
+                      {getInitials(profile.firstName, profile.lastName, profile.userName)}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
+            {/* Status Indicator */}
+            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white ${
+              profile.currentStatus === 'online' ? 'bg-green-500' :
+              profile.currentStatus === 'afk' ? 'bg-yellow-500' :
+              profile.currentStatus === 'in-game' ? 'bg-blue-500' :
+              'bg-gray-500'
+            }`} />
+          </div>
 
-            <div className="mt-4 md:mt-0">
-              <div className="flex items-center space-x-2">
-                <h1 className="text-2xl md:text-3xl font-bold text-white md:text-foreground">
-                  {profile.firstName && profile.lastName 
-                    ? `${profile.firstName} ${profile.lastName}` 
-                    : profile.userName}
-                </h1>
-                {/* Verified Badge */}
+          {/* Profile Info */}
+          <div className="flex-1">
+            {/* Stats Row */}
+            <div className="flex items-center space-x-6 mb-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold">{stats.posts}</div>
+                <div className="text-xs text-muted-foreground">Posts</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{stats.followers}</div>
+                <div className="text-xs text-muted-foreground">Followers</div>
+              </div>
+              <div className="text-center">
                 <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
               </div>
-              <p className="text-gray-200 md:text-muted-foreground">@{profile.userName}</p>
-              
-              {/* Location and Join Date */}
-              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-200 md:text-muted-foreground">
-                <div className="flex items-center space-x-1">
-                  <MapPin className="w-4 h-4" />
-                  <span>{formatRegion(profile.regionType)}</span>
+            </div>
+
+            {/* Name and Username */}
+            <div className="mb-3">
+              <div className="flex items-center space-x-2 mb-1">
+                <h1 className="text-2xl font-bold">
+                  {profile.firstName && profile.lastName 
+                    ? `${profile.firstName} ${profile.lastName}` 
+                    : profile.userName}
+                </h1>
+                {profile.nickname && (
+                  <span className="text-xl text-blue-600 font-medium">
+                    "{profile.nickname}"
+                  </span>
+                )}
+              </div>
+              <p className="text-muted-foreground">@{profile.userName}</p>
+            </div>
+
+            {/* Gaming Info */}
+            <div className="space-y-2 mb-4">
+              {profile.club && (
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm font-medium text-blue-600">{profile.club}</span>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <Calendar className="w-4 h-4" />
-                  <span>Joined {new Date(profile.createdAt).toLocaleDateString('tr-TR', { 
-                    year: 'numeric', 
-                    month: 'long' 
-                  })}</span>
+              )}
+              {profile.tagline && (
+                <div className="text-sm text-muted-foreground">{profile.tagline}</div>
+              )}
+              {profile.currentStatus && (
+                <div className="flex items-center space-x-2">
+                  <div className={`w-3 h-3 rounded-full ${
+                    profile.currentStatus === 'online' ? 'bg-green-500' :
+                    profile.currentStatus === 'afk' ? 'bg-yellow-500' :
+                    profile.currentStatus === 'in-game' ? 'bg-blue-500' :
+                    'bg-gray-500'
+                  }`} />
+                  <span className="text-sm text-muted-foreground capitalize">
+                    {profile.currentStatus === 'in-game' ? 'Currently In-Game' : profile.currentStatus}
+                  </span>
                 </div>
+              )}
+            </div>
+
+            {/* Bio */}
+            {profile.bio && (
+              <p className="text-sm text-foreground leading-relaxed mb-4 max-w-md">{profile.bio}</p>
+            )}
+
+            {/* Location and Join Date */}
+            <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+              <div className="flex items-center space-x-1">
+                <MapPin className="w-3 h-3" />
+                <span>{formatRegion(profile.regionType)}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Calendar className="w-3 h-3" />
+                <span>Joined {new Date(profile.createdAt).toLocaleDateString('tr-TR', { 
+                  year: 'numeric', 
+                  month: 'long' 
+                })}</span>
               </div>
             </div>
           </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-3 mt-4 md:mt-0">
-            <div className="flex items-center space-x-2">
-              {socialLinks.map((link) => {
-                const Icon = socialIcons[link.platform];
-                return (
-                  <a
-                    key={link.platform}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-gray-700 hover:bg-gray-600 rounded-full transition-colors"
-                  >
-                    <Icon className="w-5 h-5 text-white" />
-                  </a>
-                );
-              })}
-            </div>
-            
-            {!isOwnProfile && (
-              <>
-                <Button 
-                  variant={isFollowing ? "outline" : "default"}
-                  onClick={onFollow}
-                  className="flex items-center space-x-2"
-                >
-                  <UserPlus className="w-4 h-4" />
-                  <span>{isFollowing ? 'Following' : 'Follow'}</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={onMessage}
-                  className="flex items-center space-x-2"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Message</span>
-                </Button>
-              </>
-            )}
-          </div>
         </div>
 
-        {/* Bio */}
-        {profile.bio && (
-          <div className="mt-6">
-            <p className="text-foreground leading-relaxed">{profile.bio}</p>
+        {/* Right Side - Social Links and Actions */}
+        <div className="flex flex-col items-end space-y-4">
+          {/* Social Links */}
+          <div className="flex items-center space-x-2">
+            {socialLinks.map((link) => {
+              const Icon = socialIcons[link.platform];
+              return (
+                <a
+                  key={link.platform}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center hover:shadow-lg transition-all duration-200"
+                >
+                  <Icon className="w-5 h-5 text-white" />
+                </a>
+              );
+            })}
           </div>
-        )}
 
-        {/* Stats */}
-        <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{stats.posts.toLocaleString()}</div>
-            <div className="text-sm text-muted-foreground">Posts</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold">{stats.followers.toLocaleString()}</div>
-            <div className="text-sm text-muted-foreground">Followers</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold">{stats.following.toLocaleString()}</div>
-            <div className="text-sm text-muted-foreground">Following</div>
-          </div>
+          {/* Action Buttons */}
+          {!isOwnProfile && (
+            <div className="flex items-center space-x-2">
+              <Button 
+                variant={isFollowing ? "outline" : "default"}
+                onClick={onFollow}
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>{isFollowing ? 'Following' : 'Follow'}</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={onMessage}
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Message</span>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

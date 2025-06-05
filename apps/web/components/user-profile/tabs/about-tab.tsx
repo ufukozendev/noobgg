@@ -67,21 +67,21 @@ export function AboutTab({ profile, locale }: AboutTabProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-4xl mx-auto">
       {/* About Me Section */}
       <div className="bg-card rounded-lg p-6 border">
         <h3 className="text-lg font-semibold mb-4">About Me</h3>
         {profile.bio ? (
-          <p className="text-muted-foreground leading-relaxed">{profile.bio}</p>
+          <p className="text-muted-foreground leading-relaxed text-center">{profile.bio}</p>
         ) : (
-          <p className="text-muted-foreground italic">No bio available</p>
+          <p className="text-muted-foreground italic text-center">No bio available</p>
         )}
       </div>
 
       {/* Basic Information */}
       <div className="bg-card rounded-lg p-6 border">
         <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           <div className="flex items-center space-x-3">
             <User className="w-5 h-5 text-muted-foreground" />
             <div>
