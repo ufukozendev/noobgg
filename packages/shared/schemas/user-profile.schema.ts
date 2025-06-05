@@ -1,7 +1,5 @@
 import {z} from 'zod';
-
-const genderEnum = z.enum(['male', 'female', 'unknown']);
-const regionTypeEnum = z.enum(['north_america','south_america','europe', 'asia', 'oceania',  'middle_east', 'africa', 'russia_cis', 'unknown']);
+import {genderEnum, regionTypeEnum} from '../../../apps/api/src/db/schemas/user-profile.drizzle';
 
 export const createUserProfileSchema = z.object({
   userKeycloakId: z
@@ -39,10 +37,13 @@ export const createUserProfileSchema = z.object({
     .optional(),
   bio: z
     .string()
+    .max(500)
     .optional(),
 
-  gender: genderEnum.default('unknown'),
-  regionType: regionTypeEnum.default('unknown'),
+  gender: z
+    .enum(genderEnum.enumValues),
+  regionType: z
+    .enum(regionTypeEnum.enumValues),
 
   lastOnline: z.coerce.date().optional(),
 });
@@ -85,10 +86,13 @@ export const updateUserProfileSchema = z.object({
     .optional(),
   bio: z
     .string()
+    .max(500)
     .optional(),
 
-  gender: genderEnum.default('unknown').optional(),
-  regionType: regionTypeEnum.default('unknown').optional(),
+  gender: z
+    .enum(genderEnum.enumValues),
+  regionType: z
+    .enum(regionTypeEnum.enumValues),
 
   lastOnline: z.coerce.date().optional(),
 });

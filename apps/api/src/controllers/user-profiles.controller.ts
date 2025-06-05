@@ -52,31 +52,29 @@ export const createUserProfile = async (c: Context) => {
             return c.json({ error: result.error.flatten().fieldErrors }, 400);
         }
 
-        const [userWithSameKeycloakIdExist] = await db
+        const [isKeycloakUserExists] = await db
         .select()
         .from(userProfiles)
         .where(eq(userProfiles.userKeycloakId, result.data.userKeycloakId));
-        if(userWithSameKeycloakIdExist) return c.json({ error: "Keycloak ID already exists" }, 409);
+        if(isKeycloakUserExists) return c.json({ error: "Keycloak ID already exists" }, 409);
 
-        const [userWithSameUsernameExist] = await db
+        const [isUsernameTaken] = await db
         .select()
         .from(userProfiles)
         .where(eq(userProfiles.userName, result.data.userName));
-        if(userWithSameUsernameExist) return c.json({error: "Username alredy exists"}, 409);
+        if(isUsernameTaken) return c.json({error: "Username already exists"}, 409);
     
         const [user] = await db
         .insert(userProfiles)
         .values({
             ...result.data,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            createdAt: new Date()
         })
         .returning()
 
         const safeUser = convertBigIntToString(user);
         return c.json(safeUser, 201);
     } catch (error) {
-        console.log(error);
         return c.json({error: "Internal server error"}, 500);
     }
 };
@@ -100,7 +98,10 @@ export const updateUserProfile = async (c: Context) => {
     
         const [user] = await db
             .update(userProfiles)
-            .set(result.data)
+            .set({
+                ...result.data,
+                updatedAt: new Date()
+            })
             .where(eq(userProfiles.id, id))
             .returning();
         
@@ -123,7 +124,11 @@ export const deleteUserProfile = async (c: Context) => {
         const id = BigInt(idParam);
     
         const [user] = await db
-            .delete(userProfiles)
+            .update(userProfiles)
+            .set({
+                deletedAt: new Date(),
+                updatedAt: new Date()
+            })
             .where(eq(userProfiles.id, id))
             .returning();
         
