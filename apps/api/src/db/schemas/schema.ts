@@ -9,3 +9,8 @@ export * from "./platforms.drizzle";
 export * from "./events.drizzle";
 export * from "./event-attendees.drizzle";
 export * from "./event-invitations.drizzle";
+export * from "./languages.drizzle";
+export * from "./lobbies.drizzle";
+export * from "./lobby-languages.drizzle";
+export * from "./lobby-members.drizzle";
+export * from "./game-distributors.drizzle";
