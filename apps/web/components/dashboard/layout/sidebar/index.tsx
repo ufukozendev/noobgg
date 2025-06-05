@@ -2,15 +2,16 @@
 import * as React from "react";
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
+  Bell,
+  Building2,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  Gamepad2,
+  Home,
+  MessageSquare,
+  Monitor,
+  Settings,
+  Users,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { TeamSwitcher } from "./team-switcher";
@@ -47,86 +48,54 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: Home,
+      items: [],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
+      title: "Lobbies",
+      url: "/dashboard/lobbies",
+      icon: MessageSquare,
+      items: [],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
+      title: "Games",
+      url: "/dashboard/games",
+      icon: Gamepad2,
+      items: [],
+    },
+    {
+      title: "Platforms",
+      url: "/dashboard/platforms",
+      icon: Monitor,
+      items: [],
+    },
+    {
+      title: "Distributors",
+      url: "/dashboard/distributors",
+      icon: Building2,
+      items: [],
+    },
+    {
+      title: "Users",
+      url: "/dashboard/users",
+      icon: Users,
+      items: [],
+    },
+    {
+      title: "Notifications",
+      url: "/dashboard/notifications",
+      icon: Bell,
+      items: [],
     },
     {
       title: "Settings",
-      url: "#",
-      icon: Settings2,
+      url: "/dashboard/settings",
+      icon: Settings,
       items: [
         {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
+          title: "Sub Item Test",
           url: "#",
         },
       ],
