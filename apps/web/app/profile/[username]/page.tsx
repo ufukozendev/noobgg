@@ -4,13 +4,20 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 import { UserProfilePage } from '@/components/user-profile/user-profile-page';
 import { useUserProfileByUsername } from '@/features/user-profiles/api/use-user-profiles';
-import type { 
-  ProfileStats, 
-  SocialLink, 
-  Post, 
-  Friend, 
-  Group, 
-  Photo 
+import type {
+  ProfileStats,
+  SocialLink,
+  Post,
+  Friend,
+  Group,
+  Photo,
+  GamerExperience,
+  ConnectedPlatform,
+  FavoriteGame,
+  PCHardware,
+  GameReview,
+  Badge,
+  Quest
 } from '@/types/user-profile';
 
 // Mock data - Bu veriler gerçek API'den gelecek
@@ -122,10 +129,152 @@ const mockPhotos: Photo[] = [
   },
 ];
 
+// Gaming-related mock data
+const mockGamerExperiences: GamerExperience[] = [
+  {
+    id: '1',
+    title: 'Professional Esports Player',
+    company: 'Team Liquid',
+    startDate: '2022-01-01',
+    endDate: null,
+    description: 'Competing in international tournaments for Valorant',
+    isCurrentPosition: true,
+  },
+  {
+    id: '2',
+    title: 'Content Creator',
+    company: 'Twitch',
+    startDate: '2021-06-01',
+    endDate: '2021-12-31',
+    description: 'Streaming gameplay and tutorials',
+    isCurrentPosition: false,
+  },
+];
+
+const mockConnectedPlatforms: ConnectedPlatform[] = [
+  {
+    id: '1',
+    platform: 'Steam',
+    username: 'gamer123',
+    profileUrl: 'https://steamcommunity.com/id/gamer123',
+    isVerified: true,
+  },
+  {
+    id: '2',
+    platform: 'Epic Games',
+    username: 'gamer123',
+    profileUrl: null,
+    isVerified: false,
+  },
+];
+
+const mockFavoriteGames: FavoriteGame[] = [
+  {
+    id: '1',
+    name: 'Valorant',
+    genre: 'FPS',
+    platform: 'PC',
+    hoursPlayed: 1250,
+    rank: 'Immortal 2',
+    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400',
+  },
+  {
+    id: '2',
+    name: 'League of Legends',
+    genre: 'MOBA',
+    platform: 'PC',
+    hoursPlayed: 2100,
+    rank: 'Diamond 1',
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400',
+  },
+];
+
+const mockPCHardware: PCHardware[] = [
+  {
+    id: '1',
+    category: 'CPU',
+    name: 'Intel Core i9-13900K',
+    specifications: '24 cores, 32 threads, 3.0 GHz base',
+  },
+  {
+    id: '2',
+    category: 'GPU',
+    name: 'NVIDIA RTX 4080',
+    specifications: '16GB GDDR6X, 2505 MHz boost',
+  },
+  {
+    id: '3',
+    category: 'RAM',
+    name: 'Corsair Vengeance DDR5',
+    specifications: '32GB (2x16GB) 5600MHz',
+  },
+];
+
+const mockGameReviews: GameReview[] = [
+  {
+    id: '1',
+    gameTitle: 'Cyberpunk 2077',
+    rating: 4,
+    reviewText: 'Amazing graphics and story, but still has some bugs. Worth playing after the updates.',
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    likes: 15,
+    isRecommended: true,
+  },
+  {
+    id: '2',
+    gameTitle: 'Elden Ring',
+    rating: 5,
+    reviewText: 'Masterpiece! The open world design is incredible and the boss fights are challenging.',
+    createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+    likes: 32,
+    isRecommended: true,
+  },
+];
+
+const mockBadges: Badge[] = [
+  {
+    id: '1',
+    name: 'First Victory',
+    description: 'Won your first match',
+    iconUrl: null,
+    rarity: 'common',
+    earnedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '2',
+    name: 'Tournament Champion',
+    description: 'Won a major tournament',
+    iconUrl: null,
+    rarity: 'legendary',
+    earnedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
+const mockQuests: Quest[] = [
+  {
+    id: '1',
+    title: 'Win 10 Matches',
+    description: 'Win 10 ranked matches this week',
+    progress: 7,
+    maxProgress: 10,
+    status: 'in_progress',
+    reward: '500 Credits',
+  },
+  {
+    id: '2',
+    title: 'Stream for 5 Hours',
+    description: 'Stream gameplay for 5 hours',
+    progress: 5,
+    maxProgress: 5,
+    status: 'completed',
+    reward: 'Streamer Badge',
+  },
+];
+
 export default function ProfilePage() {
   const params = useParams();
   const username = params?.username as string;
-  
+
   const { data: profile, isLoading, error } = useUserProfileByUsername(username);
 
   if (isLoading) {
@@ -175,10 +324,18 @@ export default function ProfilePage() {
       friends={mockFriends}
       groups={mockGroups}
       photos={mockPhotos}
+      gamerExperiences={mockGamerExperiences}
+      connectedPlatforms={mockConnectedPlatforms}
+      favoriteGames={mockFavoriteGames}
+      pcHardware={mockPCHardware}
+      gameReviews={mockGameReviews}
+      badges={mockBadges}
+      quests={mockQuests}
+      credits={1250}
       isOwnProfile={isOwnProfile}
       isFollowing={isFollowing}
       onFollow={handleFollow}
       onMessage={handleMessage}
     />
   );
-} 
+}

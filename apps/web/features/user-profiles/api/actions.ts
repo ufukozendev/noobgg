@@ -1,4 +1,5 @@
 import type { UserProfile, UserProfileResponse } from "@/types/user-profile";
+import type { CreateUserProfileInput, UpdateUserProfileInput } from "@repo/shared";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -53,7 +54,7 @@ export async function getAllUserProfiles(): Promise<UserProfileResponse> {
   }
 }
 
-export async function createUserProfile(data: unknown): Promise<UserProfile> {
+export async function createUserProfile(data: CreateUserProfileInput): Promise<UserProfile> {
   try {
     const res = await fetch(`${API_BASE_URL}/user-profiles`, {
       method: "POST",
@@ -72,7 +73,7 @@ export async function createUserProfile(data: unknown): Promise<UserProfile> {
 
 export async function updateUserProfile(
   id: string,
-  data: unknown,
+  data: UpdateUserProfileInput,
 ): Promise<UserProfile> {
   try {
     const res = await fetch(`${API_BASE_URL}/user-profiles/${id}`, {

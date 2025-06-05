@@ -3,10 +3,10 @@ import { z } from "zod";
 // Gender enum validation
 const genderEnum = z.enum(['male', 'female', 'unknown']);
 
-// Region type enum validation  
+// Region type enum validation
 const regionTypeEnum = z.enum([
   'north_america',
-  'south_america', 
+  'south_america',
   'europe',
   'asia',
   'oceania',
@@ -107,3 +107,7 @@ export const updateUserProfileSchema = z.object({
   gender: genderEnum.optional(),
   regionType: regionTypeEnum.optional(),
 });
+
+// Export types
+export type CreateUserProfileInput = z.infer<typeof createUserProfileSchema>;
+export type UpdateUserProfileInput = z.infer<typeof updateUserProfileSchema>;

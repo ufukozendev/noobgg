@@ -1,8 +1,48 @@
 import { Context } from "hono";
-import { eq } from "drizzle-orm";
+import { eq, isNull, or, and } from "drizzle-orm";
 import { db } from "../db";
 import { userProfiles } from "../db/schemas/user-profile.drizzle";
 import { createUserProfileSchema, updateUserProfileSchema } from "@repo/shared";
+
+export const getAllUserProfilesController = async (c: Context) => {
+  try {
+    const result = await db
+      .select()
+      .from(userProfiles)
+      .where(isNull(userProfiles.deletedAt));
+
+    return c.json(result);
+  } catch (error) {
+    console.error("Error in getAllUserProfilesController:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+};
+
+export const getUserProfileByUsernameController = async (c: Context) => {
+  try {
+    const username = c.req.param("username");
+    if (!username || username.trim().length === 0) {
+      return c.json({ error: "Invalid username" }, 400);
+    }
+
+    const result = await db
+      .select()
+      .from(userProfiles)
+      .where(and(
+        eq(userProfiles.userName, username.trim()),
+        isNull(userProfiles.deletedAt)
+      ));
+
+    if (result.length === 0) {
+      return c.json({ error: "User profile not found" }, 404);
+    }
+
+    return c.json(result[0]);
+  } catch (error) {
+    console.error("Error in getUserProfileByUsernameController:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+};
 
 export const getUserProfileController = async (c: Context) => {
   try {
@@ -15,14 +55,18 @@ export const getUserProfileController = async (c: Context) => {
     const result = await db
       .select()
       .from(userProfiles)
-      .where(eq(userProfiles.id, id));
+      .where(and(
+        eq(userProfiles.id, id),
+        isNull(userProfiles.deletedAt)
+      ));
 
     if (result.length === 0) {
       return c.json({ error: "User profile not found" }, 404);
     }
 
     return c.json(result[0]);
-  } catch {
+  } catch (error) {
+    console.error("Error in getUserProfileController:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
 };
@@ -36,24 +80,25 @@ export const createUserProfileController = async (c: Context) => {
       return c.json({ error: result.error.flatten().fieldErrors }, 400);
     }
 
-    // Check if userKeycloakId already exists
-    const existingByKeycloakId = await db
+    // Check for both duplicates in a single query
+    const existing = await db
       .select()
       .from(userProfiles)
-      .where(eq(userProfiles.userKeycloakId, result.data.userKeycloakId));
+      .where(or(
+        eq(userProfiles.userKeycloakId, result.data.userKeycloakId),
+        eq(userProfiles.userName, result.data.userName)
+      ));
 
-    if (existingByKeycloakId.length > 0) {
-      return c.json({ error: "User with this Keycloak ID already exists" }, 409);
-    }
+    if (existing.length > 0) {
+      const existingKeycloak = existing.find(u => u.userKeycloakId === result.data.userKeycloakId);
+      const existingUsername = existing.find(u => u.userName === result.data.userName);
 
-    // Check if userName already exists
-    const existingByUsername = await db
-      .select()
-      .from(userProfiles)
-      .where(eq(userProfiles.userName, result.data.userName));
-
-    if (existingByUsername.length > 0) {
-      return c.json({ error: "Username already exists" }, 409);
+      if (existingKeycloak) {
+        return c.json({ error: "User with this Keycloak ID already exists" }, 409);
+      }
+      if (existingUsername) {
+        return c.json({ error: "Username already exists" }, 409);
+      }
     }
 
     const [userProfile] = await db
@@ -65,7 +110,8 @@ export const createUserProfileController = async (c: Context) => {
       .returning();
 
     return c.json(userProfile, 201);
-  } catch {
+  } catch (error) {
+    console.error("Error in createUserProfileController:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
 };
@@ -119,7 +165,8 @@ export const updateUserProfileController = async (c: Context) => {
     }
 
     return c.json(userProfile);
-  } catch {
+  } catch (error) {
+    console.error("Error in updateUserProfileController:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
 };
@@ -147,7 +194,8 @@ export const deleteUserProfileController = async (c: Context) => {
     }
 
     return c.json(userProfile);
-  } catch {
+  } catch (error) {
+    console.error("Error in deleteUserProfileController:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
 };

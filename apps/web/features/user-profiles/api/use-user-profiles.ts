@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { CreateUserProfileInput, UpdateUserProfileInput } from "@repo/shared";
 import {
   getUserProfile,
   getUserProfileByUsername,
@@ -34,7 +35,7 @@ export function useUserProfileByUsername(username: string) {
 export function useCreateUserProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: createUserProfile,
+    mutationFn: (data: CreateUserProfileInput) => createUserProfile(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-profiles'] });
     },
@@ -44,7 +45,7 @@ export function useCreateUserProfile() {
 export function useUpdateUserProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: unknown }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateUserProfileInput }) =>
       updateUserProfile(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['user-profiles'] });

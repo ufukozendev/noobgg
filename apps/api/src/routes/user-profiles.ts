@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
 import {
+  getAllUserProfilesController,
+  getUserProfileByUsernameController,
   getUserProfileController,
   createUserProfileController,
   updateUserProfileController,
@@ -8,8 +10,10 @@ import {
 
 const userProfiles = new Hono().basePath('/user-profiles');
 
-userProfiles.get('/:id', getUserProfileController);
 userProfiles.post('/', createUserProfileController);
+userProfiles.get('/', getAllUserProfilesController);
+userProfiles.get('/username/:username', getUserProfileByUsernameController);
+userProfiles.get('/:id', getUserProfileController);
 userProfiles.patch('/:id', updateUserProfileController);
 userProfiles.delete('/:id', deleteUserProfileController);
 
