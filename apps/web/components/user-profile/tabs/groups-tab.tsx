@@ -1,10 +1,10 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Users2, ExternalLink, Crown, Shield, User } from 'lucide-react';
 import type { Group } from '@/types/user-profile';
-import { formatTimeAgo } from '@/lib/utils';
+import { formatTimeAgo, getUserLocale } from '@/lib/utils';
 
 interface GroupsTabProps {
   groups: Group[];
@@ -12,6 +12,7 @@ interface GroupsTabProps {
   onJoinGroup?: (groupId: string) => void;
   onLeaveGroup?: (groupId: string) => void;
   isOwnProfile?: boolean;
+  locale?: string;
 }
 
 export function GroupsTab({ 
@@ -19,8 +20,16 @@ export function GroupsTab({
   onViewAll, 
   onJoinGroup, 
   onLeaveGroup,
-  isOwnProfile = false 
+  isOwnProfile = false,
+  locale 
 }: GroupsTabProps) {
+  const [userLocale, setUserLocale] = useState<string>('en-US');
+
+  useEffect(() => {
+    // Get user locale dynamically
+    const dynamicLocale = locale || getUserLocale();
+    setUserLocale(dynamicLocale);
+  }, [locale]);
   const formatMemberCount = (count: number) => {
     if (count >= 1000000) {
       return `${(count / 1000000).toFixed(1)}M`;
@@ -171,7 +180,7 @@ export function GroupsTab({
                 {group.lastActivity && (
                   <div className="flex-shrink-0">
                     <span className="text-xs text-muted-foreground">
-                      {formatTimeAgo(group.lastActivity)}
+                      {formatTimeAgo(group.lastActivity, userLocale)}
                     </span>
                   </div>
                 )}

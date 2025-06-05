@@ -24,7 +24,9 @@ import type {
   ConnectedPlatform,
   FavoriteGame,
   PCHardware,
-  GameReview
+  GameReview,
+  Badge,
+  Quest
 } from '@/types/user-profile';
 
 interface UserProfilePageProps {
@@ -41,10 +43,15 @@ interface UserProfilePageProps {
   favoriteGames: FavoriteGame[];
   pcHardware: PCHardware[];
   gameReviews: GameReview[];
+  // Sidebar props
+  credits?: number;
+  badges?: Badge[];
+  quests?: Quest[];
   isOwnProfile?: boolean;
   isFollowing?: boolean;
   onFollow?: () => void;
   onMessage?: () => void;
+  locale?: string;
 }
 
 // Media tab combines photos and videos
@@ -76,10 +83,14 @@ export function UserProfilePage({
   favoriteGames,
   pcHardware,
   gameReviews,
+  credits,
+  badges,
+  quests,
   isOwnProfile = false,
   isFollowing = false,
   onFollow,
   onMessage,
+  locale,
 }: UserProfilePageProps) {
   const [activeTab, setActiveTab] = useState<ProfileTabType>('about');
 
@@ -184,6 +195,7 @@ export function UserProfilePage({
               isFollowing={isFollowing}
               onFollow={onFollow}
               onMessage={onMessage}
+              locale={locale}
             />
           </div>
 
@@ -201,7 +213,9 @@ export function UserProfilePage({
           <div className="bg-background rounded-lg p-4 border">
             <h3 className="font-semibold text-lg mb-3 text-right">Credits</h3>
             <div className="text-right space-y-2">
-              <div className="text-2xl font-bold text-primary">2,340</div>
+              <div className="text-2xl font-bold text-primary">
+                {credits !== undefined && credits !== null ? credits.toLocaleString() : '0'}
+              </div>
               <div className="text-sm text-muted-foreground">Available Credits</div>
             </div>
           </div>
@@ -210,11 +224,36 @@ export function UserProfilePage({
           <div className="bg-background rounded-lg p-4 border">
             <h3 className="font-semibold text-lg mb-3 text-right">Badges</h3>
             <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3, 4, 5, 6].map((badge) => (
-                <div key={badge} className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">{badge}</span>
+              {!badges || badges.length === 0 ? (
+                <div className="col-span-3 text-center text-sm text-muted-foreground py-4">
+                  No badges earned yet
                 </div>
-              ))}
+              ) : (
+                badges.slice(0, 6).map((badge) => (
+                  <div 
+                    key={badge.id} 
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                      badge.rarity === 'legendary' ? 'bg-gradient-to-r from-yellow-500 to-orange-500' :
+                      badge.rarity === 'epic' ? 'bg-gradient-to-r from-purple-500 to-pink-500' :
+                      badge.rarity === 'rare' ? 'bg-gradient-to-r from-blue-500 to-cyan-500' :
+                      'bg-gradient-to-r from-gray-500 to-gray-600'
+                    }`}
+                    title={`${badge.name}: ${badge.description}`}
+                  >
+                    {badge.iconUrl ? (
+                      <img 
+                        src={badge.iconUrl} 
+                        alt={badge.name}
+                        className="w-8 h-8 object-contain"
+                      />
+                    ) : (
+                      <span className="text-white text-xs font-bold">
+                        {badge.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -222,22 +261,39 @@ export function UserProfilePage({
           <div className="bg-background rounded-lg p-4 border">
             <h3 className="font-semibold text-lg mb-3 text-right">Quests</h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Daily Login</span>
-                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
+              {!quests || quests.length === 0 ? (
+                <div className="text-center text-sm text-muted-foreground py-4">
+                  No active quests
                 </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Win 3 Games</span>
-                <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Stream 2h</span>
-                <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-              </div>
+              ) : (
+                quests.slice(0, 5).map((quest) => (
+                  <div key={quest.id} className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <span className="text-sm font-medium">{quest.title}</span>
+                      {quest.status === 'in_progress' && (
+                        <div className="text-xs text-muted-foreground">
+                          {quest.progress}/{quest.maxProgress}
+                        </div>
+                      )}
+                    </div>
+                    <div 
+                      className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                        quest.status === 'completed' ? 'bg-green-500' :
+                        quest.status === 'in_progress' ? 'bg-yellow-500' :
+                        'bg-gray-300'
+                      }`}
+                      title={`Quest ${quest.status.replace('_', ' ')}`}
+                    >
+                      {quest.status === 'completed' && (
+                        <div className="w-3 h-3 bg-white rounded-full"></div>
+                      )}
+                      {quest.status === 'in_progress' && (
+                        <div className="w-3 h-3 bg-white rounded-full"></div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

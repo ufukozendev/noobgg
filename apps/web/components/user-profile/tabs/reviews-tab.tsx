@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
+import { Select, SelectOption } from '@/components/ui/select';
 import { 
   Star, 
   ThumbsUp, 
@@ -74,7 +75,7 @@ export function ReviewsTab({
     );
   };
 
-  const getFilteredAndSortedReviews = () => {
+  const filteredAndSortedReviews = useMemo(() => {
     let filtered = reviews;
 
     // Apply filter
@@ -100,21 +101,21 @@ export function ReviewsTab({
           return 0;
       }
     });
-  };
+  }, [reviews, filterBy, sortBy]);
 
-  const getAverageRating = () => {
+  const averageRating = useMemo(() => {
     if (reviews.length === 0) return 0;
     const total = reviews.reduce((sum, review) => sum + review.rating, 0);
     return (total / reviews.length).toFixed(1);
-  };
+  }, [reviews]);
 
-  const getRatingDistribution = () => {
+  const ratingDistribution = useMemo(() => {
     const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
     reviews.forEach(review => {
       distribution[review.rating as keyof typeof distribution]++;
     });
     return distribution;
-  };
+  }, [reviews]);
 
   const sortOptions = [
     { value: 'newest', label: 'Newest First' },
@@ -133,8 +134,7 @@ export function ReviewsTab({
     { value: '1-star', label: '1 Star' },
   ];
 
-  const filteredReviews = getFilteredAndSortedReviews();
-  const distribution = getRatingDistribution();
+
 
   return (
     <div className="space-y-6">
@@ -152,7 +152,7 @@ export function ReviewsTab({
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2">
-              <div className="text-3xl font-bold text-yellow-600">{getAverageRating()}</div>
+              <div className="text-3xl font-bold text-yellow-600">{averageRating}</div>
               <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
             </div>
             <div className="text-sm text-muted-foreground">Average Rating</div>
@@ -183,12 +183,12 @@ export function ReviewsTab({
                   <div 
                     className="bg-yellow-400 h-2 rounded-full" 
                     style={{ 
-                      width: `${reviews.length > 0 ? (distribution[rating as keyof typeof distribution] / reviews.length) * 100 : 0}%` 
+                      width: `${reviews.length > 0 ? (ratingDistribution[rating as keyof typeof ratingDistribution] / reviews.length) * 100 : 0}%` 
                     }}
                   />
                 </div>
                 <span className="text-sm text-muted-foreground w-8">
-                  {distribution[rating as keyof typeof distribution]}
+                  {ratingDistribution[rating as keyof typeof ratingDistribution]}
                 </span>
               </div>
             ))}
@@ -201,43 +201,43 @@ export function ReviewsTab({
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center space-x-2">
             <Filter className="w-4 h-4 text-muted-foreground" />
-            <select
+            <Select
               value={filterBy}
               onChange={(e) => setFilterBy(e.target.value as FilterOption)}
-              className="border rounded px-3 py-1 text-sm"
+              className="w-auto min-w-[120px]"
             >
               {filterOptions.map(option => (
-                <option key={option.value} value={option.value}>
+                <SelectOption key={option.value} value={option.value}>
                   {option.label}
-                </option>
+                </SelectOption>
               ))}
-            </select>
+            </Select>
           </div>
 
           <div className="flex items-center space-x-2">
             <SortDesc className="w-4 h-4 text-muted-foreground" />
-            <select
+            <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="border rounded px-3 py-1 text-sm"
+              className="w-auto min-w-[140px]"
             >
               {sortOptions.map(option => (
-                <option key={option.value} value={option.value}>
+                <SelectOption key={option.value} value={option.value}>
                   {option.label}
-                </option>
+                </SelectOption>
               ))}
-            </select>
+            </Select>
           </div>
 
           <div className="text-sm text-muted-foreground">
-            Showing {filteredReviews.length} of {reviews.length} reviews
+            Showing {filteredAndSortedReviews.length} of {reviews.length} reviews
           </div>
         </div>
       </div>
 
       {/* Reviews List */}
       <div className="space-y-4">
-        {filteredReviews.length === 0 ? (
+        {filteredAndSortedReviews.length === 0 ? (
           <div className="bg-card rounded-lg p-8 border text-center">
             <Gamepad2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground">
@@ -245,7 +245,7 @@ export function ReviewsTab({
             </p>
           </div>
         ) : (
-          filteredReviews.map((review) => (
+          filteredAndSortedReviews.map((review) => (
             <div key={review.id} className="bg-card rounded-lg p-6 border hover:shadow-md transition-shadow">
               {/* Review Header */}
               <div className="flex items-start space-x-4 mb-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { 
@@ -10,12 +10,12 @@ import {
   MoreHorizontal,
   Filter,
   Users,
-  Shield,
+  Users2,
   Hash,
   AtSign
 } from 'lucide-react';
 import type { Post } from '@/types/user-profile';
-import { formatTimeAgo, getUserLocale } from '@/lib/utils';
+import { formatTimeAgo, getUserLocale, formatNumber } from '@/lib/utils';
 
 interface TimelineTabProps {
   posts: Post[];
@@ -31,12 +31,13 @@ const filters = [
   { id: 'all' as FilterType, label: 'All Updates', icon: Hash },
   { id: 'mentions' as FilterType, label: 'Mentions', icon: AtSign },
   { id: 'friends' as FilterType, label: 'Friends', icon: Users },
-  { id: 'groups' as FilterType, label: 'Groups', icon: Shield },
+  { id: 'groups' as FilterType, label: 'Groups', icon: Users2 },
 ];
 
 export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = false, locale }: TimelineTabProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [userLocale, setUserLocale] = useState<string>('en-US');
+  const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     // Get user locale dynamically
@@ -48,9 +49,36 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
     return userName[0]?.toUpperCase() || 'U';
   };
 
-  const formatPostStats = (count: number) => {
-    return count.toLocaleString(userLocale);
+
+
+  const handleImageError = (imageUrl: string) => {
+    setBrokenImages(prev => new Set(prev.add(imageUrl)));
   };
+
+  const isImageBroken = (imageUrl: string) => {
+    return brokenImages.has(imageUrl);
+  };
+
+  // Filter posts based on activeFilter
+  const filteredPosts = useMemo(() => {
+    if (activeFilter === 'all') return posts;
+    
+    return posts.filter(post => {
+      switch (activeFilter) {
+        case 'mentions': 
+          // Filter posts that contain @ mentions
+          return post.content.includes('@');
+        case 'friends':  
+          // Filter posts based on postType or content (simulate friend posts)
+          return post.postType === 'achievement' || post.postType === 'screenshot';
+        case 'groups':   
+          // Filter posts that have gameTag or are review/achievement types
+          return post.gameTag !== null || post.postType === 'review';
+        default:         
+          return true;
+      }
+    });
+  }, [posts, activeFilter]);
 
   return (
     <div className="space-y-6">
@@ -76,17 +104,21 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
               </Button>
             );
           })}
+
+          {/* …later, replace `posts.map(...)` with `filteredPosts.map(...)` */}
         </div>
       </div>
 
       {/* Posts */}
       <div className="space-y-4">
-        {posts.length === 0 ? (
+        {filteredPosts.length === 0 ? (
           <div className="bg-card rounded-lg p-8 border text-center">
-            <p className="text-muted-foreground">No posts to show</p>
+            <p className="text-muted-foreground">
+              {activeFilter === 'all' ? 'No posts to show' : `No ${activeFilter} posts found`}
+            </p>
           </div>
         ) : (
-          posts.map((post) => (
+          filteredPosts.map((post) => (
             <div key={post.id} className="bg-card rounded-lg p-6 border">
               {/* Post Header */}
               <div className="flex items-start justify-between mb-4">
@@ -105,7 +137,11 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
                     <p className="text-sm text-muted-foreground">{formatTimeAgo(post.createdAt, userLocale)}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  aria-label={`More options for post by ${post.userName}`}
+                >
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </div>
@@ -124,20 +160,35 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
                     post.images.length === 3 ? 'grid-cols-3' :
                     'grid-cols-2'
                   }`}>
-                    {post.images.slice(0, 4).map((image, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={image}
-                          alt={`Post image ${index + 1}`}
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                        {post.images.length > 4 && index === 3 && (
-                          <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-medium">+{post.images.length - 4}</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                    {post.images.slice(0, 4).map((image, index) => {
+                      const imageKey = `${post.id}-${index}`;
+                      const imageBroken = isImageBroken(imageKey);
+                      
+                      return (
+                        <div key={index} className="relative">
+                          {!imageBroken ? (
+                            <img
+                              src={image}
+                              alt={`Post image ${index + 1}`}
+                              className="w-full h-48 object-cover rounded-lg"
+                              onError={() => handleImageError(imageKey)}
+                            />
+                          ) : (
+                            <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
+                              <div className="text-center">
+                                <div className="text-muted-foreground text-sm mb-1">Image unavailable</div>
+                                <div className="text-xs text-muted-foreground">Failed to load</div>
+                              </div>
+                            </div>
+                          )}
+                          {post.images.length > 4 && index === 3 && (
+                            <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                              <span className="text-white font-medium">+{post.images.length - 4}</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -145,17 +196,32 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
               {/* Post Actions */}
               <div className="flex items-center justify-between pt-4 border-t">
                 <div className="flex items-center space-x-6">
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-muted-foreground hover:text-red-500">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex items-center space-x-2 text-muted-foreground hover:text-red-500"
+                    aria-label={`Like post by ${post.userName}. Currently ${formatNumber(post.likes, userLocale)} likes`}
+                  >
                     <Heart className="w-4 h-4" />
-                    <span>{formatPostStats(post.likes)}</span>
+                    <span>{formatNumber(post.likes, userLocale)}</span>
                   </Button>
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-muted-foreground hover:text-blue-500">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex items-center space-x-2 text-muted-foreground hover:text-blue-500"
+                    aria-label={`Comment on post by ${post.userName}. Currently ${formatNumber(post.comments, userLocale)} comments`}
+                  >
                     <MessageCircle className="w-4 h-4" />
-                    <span>{formatPostStats(post.comments)}</span>
+                    <span>{formatNumber(post.comments, userLocale)}</span>
                   </Button>
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-muted-foreground hover:text-green-500">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex items-center space-x-2 text-muted-foreground hover:text-green-500"
+                    aria-label={`Share post by ${post.userName}. Currently ${formatNumber(post.shares, userLocale)} shares`}
+                  >
                     <Share className="w-4 h-4" />
-                    <span>{formatPostStats(post.shares)}</span>
+                    <span>{formatNumber(post.shares, userLocale)}</span>
                   </Button>
                 </div>
               </div>

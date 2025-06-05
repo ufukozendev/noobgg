@@ -7,6 +7,7 @@ export async function getUserProfile(id: string): Promise<UserProfile> {
     const res = await fetch(`${API_BASE_URL}/user-profiles/${id}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
+      cache: "no-store",
     });
     if (!res.ok) {
       throw new Error(`Failed to fetch user profile: ${res.status}`);

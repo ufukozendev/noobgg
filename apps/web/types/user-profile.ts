@@ -138,4 +138,24 @@ export type Photo = {
   category?: 'setup' | 'gameplay' | 'achievement' | 'team' | 'general';
 };
 
+export type Badge = {
+  id: string;
+  name: string;
+  description: string;
+  iconUrl: string | null;
+  unlockedAt: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+};
+
+export type Quest = {
+  id: string;
+  title: string;
+  description: string;
+  progress: number; // 0-100
+  maxProgress: number;
+  status: 'completed' | 'in_progress' | 'locked';
+  reward: string;
+  expiresAt?: string | null;
+};
+
 export type ProfileTabType = 'about' | 'professional' | 'gamer-experience' | 'timeline' | 'media' | 'friends' | 'reviews'; 

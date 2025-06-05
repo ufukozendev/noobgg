@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { 
@@ -17,6 +17,7 @@ import {
   Twitch
 } from 'lucide-react';
 import type { UserProfile, ProfileStats, SocialLink } from '@/types/user-profile';
+import { getStatusIndicatorClass, getUserLocale } from '@/lib/utils';
 
 interface ProfileHeaderProps {
   profile: UserProfile;
@@ -26,6 +27,7 @@ interface ProfileHeaderProps {
   isFollowing?: boolean;
   onFollow?: () => void;
   onMessage?: () => void;
+  locale?: string;
 }
 
 const socialIcons = {
@@ -45,7 +47,15 @@ export function ProfileHeader({
   isFollowing = false,
   onFollow,
   onMessage,
+  locale,
 }: ProfileHeaderProps) {
+  const [userLocale, setUserLocale] = useState<string>('en-US');
+
+  useEffect(() => {
+    // Get user locale dynamically
+    const dynamicLocale = locale || getUserLocale();
+    setUserLocale(dynamicLocale);
+  }, [locale]);
   const getInitials = (firstName: string | null, lastName: string | null, userName: string) => {
     if (firstName && lastName) {
       return `${firstName[0]}${lastName[0]}`.toUpperCase();
@@ -57,22 +67,19 @@ export function ProfileHeader({
     return region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
-  const isUserOnline = (lastOnline: string) => {
-    const lastOnlineDate = new Date(lastOnline);
+  const getActualStatus = () => {
+    // If currentStatus is explicitly set, use it
+    if (profile.currentStatus) {
+      return profile.currentStatus;
+    }
+    
+    // Otherwise, determine status based on lastOnline
+    const lastOnlineDate = new Date(profile.lastOnline);
     const now = new Date();
     const diffInMinutes = Math.floor((now.getTime() - lastOnlineDate.getTime()) / (1000 * 60));
     
     // Consider user online if they were active within the last 5 minutes
-    return diffInMinutes <= 5;
-  };
-
-  const getOnlineStatusConfig = (lastOnline: string) => {
-    const online = isUserOnline(lastOnline);
-    return {
-      isOnline: online,
-      statusColor: online ? 'bg-green-500' : 'bg-gray-400',
-      statusTitle: online ? 'Online' : 'Offline'
-    };
+    return diffInMinutes <= 5 ? 'online' : 'offline';
   };
 
   return (
@@ -101,12 +108,10 @@ export function ProfileHeader({
               </div>
             </div>
             {/* Status Indicator */}
-            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white ${
-              profile.currentStatus === 'online' ? 'bg-green-500' :
-              profile.currentStatus === 'afk' ? 'bg-yellow-500' :
-              profile.currentStatus === 'in-game' ? 'bg-blue-500' :
-              'bg-gray-500'
-            }`} />
+            <div 
+              className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white ${getStatusIndicatorClass(getActualStatus())}`}
+              title={`Currently ${getActualStatus().replace('_', ' ')}`}
+            />
           </div>
 
           {/* Profile Info */}
@@ -158,19 +163,14 @@ export function ProfileHeader({
               {profile.tagline && (
                 <div className="text-sm text-muted-foreground">{profile.tagline}</div>
               )}
-              {profile.currentStatus && (
-                <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${
-                    profile.currentStatus === 'online' ? 'bg-green-500' :
-                    profile.currentStatus === 'afk' ? 'bg-yellow-500' :
-                    profile.currentStatus === 'in-game' ? 'bg-blue-500' :
-                    'bg-gray-500'
-                  }`} />
-                  <span className="text-sm text-muted-foreground capitalize">
-                    {profile.currentStatus === 'in-game' ? 'Currently In-Game' : profile.currentStatus}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center space-x-2">
+                <div className={`w-3 h-3 rounded-full ${getStatusIndicatorClass(getActualStatus())}`} />
+                <span className="text-sm text-muted-foreground capitalize">
+                  {getActualStatus() === 'in-game' ? 'Currently In-Game' : 
+                   getActualStatus() === 'afk' ? 'Away' :
+                   getActualStatus()}
+                </span>
+              </div>
             </div>
 
             {/* Bio */}
@@ -186,7 +186,7 @@ export function ProfileHeader({
               </div>
               <div className="flex items-center space-x-1">
                 <Calendar className="w-3 h-3" />
-                <span>Joined {new Date(profile.createdAt).toLocaleDateString('tr-TR', { 
+                <span>Joined {new Date(profile.createdAt).toLocaleDateString(userLocale, { 
                   year: 'numeric', 
                   month: 'long' 
                 })}</span>

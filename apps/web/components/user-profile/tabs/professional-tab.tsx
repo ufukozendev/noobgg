@@ -16,7 +16,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import type { UserProfile, GamerExperience, ConnectedPlatform } from '@/types/user-profile';
-import { getUserLocale } from '@/lib/utils';
+import { getUserLocale, formatRegion, getStatusIndicatorClass } from '@/lib/utils';
 
 interface ProfessionalTabProps {
   profile: UserProfile;
@@ -92,7 +92,7 @@ export function ProfessionalTab({
               <MapPin className="w-5 h-5 text-muted-foreground" />
               <div>
                 <p className="text-sm text-muted-foreground">Region</p>
-                <p className="font-medium">{profile.regionType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                <p className="font-medium">{formatRegion(profile.regionType)}</p>
               </div>
             </div>
           </div>
@@ -120,12 +120,7 @@ export function ProfessionalTab({
               <div>
                 <p className="text-sm text-muted-foreground">Status</p>
                 <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${
-                    profile.currentStatus === 'online' ? 'bg-green-500' :
-                    profile.currentStatus === 'afk' ? 'bg-yellow-500' :
-                    profile.currentStatus === 'in-game' ? 'bg-blue-500' :
-                    'bg-gray-500'
-                  }`} />
+                  <div className={`w-3 h-3 rounded-full ${getStatusIndicatorClass(profile.currentStatus || 'offline')}`} />
                   <span className="font-medium capitalize">{profile.currentStatus || 'offline'}</span>
                 </div>
               </div>

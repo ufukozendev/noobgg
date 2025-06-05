@@ -104,7 +104,9 @@ export function GamerExperienceTab({
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-purple-600">
-              {Math.round(favoriteGames.reduce((total, game) => total + game.stats.winRate, 0) / favoriteGames.length || 0)}%
+              {favoriteGames.length > 0 
+                ? Math.round(favoriteGames.reduce((total, game) => total + game.stats.winRate, 0) / favoriteGames.length)
+                : 0}%
             </div>
             <div className="text-sm text-muted-foreground">Avg Win Rate</div>
           </div>

@@ -29,7 +29,21 @@ const tabs = [
   { id: 'reviews' as ProfileTabType, label: 'Reviews', icon: Star },
 ];
 
+// Helper function to validate if a value is a valid ProfileTabType
+const isValidTab = (value: any): value is ProfileTabType => {
+  return tabs.some(tab => tab.id === value);
+};
+
 export function ProfileNavigation({ activeTab, onTabChange }: ProfileNavigationProps) {
+  // Safe handler with runtime validation
+  const handleTabChange = (tabId: any) => {
+    if (isValidTab(tabId)) {
+      onTabChange(tabId);
+    } else {
+      console.warn(`Invalid tab ID attempted: ${tabId}`);
+    }
+  };
+
   return (
     <div className="w-16 hover:w-64 transition-all duration-300 ease-in-out min-h-screen bg-card border-r p-2 hover:p-4 space-y-2 group overflow-hidden">
       <div className="mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -45,7 +59,7 @@ export function ProfileNavigation({ activeTab, onTabChange }: ProfileNavigationP
           <Button
             key={tab.id}
             variant={isActive ? "default" : "ghost"}
-            onClick={() => onTabChange(tab.id)}
+            onClick={() => handleTabChange(tab.id)}
             className={`w-full justify-start space-x-3 py-3 h-auto text-left relative group/item ${
               isActive 
                 ? 'bg-primary text-primary-foreground shadow-md' 

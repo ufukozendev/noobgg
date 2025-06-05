@@ -15,17 +15,19 @@ export function AboutTab({ profile, locale }: AboutTabProps) {
   const [formattedJoinDate, setFormattedJoinDate] = useState<string>('');
   const [formattedLastOnline, setFormattedLastOnline] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
+  const [userLocale, setUserLocale] = useState<string>('en-US');
 
   useEffect(() => {
     setIsClient(true);
     
     // Get user locale dynamically
-    const userLocale = locale || getUserLocale();
+    const dynamicLocale = locale || getUserLocale();
+    setUserLocale(dynamicLocale);
     
     // Format dates only on client-side
     if (profile.createdAt) {
       setFormattedJoinDate(
-        new Date(profile.createdAt).toLocaleDateString(userLocale, {
+        new Date(profile.createdAt).toLocaleDateString(dynamicLocale, {
           year: 'numeric',
           month: 'long',
           day: 'numeric'
@@ -35,7 +37,7 @@ export function AboutTab({ profile, locale }: AboutTabProps) {
 
     if (profile.lastOnline) {
       setFormattedLastOnline(
-        new Date(profile.lastOnline).toLocaleDateString(userLocale, {
+        new Date(profile.lastOnline).toLocaleDateString(dynamicLocale, {
           year: 'numeric',
           month: 'short',
           day: 'numeric',
