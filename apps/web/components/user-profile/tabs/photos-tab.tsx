@@ -9,7 +9,11 @@ interface PhotosTabProps {
   photos: Photo[];
   onViewAll?: () => void;
   onPhotoClick?: (photo: Photo) => void;
+  onLikePhoto?: (photo: Photo) => void;
+  onCommentPhoto?: (photo: Photo) => void;
+  onDownloadPhoto?: (photo: Photo) => void;
   isOwnProfile?: boolean;
+  locale?: string;
 }
 
 type ViewMode = 'grid' | 'list';
@@ -18,12 +22,16 @@ export function PhotosTab({
   photos, 
   onViewAll, 
   onPhotoClick,
-  isOwnProfile = false 
+  onLikePhoto,
+  onCommentPhoto,
+  onDownloadPhoto,
+  isOwnProfile = false,
+  locale = 'en-US'
 }: PhotosTabProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('tr-TR', {
+    return new Date(dateString).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -145,15 +153,36 @@ export function PhotosTab({
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm">
-                        <Heart className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <MessageCircle className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Download className="w-4 h-4" />
-                      </Button>
+                      {onLikePhoto && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => onLikePhoto(photo)}
+                          title="Like photo"
+                        >
+                          <Heart className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {onCommentPhoto && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => onCommentPhoto(photo)}
+                          title="Comment on photo"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {onDownloadPhoto && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => onDownloadPhoto(photo)}
+                          title="Download photo"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>

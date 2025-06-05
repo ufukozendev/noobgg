@@ -167,7 +167,6 @@ export function GroupsTab({
                     Active in <span className="font-medium text-foreground">{group.name}</span>
                   </p>
                 </div>
-                <span className="text-xs text-muted-foreground">2h ago</span>
               </div>
             ))}
           </div>

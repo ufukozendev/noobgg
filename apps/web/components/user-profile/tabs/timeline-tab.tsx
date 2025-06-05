@@ -10,6 +10,7 @@ import {
   MoreHorizontal,
   Filter,
   Users,
+  Users2,
   Hash,
   AtSign
 } from 'lucide-react';
@@ -28,7 +29,7 @@ const filters = [
   { id: 'all' as FilterType, label: 'All Updates', icon: Hash },
   { id: 'mentions' as FilterType, label: 'Mentions', icon: AtSign },
   { id: 'friends' as FilterType, label: 'Friends', icon: Users },
-  { id: 'groups' as FilterType, label: 'Groups', icon: Users },
+  { id: 'groups' as FilterType, label: 'Groups', icon: Users2 },
 ];
 
 export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = false }: TimelineTabProps) {

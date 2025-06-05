@@ -57,6 +57,24 @@ export function ProfileHeader({
     return region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
+  const isUserOnline = (lastOnline: string) => {
+    const lastOnlineDate = new Date(lastOnline);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - lastOnlineDate.getTime()) / (1000 * 60));
+    
+    // Consider user online if they were active within the last 5 minutes
+    return diffInMinutes <= 5;
+  };
+
+  const getOnlineStatusConfig = (lastOnline: string) => {
+    const online = isUserOnline(lastOnline);
+    return {
+      isOnline: online,
+      statusColor: online ? 'bg-green-500' : 'bg-gray-400',
+      statusTitle: online ? 'Online' : 'Offline'
+    };
+  };
+
   return (
     <div className="relative">
       {/* Banner */}
@@ -88,7 +106,15 @@ export function ProfileHeader({
                 </AvatarFallback>
               </Avatar>
               {/* Online Status */}
-              <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 border-2 border-white rounded-full" />
+              {(() => {
+                const statusConfig = getOnlineStatusConfig(profile.lastOnline);
+                return (
+                  <div 
+                    className={`absolute bottom-2 right-2 w-6 h-6 ${statusConfig.statusColor} border-2 border-white rounded-full`}
+                    title={statusConfig.statusTitle}
+                  />
+                );
+              })()}
             </div>
 
             <div className="mt-4 md:mt-0">

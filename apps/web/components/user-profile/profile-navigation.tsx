@@ -32,11 +32,22 @@ const tabs = [
   { id: 'photos' as ProfileTabType, label: 'Photos', icon: Image },
 ];
 
+// Helper function to validate if a value is a valid tab
+const isValidTab = (value: string): value is ProfileTabType => {
+  return tabs.some(tab => tab.id === value);
+};
+
 export function ProfileNavigation({ activeTab, onTabChange }: ProfileNavigationProps) {
+  const handleTabChange = (value: string) => {
+    if (isValidTab(value)) {
+      onTabChange(value);
+    }
+  };
+
   return (
     <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
       <div className="container mx-auto px-4">
-        <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as ProfileTabType)}>
+        <Tabs value={activeTab} onValueChange={handleTabChange}>
           <TabsList className="h-auto p-0 bg-transparent">
             <div className="flex overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => {

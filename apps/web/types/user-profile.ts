@@ -1,5 +1,5 @@
 export type UserProfile = {
-  id: bigint;
+  id: string;
   userKeycloakId: string;
   createdAt: string;
   updatedAt: string | null;
