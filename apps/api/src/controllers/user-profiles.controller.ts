@@ -145,8 +145,8 @@ export const updateUserProfileController = async (c: Context) => {
         .from(userProfiles)
         .where(eq(userProfiles.userName, result.data.userName));
 
-      // Make sure it's not the same user
-      if (existingByUsername.length > 0 && existingByUsername[0].id !== id) {
+      // Make sure it's not the same user (convert BigInt to string for comparison)
+      if (existingByUsername.length > 0 && existingByUsername[0].id.toString() !== id.toString()) {
         return c.json({ error: "Username already exists" }, 409);
       }
     }

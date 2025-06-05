@@ -8,8 +8,8 @@ export default function LanguageSwitcher() {
   const router = useRouter();
 
   const switchLanguage = (newLocale: string) => {
-    // Cookie'yi set et
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+    // Cookie'yi güvenlik flag'leri ile set et
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; secure; samesite=strict`;
 
     // Sayfayı yenile (routing olmadan)
     router.refresh();

@@ -46,7 +46,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="dark">
       <head>
-        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`${poppins.variable} antialiased`}>

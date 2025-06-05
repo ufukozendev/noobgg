@@ -1,4 +1,4 @@
-import { pgTable, bigint, timestamp, boolean, index, foreignKey } from "drizzle-orm/pg-core";
+import { pgTable, bigint, timestamp, boolean, index, foreignKey, unique } from "drizzle-orm/pg-core";
 import { lobbies } from "./lobbies.drizzle";
 import { userProfiles } from "./user-profile.drizzle";
 
@@ -21,6 +21,9 @@ export const lobbyMembers = pgTable(
   (table) => ({
     lobbyIdIndex: index("lobby_members_lobby_id_idx").on(table.lobbyId),
     memberIdIndex: index("lobby_members_member_id_idx").on(table.memberId),
+
+    // Unique constraint to prevent duplicate lobby memberships
+    uniqueLobbyMember: unique("unique_lobby_member").on(table.lobbyId, table.memberId),
 
     lobbyIdFk: foreignKey({
       columns: [table.lobbyId],
