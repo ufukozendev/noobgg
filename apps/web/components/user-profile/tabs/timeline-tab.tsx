@@ -15,12 +15,14 @@ import {
   AtSign
 } from 'lucide-react';
 import type { Post } from '@/types/user-profile';
+import { formatTimeAgo } from '@/lib/utils';
 
 interface TimelineTabProps {
   posts: Post[];
   onLoadMore?: () => void;
   hasMore?: boolean;
   isLoading?: boolean;
+  locale?: string;
 }
 
 type FilterType = 'all' | 'mentions' | 'friends' | 'groups';
@@ -32,25 +34,8 @@ const filters = [
   { id: 'groups' as FilterType, label: 'Groups', icon: Users2 },
 ];
 
-export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = false }: TimelineTabProps) {
+export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = false, locale }: TimelineTabProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (diffInSeconds < 60) return 'just now';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
-    
-    return date.toLocaleDateString('tr-TR', { 
-      month: 'short', 
-      day: 'numeric',
-      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-    });
-  };
 
   const getInitials = (userName: string) => {
     return userName[0]?.toUpperCase() || 'U';
@@ -106,7 +91,7 @@ export function TimelineTab({ posts, onLoadMore, hasMore = false, isLoading = fa
                   </Avatar>
                   <div>
                     <p className="font-medium">{post.userName}</p>
-                    <p className="text-sm text-muted-foreground">{formatTimeAgo(post.createdAt)}</p>
+                    <p className="text-sm text-muted-foreground">{formatTimeAgo(post.createdAt, locale)}</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="sm">

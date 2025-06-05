@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, MapPin, Globe, User, ExternalLink } from 'lucide-react';
 import type { UserProfile } from '@/types/user-profile';
+import { getUserLocale } from '@/lib/utils';
 
 interface AboutTabProps {
   profile: UserProfile;
+  locale?: string;
 }
 
-export function AboutTab({ profile }: AboutTabProps) {
+export function AboutTab({ profile, locale }: AboutTabProps) {
   // State for client-side only date formatting to prevent hydration mismatch
   const [formattedJoinDate, setFormattedJoinDate] = useState<string>('');
   const [formattedLastOnline, setFormattedLastOnline] = useState<string>('');
@@ -17,10 +19,13 @@ export function AboutTab({ profile }: AboutTabProps) {
   useEffect(() => {
     setIsClient(true);
     
+    // Get user locale dynamically
+    const userLocale = locale || getUserLocale();
+    
     // Format dates only on client-side
     if (profile.createdAt) {
       setFormattedJoinDate(
-        new Date(profile.createdAt).toLocaleDateString('tr-TR', {
+        new Date(profile.createdAt).toLocaleDateString(userLocale, {
           year: 'numeric',
           month: 'long',
           day: 'numeric'
@@ -30,7 +35,7 @@ export function AboutTab({ profile }: AboutTabProps) {
 
     if (profile.lastOnline) {
       setFormattedLastOnline(
-        new Date(profile.lastOnline).toLocaleDateString('tr-TR', {
+        new Date(profile.lastOnline).toLocaleDateString(userLocale, {
           year: 'numeric',
           month: 'short',
           day: 'numeric',
@@ -39,7 +44,7 @@ export function AboutTab({ profile }: AboutTabProps) {
         })
       );
     }
-  }, [profile.createdAt, profile.lastOnline]);
+  }, [profile.createdAt, profile.lastOnline, locale]);
 
   const formatRegion = (region: string) => {
     return region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
