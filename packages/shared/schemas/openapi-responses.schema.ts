@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { createPaginatedResponseSchema, paginationMetaSchema } from "./pagination.schema";
 
 // Common error response schema
 export const ErrorResponseSchema = z.object({
@@ -18,6 +19,9 @@ export const GameResponseSchema = z.object({
 
 export const GamesListResponseSchema = z.array(GameResponseSchema);
 
+// Paginated Games response schema
+export const GamesPaginatedResponseSchema = createPaginatedResponseSchema(GameResponseSchema);
+
 // Distributor response schemas
 export const DistributorResponseSchema = z.object({
   id: z.number().int().positive().describe("Unique identifier for the distributor"),
@@ -32,6 +36,9 @@ export const DistributorResponseSchema = z.object({
 
 export const DistributorsListResponseSchema = z.array(DistributorResponseSchema);
 
+// Paginated Distributors response schema
+export const DistributorsPaginatedResponseSchema = createPaginatedResponseSchema(DistributorResponseSchema);
+
 // Platform response schemas
 export const PlatformResponseSchema = z.object({
   id: z.string().describe("Unique identifier for the platform (BigInt as string)"),
@@ -42,6 +49,9 @@ export const PlatformResponseSchema = z.object({
 });
 
 export const PlatformsListResponseSchema = z.array(PlatformResponseSchema);
+
+// Paginated Platforms response schema
+export const PlatformsPaginatedResponseSchema = createPaginatedResponseSchema(PlatformResponseSchema);
 
 // Game Rank response schemas
 export const GameRankResponseSchema = z.object({
@@ -56,6 +66,42 @@ export const GameRankResponseSchema = z.object({
 });
 
 export const GameRanksListResponseSchema = z.array(GameRankResponseSchema);
+
+// Paginated Game Ranks response schema
+export const GameRanksPaginatedResponseSchema = createPaginatedResponseSchema(GameRankResponseSchema);
+
+// User Profile response schemas (adding missing schemas)
+export const UserProfileResponseSchema = z.object({
+  id: z.string().describe("Unique identifier for the user profile (BigInt as string)"),
+  userKeycloakId: z.string().max(100).describe("Keycloak user identifier"),
+  userName: z.string().max(50).describe("Username"),
+  firstName: z.string().max(60).nullable().describe("First name"),
+  lastName: z.string().max(60).nullable().describe("Last name"),
+  profileImageUrl: z.string().max(255).nullable().describe("Profile image URL"),
+  bannerImageUrl: z.string().max(255).nullable().describe("Banner image URL"),
+  bio: z.string().nullable().describe("User biography"),
+  birthDate: z.string().datetime().nullable().describe("Birth date"),
+  gender: z.enum(['male', 'female', 'unknown']).describe("User gender"),
+  regionType: z.enum([
+    'north_america',
+    'south_america',
+    'europe',
+    'asia',
+    'oceania',
+    'middle_east',
+    'africa',
+    'russia_cis',
+    'unknown'
+  ]).describe("User region"),
+  createdAt: z.string().datetime().describe("When the profile was created"),
+  updatedAt: z.string().datetime().nullable().describe("When the profile was last updated"),
+  deletedAt: z.string().datetime().nullable().describe("When the profile was deleted (soft delete)"),
+});
+
+export const UserProfilesListResponseSchema = z.array(UserProfileResponseSchema);
+
+// Paginated User Profiles response schema
+export const UserProfilesPaginatedResponseSchema = createPaginatedResponseSchema(UserProfileResponseSchema);
 
 // Parameter schemas for path parameters
 export const IdParamSchema = z.object({

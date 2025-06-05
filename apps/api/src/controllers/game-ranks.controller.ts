@@ -3,13 +3,20 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { gameRanks } from "../db/schemas/game-ranks.drizzle";
 import { createGameRankSchema, updateGameRankSchema } from "@repo/shared";
+import { BaseService } from "../services/base.service";
+import { extractPaginationParams } from "../utils/pagination";
+
+// Create service instance
+const gameRanksService = new BaseService(gameRanks);
 
 export const getAllGameRanksController = async (c: Context) => {
   try {
-    const ranks = await db.select().from(gameRanks);
-    return c.json(ranks);
+    const params = extractPaginationParams(c);
+    const result = await gameRanksService.findAllPaginated(params);
+    return c.json(result);
   } catch (error) {
-    return c.json({ error: "Internal server error" }, 500);
+    console.error('Error fetching game ranks:', error);
+    return c.json({ success: false, error: "Internal server error" }, 500);
   }
 };
 

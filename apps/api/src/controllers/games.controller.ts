@@ -9,35 +9,56 @@ import {
   ErrorResponseSchema,
   GameResponseSchema,
   GamesListResponseSchema,
+  GamesPaginatedResponseSchema,
+  paginationQuerySchema,
   IdParamSchema,
 } from "@repo/shared";
+import { BaseService } from "../services/base.service";
+import { extractPaginationParams } from "../utils/pagination";
+
+// Create service instance
+const gamesService = new BaseService(gamesTable);
 
 // OpenAPI Route Definitions
 export const getAllGamesRoute = createRoute({
   method: "get",
   path: "/",
   tags: ["Games"],
-  summary: "Get all games",
-  description: "Retrieve a list of all available games in the platform. This endpoint returns all games that are not soft-deleted.",
+  summary: "Get all games with pagination",
+  description: "Retrieve a paginated list of all available games in the platform. This endpoint returns all games that are not soft-deleted with pagination support.",
+  request: {
+    query: paginationQuerySchema,
+  },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: GamesListResponseSchema,
-          example: [
-            {
-              id: 1,
-              name: "Counter-Strike 2",
-              description: "Popular tactical first-person shooter game",
-              logo: "https://example.com/cs2-logo.png",
-              createdAt: "2024-01-01T00:00:00Z",
-              updatedAt: "2024-01-15T10:30:00Z",
-              deletedAt: null,
+          schema: GamesPaginatedResponseSchema,
+          example: {
+            success: true,
+            data: [
+              {
+                id: 1,
+                name: "Counter-Strike 2",
+                description: "Popular tactical first-person shooter game",
+                logo: "https://example.com/cs2-logo.png",
+                createdAt: "2024-01-01T00:00:00Z",
+                updatedAt: "2024-01-15T10:30:00Z",
+                deletedAt: null,
+              },
+            ],
+            meta: {
+              currentPage: 1,
+              totalPages: 5,
+              totalItems: 95,
+              itemsPerPage: 20,
+              hasNextPage: true,
+              hasPreviousPage: false,
             },
-          ],
+          },
         },
       },
-      description: "List of games retrieved successfully",
+      description: "Paginated list of games retrieved successfully",
     },
     500: {
       content: {
@@ -319,10 +340,12 @@ export const deleteGameRoute = createRoute({
 // Controller Functions
 export const getAllGamesController = async (c: Context) => {
   try {
-    const games = await db.select().from(gamesTable);
-    return c.json(games);
+    const params = extractPaginationParams(c);
+    const result = await gamesService.findAllPaginated(params);
+    return c.json(result);
   } catch (error) {
-    return c.json({ error: "Internal server error" }, 500);
+    console.error('Error fetching games:', error);
+    return c.json({ success: false, error: "Internal server error" }, 500);
   }
 };
 

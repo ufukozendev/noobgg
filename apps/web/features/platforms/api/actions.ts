@@ -1,11 +1,28 @@
-import { createPlatformSchema, updatePlatformSchema } from "@repo/shared";
+import { createPlatformSchema, updatePlatformSchema, type PaginatedResponse } from "@repo/shared";
 import type { Platform, PlatformsResponse } from "@/types/platform";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-export async function getAllPlatforms(): Promise<PlatformsResponse> {
+// Pagination parameters interface
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export async function getAllPlatforms(params?: PaginationParams): Promise<PaginatedResponse<Platform>> {
   try {
-    const res = await fetch(`${API_BASE_URL}/platforms`, {
+    const searchParams = new URLSearchParams();
+
+    if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.limit) searchParams.append('limit', params.limit.toString());
+    if (params?.sortBy) searchParams.append('sortBy', params.sortBy);
+    if (params?.sortOrder) searchParams.append('sortOrder', params.sortOrder);
+
+    const url = `${API_BASE_URL}/platforms${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+
+    const res = await fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
@@ -18,6 +35,12 @@ export async function getAllPlatforms(): Promise<PlatformsResponse> {
     console.error("Error fetching platforms:", error);
     throw error;
   }
+}
+
+// Legacy function for backward compatibility
+export async function getAllPlatformsLegacy(): Promise<PlatformsResponse> {
+  const result = await getAllPlatforms();
+  return result.data;
 }
 
 export async function getPlatform(id: number): Promise<Platform> {
