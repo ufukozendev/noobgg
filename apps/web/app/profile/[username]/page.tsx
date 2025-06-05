@@ -133,38 +133,38 @@ const mockPhotos: Photo[] = [
 const mockGamerExperiences: GamerExperience[] = [
   {
     id: '1',
-    title: 'Professional Esports Player',
-    company: 'Team Liquid',
-    startDate: '2022-01-01',
-    endDate: null,
-    description: 'Competing in international tournaments for Valorant',
-    isCurrentPosition: true,
+    game: 'Valorant',
+    platform: 'PC',
+    rank: 'Immortal 2',
+    experience: 'professional',
+    startDate: '2022-01-01T00:00:00.000Z',
+    achievements: ['Regional Champion 2023', 'Team Liquid Player', 'International Tournament Competitor'],
   },
   {
     id: '2',
-    title: 'Content Creator',
-    company: 'Twitch',
-    startDate: '2021-06-01',
-    endDate: '2021-12-31',
-    description: 'Streaming gameplay and tutorials',
-    isCurrentPosition: false,
+    game: 'League of Legends',
+    platform: 'PC',
+    rank: 'Diamond 1',
+    experience: 'advanced',
+    startDate: '2021-06-01T00:00:00.000Z',
+    achievements: ['Content Creator', 'Twitch Partner', 'Educational Streamer'],
   },
 ];
 
 const mockConnectedPlatforms: ConnectedPlatform[] = [
   {
     id: '1',
-    platform: 'Steam',
+    platform: 'steam',
     username: 'gamer123',
     profileUrl: 'https://steamcommunity.com/id/gamer123',
-    isVerified: true,
+    verified: true,
   },
   {
     id: '2',
-    platform: 'Epic Games',
+    platform: 'epic',
     username: 'gamer123',
-    profileUrl: null,
-    isVerified: false,
+    profileUrl: 'https://epic.com/gamer123',
+    verified: false,
   },
 ];
 
@@ -172,62 +172,81 @@ const mockFavoriteGames: FavoriteGame[] = [
   {
     id: '1',
     name: 'Valorant',
-    genre: 'FPS',
+    iconUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400',
     platform: 'PC',
-    hoursPlayed: 1250,
-    rank: 'Immortal 2',
-    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400',
+    stats: {
+      winRate: 68,
+      totalGames: 890,
+      rank: 'Immortal 2',
+      rating: 2750,
+      hoursPlayed: 1250,
+    },
   },
   {
     id: '2',
     name: 'League of Legends',
-    genre: 'MOBA',
+    iconUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400',
     platform: 'PC',
-    hoursPlayed: 2100,
-    rank: 'Diamond 1',
-    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400',
+    stats: {
+      winRate: 72,
+      totalGames: 1200,
+      rank: 'Diamond 1',
+      rating: 2400,
+      hoursPlayed: 2100,
+    },
   },
 ];
 
 const mockPCHardware: PCHardware[] = [
   {
     id: '1',
-    category: 'CPU',
-    name: 'Intel Core i9-13900K',
-    specifications: '24 cores, 32 threads, 3.0 GHz base',
+    component: 'cpu',
+    brand: 'Intel',
+    model: 'Core i9-13900K',
+    imageUrl: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=200',
   },
   {
     id: '2',
-    category: 'GPU',
-    name: 'NVIDIA RTX 4080',
-    specifications: '16GB GDDR6X, 2505 MHz boost',
+    component: 'gpu',
+    brand: 'NVIDIA',
+    model: 'RTX 4080',
+    imageUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=200',
   },
   {
     id: '3',
-    category: 'RAM',
-    name: 'Corsair Vengeance DDR5',
-    specifications: '32GB (2x16GB) 5600MHz',
+    component: 'ram',
+    brand: 'Corsair',
+    model: 'Vengeance DDR5 32GB',
+    imageUrl: 'https://images.unsplash.com/photo-1541029071515-84cc69b5c9e9?w=200',
   },
 ];
 
 const mockGameReviews: GameReview[] = [
   {
     id: '1',
-    gameTitle: 'Cyberpunk 2077',
+    gameId: 'cyberpunk-2077',
+    gameName: 'Cyberpunk 2077',
+    gameImageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=100',
     rating: 4,
     reviewText: 'Amazing graphics and story, but still has some bugs. Worth playing after the updates.',
+    playedHours: 85,
+    platform: 'PC',
     createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     likes: 15,
-    isRecommended: true,
+    helpful: 23,
   },
   {
     id: '2',
-    gameTitle: 'Elden Ring',
+    gameId: 'elden-ring',
+    gameName: 'Elden Ring',
+    gameImageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=100',
     rating: 5,
     reviewText: 'Masterpiece! The open world design is incredible and the boss fights are challenging.',
+    playedHours: 120,
+    platform: 'PC',
     createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
     likes: 32,
-    isRecommended: true,
+    helpful: 45,
   },
 ];
 
@@ -238,7 +257,7 @@ const mockBadges: Badge[] = [
     description: 'Won your first match',
     iconUrl: null,
     rarity: 'common',
-    earnedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    unlockedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '2',
@@ -246,7 +265,7 @@ const mockBadges: Badge[] = [
     description: 'Won a major tournament',
     iconUrl: null,
     rarity: 'legendary',
-    earnedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    unlockedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
@@ -294,7 +313,7 @@ export default function ProfilePage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">Profile Not Found</h1>
           <p className="text-muted-foreground">
-            The user profile you're looking for doesn't exist or has been removed.
+            The user profile you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
         </div>
       </div>
