@@ -161,6 +161,8 @@ Yayınlarımıza katılan ve geliştirme sürecimizde bize destek olan tüm arka
     <a href="https://github.com/Alsond5">
     <img width="60px" alt="Ahmet" src="https://github.com/Alsond5.png" style="border-radius: 50%;"/>
   </a>
+   <img width="60px" alt="Abhishek85805" src="https://github.com/Abhishek85805.png" style="border-radius: 50%;"/>
+  </a>
   <a href="https://github.com/apps/google-labs-jules">
     <img width="60px" alt="Jules (Google Labs AI)" src="https://avatars.githubusercontent.com/in/842251?s=41&u=e6ce41f2678ba45349e003a9b1d8719b7f414a6f&v=4" style="border-radius: 50%;"/>
   </a>
