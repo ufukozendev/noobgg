@@ -5,6 +5,7 @@ import gamesRoutes from "./games";
 import distributorsRoutes from "./distributors";
 import platformsRoutes from "./platforms";
 import gameRanksRoutes from "./game-ranks";
+import userProfile from "./user-profiles";
 
 
 const router = new OpenAPIHono();
@@ -15,5 +16,6 @@ router.route("/", gamesRoutes);
 router.route("/", distributorsRoutes);
 router.route("/", platformsRoutes);
 router.route("/", gameRanksRoutes);
+router.route("/", userProfile);
 
 export default router;
