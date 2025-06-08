@@ -6,6 +6,8 @@ import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import ThemeSwitcher from "../theme-switcher";
+import LanguageSwitcher from "../language-switcher";
 
 interface NavItem {
   name: string;
@@ -169,6 +171,8 @@ export default function Header1() {
           </nav>
 
           <div className="hidden items-center space-x-4 lg:flex">
+            <ThemeSwitcher />
+            <LanguageSwitcher />
             <Link
               href="/login"
               className="font-medium text-foreground transition-colors duration-200 hover:text-rose-500"
