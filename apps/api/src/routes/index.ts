@@ -6,6 +6,7 @@ import distributorsRoutes from "./distributors";
 import platformsRoutes from "./platforms";
 import gameRanksRoutes from "./game-ranks";
 import userProfile from "./user-profiles";
+import { eventInvitationsRouter } from "./event-invitations";
 
 
 const router = new OpenAPIHono();
@@ -17,5 +18,7 @@ router.route("/", distributorsRoutes);
 router.route("/", platformsRoutes);
 router.route("/", gameRanksRoutes);
 router.route("/", userProfile);
+router.route("/event-invitations", eventInvitationsRouter);
+
 
 export default router;
