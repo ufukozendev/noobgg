@@ -9,6 +9,11 @@ export {
   updateDistributorSchema,
 } from "./schemas/distributor.schema";
 
+export{
+  createUserProfileSchema,
+  updateUserProfileSchema
+} from "./schemas/user-profile.schema"
+
 export {
   createGameSchema,
   updateGameSchema,
