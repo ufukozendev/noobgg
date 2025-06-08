@@ -2,7 +2,7 @@ import { QueryProvider } from "@/components/query-provider";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-import { Poppins } from "next/font/google";
+import { Poppins, Titillium_Web, Exo_2 } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "next-themes";
 
@@ -46,6 +46,12 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+const exo2 = Exo_2({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-exo2",
+});
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -58,7 +64,7 @@ export default async function RootLayout({
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${poppins.variable} ${exo2.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <QueryProvider>
             <NextIntlClientProvider>{children}</NextIntlClientProvider>
