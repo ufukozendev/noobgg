@@ -1,8 +1,18 @@
 import { z } from "zod";
 
 export const createEventAttendeeSchema = z.object({
-  eventId: z.string().or(z.number()),
-  userProfileId: z.string().or(z.number()),
+  eventId: z.coerce.bigint().or(
+    z
+      .string()
+      .regex(/^\d+$/)
+      .transform((val) => BigInt(val))
+  ),
+  userProfileId: z.coerce.bigint().or(
+    z
+      .string()
+      .regex(/^\d+$/)
+      .transform((val) => BigInt(val))
+  ),
 });
 
 export const getEventAttendeesSchema = z.object({
@@ -11,5 +21,7 @@ export const getEventAttendeesSchema = z.object({
   eventId: z.string().optional(),
 });
 
-export type CreateEventAttendeeInput = z.infer<typeof createEventAttendeeSchema>;
+export type CreateEventAttendeeInput = z.infer<
+  typeof createEventAttendeeSchema
+>;
 export type GetEventAttendeesInput = z.infer<typeof getEventAttendeesSchema>;
