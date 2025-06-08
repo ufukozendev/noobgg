@@ -43,6 +43,9 @@
   --font-poppins:
     "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
+  --font-exo2:
+    "Exo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
 }
 
 :root {
@@ -124,6 +127,7 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-poppins), sans-serif;
+    /* font-family: var(--font-exo2), sans-serif; */
   }
 }
 
