@@ -125,6 +125,9 @@
     @apply bg-background text-foreground;
     font-family: var(--font-poppins), sans-serif;
   }
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 @layer utilities {
