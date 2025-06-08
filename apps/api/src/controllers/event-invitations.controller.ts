@@ -7,17 +7,17 @@ import { sql } from "drizzle-orm";
 // GET /api/event-invitations - List all event invitations with pagination
 export const getEventInvitations = async (c: Context) => {
   try {
-    const page = parseInt(c.req.query("page") || "1");
-    const limit = parseInt(c.req.query("limit") || "10");
+    const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(c.req.query("limit") || "10") || 10));
     const offset = (page - 1) * limit;
     const status = c.req.query("status");
 
     let whereCondition = eq(eventInvitations.deletedAt, null);
-    
+
     if (status && ["pending", "accepted", "declined"].includes(status)) {
       whereCondition = and(
         eq(eventInvitations.deletedAt, null),
-        eq(eventInvitations.status, status as any)
+        eq(eventInvitations.status, status as typeof invitationStatusEnum.enumValues[number])
       );
     }
 
@@ -39,8 +39,8 @@ export const getEventInvitations = async (c: Context) => {
       pagination: {
         page,
         limit,
-        total: total[0].count,
-        totalPages: Math.ceil(total[0].count / limit),
+        total: Number(total[0].count),
+        totalPages: Math.ceil(Number(total[0].count) / limit),
       },
     });
   } catch (error) {
@@ -77,12 +77,12 @@ export const getUserInvitations = async (c: Context) => {
     const userId = c.req.param("userId");
     const type = c.req.query("type"); // 'sent' or 'received'
     const status = c.req.query("status");
-    const page = parseInt(c.req.query("page") || "1");
-    const limit = parseInt(c.req.query("limit") || "10");
+    const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(c.req.query("limit") || "10") || 10));
     const offset = (page - 1) * limit;
 
     let whereCondition;
-    
+
     if (type === "sent") {
       whereCondition = and(
         eq(eventInvitations.inviterId, BigInt(userId)),
@@ -130,8 +130,8 @@ export const getEventInvitationsByEvent = async (c: Context) => {
   try {
     const eventId = c.req.param("eventId");
     const status = c.req.query("status");
-    const page = parseInt(c.req.query("page") || "1");
-    const limit = parseInt(c.req.query("limit") || "10");
+    const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(c.req.query("limit") || "10") || 10));
     const offset = (page - 1) * limit;
 
     let whereCondition = and(
@@ -261,7 +261,7 @@ export const deleteEventInvitation = async (c: Context) => {
 
     const deletedInvitation = await db
       .update(eventInvitations)
-      .set({ 
+      .set({
         deletedAt: new Date(),
         updatedAt: new Date()
       })
