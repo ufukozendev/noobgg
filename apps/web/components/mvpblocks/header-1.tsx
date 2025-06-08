@@ -146,8 +146,8 @@ export default function Header1() {
           </nav>
 
           <div className="hidden items-center space-x-4 lg:flex">
-            <ThemeSwitcher />
-            <LanguageSwitcher />
+            <ThemeSwitcher isScrolled={isScrolled} />
+            <LanguageSwitcher isScrolled={isScrolled} />
             <Link
               href="/login"
               className={cn(

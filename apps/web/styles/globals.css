@@ -171,6 +171,9 @@
     font-family: var(--font-poppins), sans-serif;
     /* font-family: var(--font-exo2), sans-serif; */
   }
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 @layer utilities {
