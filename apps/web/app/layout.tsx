@@ -6,7 +6,7 @@ import { Poppins } from "next/font/google";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "noob.gg - Gaming Platform",
+  title: { template: "%s | noob.gg", default: "noob.gg" },
   description: "Discover and explore games on noob.gg gaming platform",
   icons: {
     icon: [
@@ -18,8 +18,16 @@ export const metadata: Metadata = {
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
     other: [
-      { url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
-      { url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
+      {
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
     ],
   },
   manifest: "/site.webmanifest",
