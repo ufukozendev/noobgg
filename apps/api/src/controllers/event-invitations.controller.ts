@@ -39,7 +39,7 @@ export const getEventInvitations = async (c: Context) => {
       pagination: {
         page,
         limit,
-        total: Number(total[0].count),
+        total: total[0].count,
         totalPages: Math.ceil(Number(total[0].count) / limit),
       },
     });
@@ -119,7 +119,20 @@ export const getUserInvitations = async (c: Context) => {
       .limit(limit)
       .offset(offset);
 
-    return c.json({ data: invitations });
+    const total = await db
+      .select({ count: sql`count(*)` })
+      .from(eventInvitations).where(whereCondition);
+
+
+    return c.json({
+      data: invitations,
+      pagination: {
+        page,
+        limit,
+        total: Number(total[0].count),
+        totalPages: Math.ceil(Number(total[0].count) / limit),
+      },
+    });
   } catch (error) {
     return c.json({ error: "Failed to fetch user invitations" }, 500);
   }
@@ -154,7 +167,20 @@ export const getEventInvitationsByEvent = async (c: Context) => {
       .limit(limit)
       .offset(offset);
 
-    return c.json({ data: invitations });
+    const total = await db
+      .select({ count: sql`count(*)` })
+      .from(eventInvitations).where(whereCondition);
+
+
+    return c.json({
+      data: invitations,
+      pagination: {
+        page,
+        limit,
+        total: Number(total[0].count),
+        totalPages: Math.ceil(Number(total[0].count) / limit),
+      },
+    });
   } catch (error) {
     return c.json({ error: "Failed to fetch event invitations" }, 500);
   }
