@@ -2,33 +2,33 @@
 
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import { Languages } from "lucide-react";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
 
-  const switchLanguage = (newLocale: string) => {
-    // Cookie'yi set et
+  const switchLanguage = () => {
+    const newLocale = locale === "tr" ? "en" : "tr";
+
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
 
-    // Sayfayı yenile (routing olmadan)
     router.refresh();
   };
 
+  const currentLang = locale === "tr" ? "TR" : "EN";
+  const nextLang = locale === "tr" ? "EN" : "TR";
+
   return (
-    <div className="flex gap-2">
-      <button
-        onClick={() => switchLanguage("tr")}
-        className={`px-3 py-1 rounded ${locale === "tr" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-      >
-        TR
-      </button>
-      <button
-        onClick={() => switchLanguage("en")}
-        className={`px-3 py-1 rounded ${locale === "en" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-      >
-        EN
-      </button>
-    </div>
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={switchLanguage}
+      title={`Şu an: ${currentLang} - ${nextLang} için tıklayın`}
+      className="relative"
+    >
+      <span className="text-xs font-medium">{currentLang}</span>
+    </Button>
   );
 }
