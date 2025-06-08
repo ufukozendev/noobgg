@@ -250,7 +250,7 @@ export default function Header1() {
                     className="block w-full rounded-lg bg-gradient-to-r from-rose-500 to-rose-700 py-2.5 text-center font-medium text-white transition-all duration-200 hover:shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Get Started te
+                    Get Started
                   </Link>
                 </div>
               </div>
