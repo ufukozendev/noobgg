@@ -46,6 +46,7 @@ export default function Header1() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { theme } = useTheme();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -189,18 +190,26 @@ export default function Header1() {
               </Link>
             </motion.div>
           </div>
-
-          <motion.button
-            className="rounded-lg p-2 transition-colors duration-200 hover:bg-muted lg:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </motion.button>
+          <div className='flex lg:hidden'>
+            <DropdownMenu>
+              <DropdownMenuTrigger className='cursor-pointer inline-flex items-center space-x-2 rounded-full border border-border  px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-0'>{selectedLanguage}</DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem onClick={() => setSelectedLanguage('English')}>English</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSelectedLanguage('Türkçe')}>Türkçe</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <motion.button
+              className="rounded-lg p-2 transition-colors duration-200 hover:bg-muted "
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              whileTap={{ scale: 0.95 }}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </motion.button>
+          </div>
         </div>
 
         <AnimatePresence>
