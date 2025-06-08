@@ -6,7 +6,7 @@ import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ThemeSwitcher() {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -14,7 +14,8 @@ export default function ThemeSwitcher() {
   }, []);
 
   const handleThemeSwitch = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const next = resolvedTheme === "dark" ? "light" : "dark";
+    setTheme(next);
   };
 
   if (!mounted) {
@@ -25,7 +26,7 @@ export default function ThemeSwitcher() {
     );
   }
 
-  const isDark = theme === "dark";
+  const isDark = resolvedTheme === "dark";
   const Icon = isDark ? Moon : Sun;
   const label = isDark ? "Karanlık" : "Aydınlık";
 
