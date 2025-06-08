@@ -23,10 +23,9 @@ export default function LanguageSwitcher({
 
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
 
-    setTimeout(() => {
-      router.refresh();
+    Promise.resolve(router.refresh()).then(() => {
       setIsLoading(false);
-    }, 500);
+    });
   };
 
   const currentLang = locale === "tr" ? "TR" : "EN";
