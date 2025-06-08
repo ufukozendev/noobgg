@@ -46,7 +46,6 @@ export default function Header1() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const { theme, resolvedTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,15 +74,15 @@ export default function Header1() {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             <Link href="/" className="flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg ">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg ">
                 <Image
                   src="/noobgg-logo.png"
                   alt="noob.gg logo"
-                  width={36}
-                  height={36}
+                  width={40}
+                  height={40}
                 />
               </div>
-              <span className="bg-gradient-to-r from-rose-500 to-rose-700 bg-clip-text text-xl font-bold text-transparent">
+              <span className="bg-gradient-to-r from-rose-500 to-rose-700 bg-clip-text text-2xl font-bold text-transparent">
                 noob.gg
               </span>
             </Link>
@@ -168,14 +167,7 @@ export default function Header1() {
               </Link>
             </motion.div>
           </div>
-          <div className='flex lg:hidden'>
-            <DropdownMenu>
-              <DropdownMenuTrigger className='cursor-pointer inline-flex items-center space-x-2 rounded-full border border-border  px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-0'>{selectedLanguage}</DropdownMenuTrigger>
-              <DropdownMenuContent align='end'>
-                <DropdownMenuItem onClick={() => setSelectedLanguage('English')}>English</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSelectedLanguage('Türkçe')}>Türkçe</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex lg:hidden">
             <motion.button
               className="rounded-lg p-2 transition-colors duration-200 hover:bg-muted "
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
