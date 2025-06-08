@@ -32,7 +32,7 @@ export default function LanguageSwitcher() {
     >
       <Image
         src={flagSrc}
-        alt={nextLang}
+        alt={currentLang}
         width={16}
         height={16}
         className="h-5 w-5"
