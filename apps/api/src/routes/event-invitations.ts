@@ -13,7 +13,7 @@ import {
   createEventInvitationSchema,
   respondToInvitationSchema,
   getEventInvitationsSchema,
-} from "@repo/shared/schemas/event-invitations";
+} from "@repo/shared";
 
 const eventInvitationsRouter = new Hono();
 
