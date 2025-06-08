@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import ThemeSwitcher from "../theme-switcher";
 import LanguageSwitcher from "../language-switcher";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   name: string;
@@ -44,7 +45,7 @@ export default function Header1() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,43 +55,16 @@ export default function Header1() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const headerVariants = {
-    initial: { y: -100, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-    scrolled: {
-      backdropFilter: "blur(20px)",
-      backgroundColor:
-        theme === "dark" ? "rgba(0, 0, 0, 0.8)" : "rgba(255, 255, 255, 0.8)",
-      boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-    },
-  };
-
-  const mobileMenuVariants = {
-    closed: { opacity: 0, height: 0 },
-    open: { opacity: 1, height: "auto" },
-  };
-
-  const dropdownVariants = {
-    hidden: { opacity: 0, y: -10, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1 },
-  };
-
   return (
     <motion.header
-      className="fixed left-0 right-0 top-0 z-50 transition-all duration-300"
-      variants={headerVariants}
-      initial="initial"
-      animate={isScrolled ? "scrolled" : "animate"}
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "backdrop-blur-xl bg-background/80 shadow-lg "
+          : "bg-transparent backdrop-blur-sm"
+      }`}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      style={{
-        backdropFilter: isScrolled ? "blur(20px)" : "none",
-        backgroundColor: isScrolled
-          ? theme === "dark"
-            ? "rgba(0, 0, 0, 0.8)"
-            : "rgba(255, 255, 255, 0.8)"
-          : "transparent",
-        boxShadow: isScrolled ? "0 8px 32px rgba(0, 0, 0, 0.1)" : "none",
-      }}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between lg:h-20">
@@ -121,7 +95,10 @@ export default function Header1() {
               >
                 <Link
                   href={item.href}
-                  className="flex items-center space-x-1 font-medium text-foreground transition-colors duration-200 hover:text-rose-500"
+                  className={cn(
+                    "flex items-center space-x-1 font-medium dark:text-foreground transition-colors duration-200 hover:text-rose-500",
+                    isScrolled ? "text-foreground" : "text-background"
+                  )}
                 >
                   <span>{item.name}</span>
                   {item.hasDropdown && (
@@ -134,10 +111,9 @@ export default function Header1() {
                     {activeDropdown === item.name && (
                       <motion.div
                         className="absolute left-0 top-full mt-2 w-64 overflow-hidden rounded-xl border border-border bg-background/95 shadow-xl backdrop-blur-lg"
-                        variants={dropdownVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                       >
                         {item.dropdownItems?.map((dropdownItem) => (
@@ -169,7 +145,10 @@ export default function Header1() {
             <LanguageSwitcher />
             <Link
               href="/login"
-              className="font-medium text-foreground transition-colors duration-200 hover:text-rose-500"
+              className={cn(
+                "font-medium dark:text-foreground transition-colors duration-200 hover:text-rose-500",
+                isScrolled ? "text-foreground" : "text-background"
+              )}
             >
               Sign In
             </Link>
@@ -201,10 +180,9 @@ export default function Header1() {
           {isMobileMenuOpen && (
             <motion.div
               className="overflow-hidden lg:hidden"
-              variants={mobileMenuVariants}
-              initial="closed"
-              animate="open"
-              exit="closed"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               <div className="mt-4 space-y-2 rounded-xl border border-border bg-background/95 py-4 shadow-xl backdrop-blur-lg">
