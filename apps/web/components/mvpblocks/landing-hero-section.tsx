@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ShimmerButton } from "../magicui/shimmer-button";
 import { motion } from "framer-motion";
 
 export default function LandingHeroSection() {
@@ -25,11 +26,10 @@ export default function LandingHeroSection() {
           </h1>
 
           <div className="mb-10 mt-10 flex flex-col items-center justify-center gap-4 sm:mb-0 sm:flex-row">
-            <Link
-              href="/docs/get-started"
-              className="neumorphic-button hover:shadow-[0_0_20px_rgba(155, 135, 245, 0.5)] relative w-full overflow-hidden rounded-full border border-white/10 bg-gradient-to-b from-white/10 to-white/5 px-8 py-4 text-white shadow-lg transition-all duration-300 hover:border-[#9b87f5]/30 sm:w-auto"
-            >
-              Find Your Squad Now
+            <Link href="/docs/get-started">
+              <ShimmerButton className="w-full sm:w-auto mb-3 mt-4">
+                Find Your Squad Now
+              </ShimmerButton>
             </Link>
           </div>
         </motion.div>
