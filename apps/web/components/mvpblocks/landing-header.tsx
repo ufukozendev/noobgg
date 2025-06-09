@@ -62,11 +62,10 @@ export default function LandingHeader() {
 
   return (
     <motion.header
-      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "backdrop-blur-xl bg-foreground/10 dark:bg-background/10 shadow-lg "
-          : "bg-transparent backdrop-blur-sm"
-      }`}
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${isScrolled
+        ? "backdrop-blur-xl bg-foreground/10 dark:bg-background/10 shadow-lg "
+        : "bg-transparent backdrop-blur-sm"
+        }`}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -167,7 +166,9 @@ export default function LandingHeader() {
               </Button>
             </motion.div>
           </div>
-          <div className="flex lg:hidden">
+          <div className="flex lg:hidden space-x-2">
+            <ThemeSwitcher isScrolled={isScrolled} />
+            <LanguageSwitcher isScrolled={isScrolled} />
             <motion.button
               className="rounded-lg p-2 transition-colors duration-200 hover:bg-muted "
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
