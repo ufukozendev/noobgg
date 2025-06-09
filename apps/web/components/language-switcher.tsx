@@ -36,10 +36,7 @@ export default function LanguageSwitcher({
       size="icon"
       onClick={switchLanguage}
       title={`Şu an: ${currentLang} - Tıklayınca değişir`}
-      className={cn(
-        isScrolled
-          ? "bg-transparent hover:bg-accent/30 border-foreground/10 text-foreground"
-          : "bg-transparent hover:bg-accent/10 border-accent/20 text-white"
+      className={cn("bg-transparent hover:bg-accent/10 border-accent/20 text-white"
       )}
     >
       <AnimatePresence mode="wait" initial={false}>

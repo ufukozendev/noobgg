@@ -37,10 +37,7 @@ export default function ThemeSwitcher({ isScrolled }: { isScrolled: boolean }) {
       size="icon"
       onClick={handleThemeSwitch}
       title={`Şu an: ${label} - Değiştirmek için tıklayın`}
-      className={cn(
-        isScrolled
-          ? "bg-transparent hover:bg-accent/30 border-foreground/10 text-foreground"
-          : "bg-transparent hover:bg-accent/10 border-accent/20 text-white"
+      className={cn("bg-transparent hover:bg-accent/10 border-accent/20 text-white"
       )}
     >
       <Icon className="w-4 h-4" />
