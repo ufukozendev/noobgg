@@ -9,7 +9,9 @@ import ThemeSwitcher from "../theme-switcher";
 import LanguageSwitcher from "../language-switcher";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import LoginButton from "../LoginButton";
+import LogoutButton from "../LogoutButton";
 
 interface NavItem {
   name: string;
@@ -55,6 +57,8 @@ export default function LandingHeader() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const { data: session } = useSession();
 
   return (
     <motion.header
@@ -149,15 +153,7 @@ export default function LandingHeader() {
             <ThemeSwitcher isScrolled={isScrolled} />
             <LanguageSwitcher isScrolled={isScrolled} />
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "bg-transparent hover:bg-accent/10 border-accent/20 text-white"
-                )}
-                onClick={() => signIn("keycloak", { callbackUrl: "/" })}
-              >
-                <span>Sign In</span>
-              </Button>
+              {session ? <LogoutButton /> : <LoginButton />}
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button asChild variant={"gaming"}>
@@ -207,13 +203,7 @@ export default function LandingHeader() {
                   </Link>
                 ))}
                 <div className="space-y-2 px-4 py-2">
-                  <Link
-                    href="/login"
-                    className="block w-full rounded-lg bg-gradient-to-r from-[#6f52f4] to-[#9b87f5] py-2.5 text-center font-medium text-white transition-all duration-200 hover:shadow-lg"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign In
-                  </Link>
+                  {session ? <LogoutButton mobile /> : <LoginButton mobile />}
                   <Link
                     href="/signup"
                     className="block w-full rounded-lg bg-gradient-to-r from-[#6f52f4] to-[#9b87f5] py-2.5 text-center font-medium text-white transition-all duration-200 hover:shadow-lg"

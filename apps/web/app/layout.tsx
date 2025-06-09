@@ -2,9 +2,10 @@ import { QueryProvider } from "@/components/query-provider";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-import { Poppins, Titillium_Web, Exo_2 } from "next/font/google";
+import { Poppins, Exo_2 } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "next-themes";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: { template: "%s | noob.gg", default: "noob.gg" },
@@ -65,11 +66,13 @@ export default async function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`${poppins.variable} ${exo2.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <QueryProvider>
-            <NextIntlClientProvider>{children}</NextIntlClientProvider>
-          </QueryProvider>
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <QueryProvider>
+              <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            </QueryProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
