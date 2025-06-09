@@ -8,6 +8,7 @@ import Link from "next/link";
 import ThemeSwitcher from "../theme-switcher";
 import LanguageSwitcher from "../language-switcher";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 interface NavItem {
   name: string;
@@ -58,7 +59,7 @@ export default function LandingHeader() {
     <motion.header
       className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "backdrop-blur-xl bg-background/80 shadow-lg "
+          ? "backdrop-blur-xl bg-foreground/10 dark:bg-background/10 shadow-lg "
           : "bg-transparent backdrop-blur-sm"
       }`}
       initial={{ y: -100, opacity: 0 }}
@@ -100,9 +101,7 @@ export default function LandingHeader() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center space-x-1 font-medium dark:text-foreground transition-colors duration-200",
-                    isScrolled ? "text-foreground" : "text-background"
-                  )}
+                    "flex items-center space-x-1 font-medium text-background dark:text-foreground transition-colors duration-200")}
                 >
                   <span>{item.name}</span>
                   {item.hasDropdown && (
@@ -148,24 +147,27 @@ export default function LandingHeader() {
             <ThemeSwitcher isScrolled={isScrolled} />
             <LanguageSwitcher isScrolled={isScrolled} />
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
+              <Button asChild variant={"outline"}>
+                <Link
                 href="/login"
-                className={cn(
-                  "font-medium dark:text-foreground transition-colors duration-200",
-                  isScrolled ? "text-foreground" : "text-background"
+                className={cn("bg-transparent hover:bg-accent/10 border-accent/20 text-white"
                 )}
               >
                 <span>Sign In</span>
               </Link>
+              </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
+              <Button asChild variant={"gaming"}>
+                <Link
                 href="/signup"
-                className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#6f52f4] to-[#9b87f5] px-6 py-2.5 font-medium text-white transition-all duration-200 hover:shadow-lg"
+                className="inline-flex items-center space-x-2"
               >
                 <span>Find Your Squad</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
+
+              </Button>
             </motion.div>
           </div>
           <div className="flex lg:hidden">
