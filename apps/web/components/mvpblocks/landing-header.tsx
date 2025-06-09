@@ -9,6 +9,7 @@ import ThemeSwitcher from "../theme-switcher";
 import LanguageSwitcher from "../language-switcher";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { signIn } from "next-auth/react";
 
 interface NavItem {
   name: string;
@@ -101,7 +102,8 @@ export default function LandingHeader() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center space-x-1 font-medium text-background dark:text-foreground transition-colors duration-200")}
+                    "flex items-center space-x-1 font-medium text-background dark:text-foreground transition-colors duration-200"
+                  )}
                 >
                   <span>{item.name}</span>
                   {item.hasDropdown && (
@@ -147,26 +149,25 @@ export default function LandingHeader() {
             <ThemeSwitcher isScrolled={isScrolled} />
             <LanguageSwitcher isScrolled={isScrolled} />
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button asChild variant={"outline"}>
-                <Link
-                href="/login"
-                className={cn("bg-transparent hover:bg-accent/10 border-accent/20 text-white"
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "bg-transparent hover:bg-accent/10 border-accent/20 text-white"
                 )}
+                onClick={() => signIn("keycloak", { callbackUrl: "/" })}
               >
                 <span>Sign In</span>
-              </Link>
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button asChild variant={"gaming"}>
                 <Link
-                href="/signup"
-                className="inline-flex items-center space-x-2"
-              >
-                <span>Find Your Squad</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-
+                  href="/signup"
+                  className="inline-flex items-center space-x-2"
+                >
+                  <span>Find Your Squad</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </Button>
             </motion.div>
           </div>

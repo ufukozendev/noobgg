@@ -5,7 +5,7 @@ export default auth((req) => {
   const locale = req.cookies.get("NEXT_LOCALE")?.value || "tr";
   const { pathname } = req.nextUrl;
 
-  if (!req.auth && pathname !== "/login") {
+  if (!req.auth && pathname !== "/" && pathname !== "/login") {
     const newUrl = new URL("/login", req.nextUrl.origin);
     const redirectResponse = NextResponse.redirect(newUrl);
     redirectResponse.cookies.set("NEXT_LOCALE", locale, {
