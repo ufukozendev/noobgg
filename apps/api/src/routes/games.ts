@@ -1,24 +1,19 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
+import { Hono } from "hono";
+
 import {
-  getAllGamesRoute,
-  getGameByIdRoute,
-  createGameRoute,
-  updateGameRoute,
-  deleteGameRoute,
   getAllGamesController,
   getGameByIdController,
   createGameController,
   updateGameController,
   deleteGameController,
-} from "../controllers/games.controller";
+} from "../controllers/v1/games.controller";
 
-const games = new OpenAPIHono().basePath("/games");
+const games = new Hono();
+games.get("/", getAllGamesController);
+games.get("/:id", getGameByIdController);
+games.post("/", createGameController);
+games.put("/:id", updateGameController);
+games.delete("/:id", deleteGameController);
 
-// Use OpenAPI routes with existing controllers
-games.openapi(getAllGamesRoute, getAllGamesController);
-games.openapi(getGameByIdRoute, getGameByIdController);
-games.openapi(createGameRoute, createGameController);
-games.openapi(updateGameRoute, updateGameController);
-games.openapi(deleteGameRoute, deleteGameController);
 
 export default games;

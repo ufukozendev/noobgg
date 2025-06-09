@@ -1,26 +1,20 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
-import { homeController } from "../controllers/main.controller";
-import anyRoutes from "./any-route";
-import gamesRoutes from "./games";
-import distributorsRoutes from "./distributors";
-import platformsRoutes from "./platforms";
-import gameRanksRoutes from "./game-ranks";
-import userProfile from "./user-profiles";
-import { eventInvitationsRouter } from "./event-invitations";
-import { eventAttendeesRouter } from "./event-attendees";
+import { Hono } from 'hono'
+import { homeController } from '../controllers/main.controller'
+import v1Router from './v1'
+// Gelecekte: import v2Router from './v2'
 
+const router = new Hono()
 
-const router = new OpenAPIHono();
+// Health check endpoint (unversioned)
+router.get('/', homeController)
+router.get('/health', homeController)
 
-router.get("/", homeController);
-router.route("/", anyRoutes);
-router.route("/", gamesRoutes);
-router.route("/", distributorsRoutes);
-router.route("/", platformsRoutes);
-router.route("/", gameRanksRoutes);
-router.route("/", userProfile);
-router.route("/event-invitations", eventInvitationsRouter);
-router.route("/event-attendees", eventAttendeesRouter);
+// Versioned API routes
+router.route('/', v1Router)
 
+router.get('/api/*', (c) => {
+  const path = c.req.path.replace('/api/', '/api/v1/')
+  return c.redirect(path, 301)
+})
 
-export default router;
+export default router
