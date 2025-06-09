@@ -1,4 +1,4 @@
-import Header1 from "@/components/mvpblocks/header-1";
+import LandingHeader from "@/components/mvpblocks/landingn-header";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 
@@ -35,7 +35,7 @@ export default function RootLayout({
       />
       {/* Content wrapper to ensure it's above the glows */}
       <div className="relative z-10">
-        <Header1 />
+        <LandingHeader />
 
         <section className="pt-32">{children}</section>
         <footer></footer>

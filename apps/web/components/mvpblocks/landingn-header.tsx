@@ -42,7 +42,7 @@ const navItems: NavItem[] = [
   { name: "About", href: "/about" },
 ];
 
-export default function Header1() {
+export default function LandingHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);

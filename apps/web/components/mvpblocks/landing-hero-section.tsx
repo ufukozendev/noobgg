@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function Globe3D() {
+export default function LandingHeroSection() {
   return (
     <section
       className="relative w-full overflow-hidden pb-10 font-light text-white antialiased md:pb-16" // Removed bg-* and pt-* classes
