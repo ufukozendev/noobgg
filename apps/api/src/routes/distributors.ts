@@ -7,7 +7,7 @@ import {
   deleteDistributorController,
 } from "../controllers/v1/distributors.controller";
 
-const distributors = new Hono().basePath("/distributors");
+const distributors = new Hono();
 
 distributors.get("/", getAllDistributorsController);
 distributors.get("/:id", getDistributorByIdController);

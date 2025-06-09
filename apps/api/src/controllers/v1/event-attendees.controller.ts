@@ -3,7 +3,7 @@ import { Context } from "hono";
 import { db } from "../../db";
 import { eventAttendees } from "../../db/schemas/event-attendees.drizzle";
 import { eq, and, desc, sql, isNull } from "drizzle-orm";
-import { createEventAttendeeSchema } from "../../../../../packages/shared/schemas/event-attendees";
+import { createEventAttendeeSchema } from "@repo/shared";
 
 export const getEventAttendees = async (c: Context) => {
   try {

@@ -10,10 +10,10 @@ router.get('/', homeController)
 router.get('/health', homeController)
 
 // Versioned API routes
-router.route('/', v1Router)
+router.route('/api/v1', v1Router)
 
 router.get('/api/*', (c) => {
-  const path = c.req.path.replace('/api/', '/api/v1/')
+  const path = c.req.path.replace(/^\/api\//, '/api/v1/')
   return c.redirect(path, 301)
 })
 
