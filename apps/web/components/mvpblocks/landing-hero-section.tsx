@@ -7,7 +7,7 @@ import StarWarsButton from "../syntax-ui/starwars-button";
 export default function LandingHeroSection() {
   return (
     <section
-      className="relative w-full overflow-hidden font-light text-white antialiased" // Removed bg-* and pt-* classes
+      className="relative w-full font-light text-white antialiased" // Removed bg-* and pt-* classes
       // Removed inline style attribute for background
     >
       {/* Removed the two div elements for radial gradient glows */}
