@@ -14,7 +14,7 @@ export default function SparklesLogo() {
 
         <div className="mt-10 grid grid-cols-5 gap-10 items-center">
           <Image
-            src="/logos/valorant-logo.png"
+            src="/logos/valorant-logo.svg"
             alt="Valorant Logo"
             width={220}
             height={70}
