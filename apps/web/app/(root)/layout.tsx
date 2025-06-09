@@ -1,4 +1,4 @@
-import LandingHeader from "@/components/mvpblocks/landingn-header";
+import LandingHeader from "@/components/mvpblocks/landing-header";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 
