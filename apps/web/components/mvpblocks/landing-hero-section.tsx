@@ -17,7 +17,7 @@ export default function LandingHeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <span className="mb-6 inline-block rounded-full border border-[#9b87f5]/30 px-3 py-1 text-xs text-[#9b87f5]">
+          <span className="mb-6 inline-block rounded-full border border-[#9b87f5]/30 px-3 py-1 text-s text-[#9b87f5]">
             Join 2,000+ gamers who found their perfect squad in under 5 minutes
           </span>
           <h1 className="mx-auto mb-6 max-w-4xl text-4xl font-exo2 font-semibold md:text-5xl lg:text-7xl">
