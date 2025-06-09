@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import { db } from "../db";
 import { eventInvitations, invitationStatusEnum } from "../db/schemas/event-invitations.drizzle";
-import { eq, and, desc, or } from "drizzle-orm";
+import { eq, and, desc, or, isNull, SQL } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 
 // GET /api/event-invitations - List all event invitations with pagination
@@ -12,11 +12,11 @@ export const getEventInvitations = async (c: Context) => {
     const offset = (page - 1) * limit;
     const status = c.req.query("status");
 
-    let whereCondition = eq(eventInvitations.deletedAt, null);
+    let whereCondition: SQL | undefined = isNull(eventInvitations.deletedAt);
 
     if (status && ["pending", "accepted", "declined"].includes(status)) {
       whereCondition = and(
-        eq(eventInvitations.deletedAt, null),
+        isNull(eventInvitations.deletedAt),
         eq(eventInvitations.status, status as typeof invitationStatusEnum.enumValues[number])
       );
     }
@@ -57,7 +57,7 @@ export const getEventInvitationById = async (c: Context) => {
       .from(eventInvitations)
       .where(and(
         eq(eventInvitations.id, BigInt(id)),
-        eq(eventInvitations.deletedAt, null)
+        isNull(eventInvitations.deletedAt)
       ))
       .limit(1);
 
@@ -81,17 +81,17 @@ export const getUserInvitations = async (c: Context) => {
     const limit = Math.min(100, Math.max(1, parseInt(c.req.query("limit") || "10") || 10));
     const offset = (page - 1) * limit;
 
-    let whereCondition;
+    let whereCondition: SQL | undefined;
 
     if (type === "sent") {
       whereCondition = and(
         eq(eventInvitations.inviterId, BigInt(userId)),
-        eq(eventInvitations.deletedAt, null)
+        isNull(eventInvitations.deletedAt)
       );
     } else if (type === "received") {
       whereCondition = and(
         eq(eventInvitations.inviteeId, BigInt(userId)),
-        eq(eventInvitations.deletedAt, null)
+        isNull(eventInvitations.deletedAt)
       );
     } else {
       // Both sent and received
@@ -100,14 +100,14 @@ export const getUserInvitations = async (c: Context) => {
           eq(eventInvitations.inviterId, BigInt(userId)),
           eq(eventInvitations.inviteeId, BigInt(userId))
         ),
-        eq(eventInvitations.deletedAt, null)
+        isNull(eventInvitations.deletedAt)
       );
     }
 
     if (status && ["pending", "accepted", "declined"].includes(status)) {
       whereCondition = and(
         whereCondition,
-        eq(eventInvitations.status, status as any)
+        eq(eventInvitations.status, status as typeof invitationStatusEnum.enumValues[number])
       );
     }
 
@@ -149,13 +149,13 @@ export const getEventInvitationsByEvent = async (c: Context) => {
 
     let whereCondition = and(
       eq(eventInvitations.eventId, BigInt(eventId)),
-      eq(eventInvitations.deletedAt, null)
+      isNull(eventInvitations.deletedAt)
     );
 
     if (status && ["pending", "accepted", "declined"].includes(status)) {
       whereCondition = and(
         whereCondition,
-        eq(eventInvitations.status, status as any)
+        eq(eventInvitations.status, status as typeof invitationStatusEnum.enumValues[number])
       );
     }
 
@@ -200,7 +200,7 @@ export const createEventInvitation = async (c: Context) => {
         eq(eventInvitations.inviterId, BigInt(inviterId)),
         eq(eventInvitations.inviteeId, BigInt(inviteeId)),
         eq(eventInvitations.eventId, BigInt(eventId)),
-        eq(eventInvitations.deletedAt, null)
+        isNull(eventInvitations.deletedAt)
       ))
       .limit(1);
 
@@ -249,7 +249,7 @@ export const respondToInvitation = async (c: Context) => {
       .from(eventInvitations)
       .where(and(
         eq(eventInvitations.id, BigInt(id)),
-        eq(eventInvitations.deletedAt, null)
+        isNull(eventInvitations.deletedAt)
       ))
       .limit(1);
 
@@ -264,7 +264,7 @@ export const respondToInvitation = async (c: Context) => {
     const updatedInvitation = await db
       .update(eventInvitations)
       .set({
-        status: status as any,
+        status: status as typeof invitationStatusEnum.enumValues[number],
         respondedAt: new Date(),
         updatedAt: new Date(),
       })

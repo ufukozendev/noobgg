@@ -24,6 +24,8 @@ export {
   updateGameRankSchema,
 } from "./schemas/gamerank.schema";
 
+export * from "./schemas/event-invitations";
+
 // OpenAPI Response Schemas
 export {
   ErrorResponseSchema,
