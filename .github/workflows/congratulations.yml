@@ -1,7 +1,10 @@
 name: Congratulations
 
-on: [pull_request_target, issues]
-
+on:
+  pull_request:
+    types: [opened]
+  issues:
+    types: [opened]
 jobs:
   Congratulation:
 
