@@ -2,12 +2,10 @@ import { NextResponse } from "next/server";
 import { auth } from "./auth";
 
 export default auth((req) => {
-  console.log("çalıştı");
-
   const locale = req.cookies.get("NEXT_LOCALE")?.value || "tr";
   const { pathname } = req.nextUrl;
 
-  if (!req.auth && req.nextUrl.pathname !== "/login") {
+  if (!req.auth && pathname !== "/login") {
     const newUrl = new URL("/login", req.nextUrl.origin);
     const redirectResponse = NextResponse.redirect(newUrl);
     redirectResponse.cookies.set("NEXT_LOCALE", locale, {
