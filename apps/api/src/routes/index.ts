@@ -1,15 +1,12 @@
 import { Hono } from 'hono'
-import { homeController } from '../controllers/main.controller'
+import { homeController } from '../controllers/v1/main.controller'
 import v1Router from './v1'
-// Gelecekte: import v2Router from './v2'
 
 const router = new Hono()
 
-// Health check endpoint (unversioned)
 router.get('/', homeController)
 router.get('/health', homeController)
 
-// Versioned API routes
 router.route('/api/v1', v1Router)
 
 router.get('/api/*', (c) => {

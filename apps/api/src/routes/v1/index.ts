@@ -7,7 +7,7 @@ import userProfilesRoutes from './user-profiles'
 import eventAttendeesRouter from './event-attendees'
 import eventInvitationsRouter from './event-invitations'
 
-const v1Router = new Hono().basePath('/api/v1')
+const v1Router = new Hono()
 
 v1Router.route('/games', gamesRoutes)
 v1Router.route('/platforms', platformsRoutes)
