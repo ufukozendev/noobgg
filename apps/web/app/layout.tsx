@@ -65,7 +65,7 @@ export default async function RootLayout({
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body className={`${poppins.variable} ${exo2.variable} antialiased`}>
+      <body suppressHydrationWarning className={`${poppins.variable} ${exo2.variable} antialiased`}>
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <QueryProvider>
