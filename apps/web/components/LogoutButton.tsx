@@ -19,7 +19,7 @@ export default function LogoutButton({ mobile = false }: { mobile?: boolean }) {
       )}
       onClick={() => signOut({ callbackUrl: "/" })}
     >
-      <span>Log Out</span>
+      <span>Sign Out</span>
     </Button>
   );
 }

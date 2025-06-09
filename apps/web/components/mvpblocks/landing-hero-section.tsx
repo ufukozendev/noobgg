@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ShimmerButton } from "../magicui/shimmer-button";
 import { motion } from "framer-motion";
+import StarWarsButton from "../syntax-ui/starwars-button";
 
 export default function LandingHeroSection() {
   return (
@@ -27,9 +27,9 @@ export default function LandingHeroSection() {
 
           <div className="mb-10 mt-10 flex flex-col items-center justify-center gap-4 sm:mb-0 sm:flex-row">
             <Link href="/docs/get-started">
-              <ShimmerButton className="w-full sm:w-auto mb-3 mt-4">
+              <StarWarsButton className="w-full sm:w-auto mb-4 mt-4">
                 Find Your Squad Now
-              </ShimmerButton>
+              </StarWarsButton>
             </Link>
           </div>
         </motion.div>
