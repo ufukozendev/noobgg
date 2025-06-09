@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import ThemeSwitcher from "../theme-switcher";
 import LanguageSwitcher from "../language-switcher";
 import { cn } from "@/lib/utils";
@@ -148,21 +147,23 @@ export default function LandingHeader() {
           <div className="hidden items-center space-x-4 lg:flex">
             <ThemeSwitcher isScrolled={isScrolled} />
             <LanguageSwitcher isScrolled={isScrolled} />
-            <Link
-              href="/login"
-              className={cn(
-                "font-medium dark:text-foreground transition-colors duration-200",
-                isScrolled ? "text-foreground" : "text-background"
-              )}
-            >
-              Sign In
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                href="/login"
+                className={cn(
+                  "font-medium dark:text-foreground transition-colors duration-200",
+                  isScrolled ? "text-foreground" : "text-background"
+                )}
+              >
+                <span>Sign In</span>
+              </Link>
+            </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/signup"
                 className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#6f52f4] to-[#9b87f5] px-6 py-2.5 font-medium text-white transition-all duration-200 hover:shadow-lg"
               >
-                <span>Get Started</span>
+                <span>Find Your Squad</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
@@ -205,7 +206,7 @@ export default function LandingHeader() {
                 <div className="space-y-2 px-4 py-2">
                   <Link
                     href="/login"
-                    className="block w-full rounded-lg py-2.5 text-center font-medium text-foreground transition-colors duration-200 hover:bg-muted"
+                    className="block w-full rounded-lg bg-gradient-to-r from-[#6f52f4] to-[#9b87f5] py-2.5 text-center font-medium text-white transition-all duration-200 hover:shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign In
@@ -215,7 +216,7 @@ export default function LandingHeader() {
                     className="block w-full rounded-lg bg-gradient-to-r from-[#6f52f4] to-[#9b87f5] py-2.5 text-center font-medium text-white transition-all duration-200 hover:shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Get Started
+                    Find Your Squad Now
                   </Link>
                 </div>
               </div>
