@@ -1,4 +1,6 @@
-export function convertBigIntToString(obj: any): any {
+type Serializable = bigint | string | number | boolean | null | undefined | Serializable[] | { [key: string]: Serializable };
+
+export function convertBigIntToString(obj: Serializable): Serializable {
   if (typeof obj === "bigint") {
     return obj.toString();
   }
