@@ -514,11 +514,16 @@ components:
           type: string
     GameUpdate:
       type: object
+      required:
+        - name
       properties:
         name:
           type: string
+          minLength: 1
+          maxLength: 100
         description:
           type: string
+          maxLength: 500
     GameRank:
       type: object
       properties:
@@ -545,6 +550,9 @@ components:
           type: string
     UserProfile:
       type: object
+      required:
+        - userKeycloakId
+        - userName
       properties:
         userKeycloakId:
           type: string
@@ -555,8 +563,11 @@ components:
       properties:
         userKeycloakId:
           type: string
+          format: uuid
         userName:
           type: string
+          minLength: 1
+          maxLength: 50
     Distributor:
       type: object
       properties:
