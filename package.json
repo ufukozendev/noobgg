@@ -23,6 +23,8 @@
   ],
   "dependencies": {
     "@hono/swagger-ui": "^0.5.1",
-    "@hono/zod-openapi": "^0.19.8"
+    "@hono/zod-openapi": "^0.19.8",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   }
 }

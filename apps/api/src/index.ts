@@ -5,12 +5,11 @@ import { swaggerUI } from '@hono/swagger-ui';
 import router from './routes';
 import { versionMiddleware } from './middleware/version';
 import { deprecationMiddleware } from './middleware/deprecation';
-
-// burada ortak paketi çektik
+import YAML from 'yamljs';
+import path from 'path';
 
 const app = new Hono();
 
-// Global middleware
 app.use('*', logger());
 app.use('*', cors({
   origin: ['http://localhost:3000', 'http://localhost:3001'],
@@ -18,17 +17,19 @@ app.use('*', cors({
   allowHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Version detection and deprecation middleware
 app.use('/api/*', versionMiddleware);
 app.use('/api/*', deprecationMiddleware);
 
-// Swagger UI ve OpenAPI dokümantasyon endpointleri
 app.get('/docs', swaggerUI({ url: '/docs/openapi.json' }));
 
-// Routes
+app.get('/docs/openapi.json', (c) => {
+  const openapiPath = path.join(process.cwd(), 'openapi.yaml');
+  const openapiDoc = YAML.load(openapiPath);
+  return c.json(openapiDoc);
+});
+
 app.route('/', router);
 
-// Global error handler
 app.onError((err, c) => {
   console.error('API Error:', err);
   return c.json({

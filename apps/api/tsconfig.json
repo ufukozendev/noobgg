@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "paths": {
       "@repo/*": ["../../packages/*"]
-    }
+    },
+    "esModuleInterop": true,
   },
   "include": ["src"]
 }
