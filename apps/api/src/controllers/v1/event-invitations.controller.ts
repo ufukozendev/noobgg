@@ -6,6 +6,7 @@ import {
 } from "../../db/schemas/event-invitations.drizzle";
 import { eq, and, desc, or, isNull, SQL } from "drizzle-orm";
 import { sql } from "drizzle-orm";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
 
 export const getEventInvitations = async (c: Context) => {
   try {
@@ -38,11 +39,11 @@ export const getEventInvitations = async (c: Context) => {
       .from(eventInvitations)
       .where(whereCondition);
     return c.json({
-      data: invitations,
+      data: convertBigIntToString(invitations),
       pagination: {
         page,
         limit,
-        total: total[0].count,
+        total: Number(total[0].count),
         totalPages: Math.ceil(Number(total[0].count) / limit),
       },
     });
@@ -67,7 +68,7 @@ export const getEventInvitationById = async (c: Context) => {
     if (invitation.length === 0) {
       return c.json({ error: "Event invitation not found" }, 404);
     }
-    return c.json({ data: invitation[0] });
+    return c.json({ data: convertBigIntToString(invitation[0]) });
   } catch (error) {
     return c.json({ error: "Failed to fetch event invitation" }, 500);
   }
@@ -125,7 +126,7 @@ export const getUserInvitations = async (c: Context) => {
       .from(eventInvitations)
       .where(whereCondition);
     return c.json({
-      data: invitations,
+      data: convertBigIntToString(invitations),
       pagination: {
         page,
         limit,
@@ -173,7 +174,7 @@ export const getEventInvitationsByEvent = async (c: Context) => {
       .from(eventInvitations)
       .where(whereCondition);
     return c.json({
-      data: invitations,
+      data: convertBigIntToString(invitations),
       pagination: {
         page,
         limit,
@@ -221,7 +222,7 @@ export const createEventInvitation = async (c: Context) => {
         status: "pending",
       })
       .returning();
-    return c.json({ data: newInvitation[0] }, 201);
+    return c.json({ data: convertBigIntToString(newInvitation[0]) }, 201);
   } catch (error) {
     return c.json({ error: "Failed to create event invitation" }, 500);
   }
@@ -263,7 +264,7 @@ export const respondToInvitation = async (c: Context) => {
       })
       .where(eq(eventInvitations.id, BigInt(id)))
       .returning();
-    return c.json({ data: updatedInvitation[0] });
+    return c.json({ data: convertBigIntToString(updatedInvitation[0]) });
   } catch (error) {
     return c.json({ error: "Failed to respond to invitation" }, 500);
   }
