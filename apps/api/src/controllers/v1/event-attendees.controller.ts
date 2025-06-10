@@ -35,7 +35,7 @@ export const getEventAttendees = async (c: Context) => {
         totalPages: Math.ceil(Number(total[0].count) / limit),
       },
     });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to fetch event attendees" }, 500);
   }
 };
@@ -57,7 +57,7 @@ export const getEventAttendeeById = async (c: Context) => {
       return c.json({ error: "Event attendee not found" }, 404);
     }
     return c.json({ data: convertBigIntToString(attendee[0]) });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to fetch event attendee" }, 500);
   }
 };
@@ -104,7 +104,7 @@ export const getEventAttendeesByEvent = async (c: Context) => {
         totalPages: Math.ceil(Number(total[0].count) / limit),
       },
     });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to fetch event attendees" }, 500);
   }
 };
@@ -129,8 +129,8 @@ export const createEventAttendee = async (c: Context) => {
       })
       .returning();
     return c.json({ data: convertBigIntToString(newAttendee[0]) }, 201);
-  } catch (dbError: any) {
-    if (dbError.code === "23505" || dbError.constraint) {
+  } catch (dbError: unknown) {
+    if (dbError && typeof dbError === 'object' && 'code' in dbError && (dbError.code === "23505" || 'constraint' in dbError)) {
       return c.json({ error: "User is already attending this event" }, 409);
     }
     throw dbError;
@@ -165,7 +165,7 @@ export const deleteEventAttendee = async (c: Context) => {
       return c.json({ error: "Event attendee not found" }, 404);
     }
     return c.json({ message: "Event attendee removed successfully" });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to remove event attendee" }, 500);
   }
 };
