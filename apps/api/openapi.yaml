@@ -3,6 +3,8 @@ info:
   title: NoobGG API
   version: 1.0.0
   description: API documentation for NoobGG endpoints
+security:
+  - bearerAuth: []
 servers:
   - url: /api/v1
 paths:
@@ -10,7 +12,7 @@ paths:
     get:
       summary: Get all games
       responses:
-        '200':
+        "200":
           description: List of games
     post:
       summary: Create a new game
@@ -19,9 +21,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Game'
+              $ref: "#/components/schemas/Game"
       responses:
-        '201':
+        "201":
           description: Game created
   /games/{id}:
     get:
@@ -33,9 +35,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Game found
-        '404':
+        "404":
           description: Game not found
     put:
       summary: Update game by ID
@@ -50,11 +52,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GameUpdate'
+              $ref: "#/components/schemas/GameUpdate"
       responses:
-        '200':
+        "200":
           description: Game updated
-        '404':
+        "404":
           description: Game not found
     delete:
       summary: Delete game by ID
@@ -65,15 +67,15 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Game deleted
-        '404':
+        "404":
           description: Game not found
   /game-ranks:
     get:
       summary: Get all game ranks
       responses:
-        '200':
+        "200":
           description: List of game ranks
     post:
       summary: Create a new game rank
@@ -82,9 +84,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GameRank'
+              $ref: "#/components/schemas/GameRank"
       responses:
-        '201':
+        "201":
           description: Game rank created
   /game-ranks/{id}:
     get:
@@ -96,9 +98,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Game rank found
-        '404':
+        "404":
           description: Game rank not found
     put:
       summary: Update game rank by ID
@@ -113,11 +115,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GameRankUpdate'
+              $ref: "#/components/schemas/GameRankUpdate"
       responses:
-        '200':
+        "200":
           description: Game rank updated
-        '404':
+        "404":
           description: Game rank not found
     delete:
       summary: Delete game rank by ID
@@ -128,15 +130,15 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Game rank deleted
-        '404':
+        "404":
           description: Game rank not found
   /platforms:
     get:
       summary: Get all platforms
       responses:
-        '200':
+        "200":
           description: List of platforms
     post:
       summary: Create a new platform
@@ -145,9 +147,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Platform'
+              $ref: "#/components/schemas/Platform"
       responses:
-        '201':
+        "201":
           description: Platform created
   /platforms/{id}:
     get:
@@ -159,9 +161,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Platform found
-        '404':
+        "404":
           description: Platform not found
     put:
       summary: Update platform by ID
@@ -176,11 +178,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PlatformUpdate'
+              $ref: "#/components/schemas/PlatformUpdate"
       responses:
-        '200':
+        "200":
           description: Platform updated
-        '404':
+        "404":
           description: Platform not found
     delete:
       summary: Delete platform by ID
@@ -191,9 +193,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Platform deleted
-        '404':
+        "404":
           description: Platform not found
   /user-profiles/{id}:
     get:
@@ -205,9 +207,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: User profile found
-        '404':
+        "404":
           description: User profile not found
     put:
       summary: Update user profile by ID
@@ -222,11 +224,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserProfileUpdate'
+              $ref: "#/components/schemas/UserProfileUpdate"
       responses:
-        '200':
+        "200":
           description: User profile updated
-        '404':
+        "404":
           description: User profile not found
     delete:
       summary: Delete user profile by ID
@@ -237,9 +239,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: User profile deleted
-        '404':
+        "404":
           description: User profile not found
   /user-profiles:
     post:
@@ -249,15 +251,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserProfile'
+              $ref: "#/components/schemas/UserProfile"
       responses:
-        '201':
+        "201":
           description: User profile created
   /distributors:
     get:
       summary: Get all distributors
       responses:
-        '200':
+        "200":
           description: List of distributors
     post:
       summary: Create a new distributor
@@ -266,9 +268,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Distributor'
+              $ref: "#/components/schemas/Distributor"
       responses:
-        '201':
+        "201":
           description: Distributor created
   /distributors/{id}:
     get:
@@ -280,9 +282,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Distributor found
-        '404':
+        "404":
           description: Distributor not found
     put:
       summary: Update distributor by ID
@@ -297,11 +299,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DistributorUpdate'
+              $ref: "#/components/schemas/DistributorUpdate"
       responses:
-        '200':
+        "200":
           description: Distributor updated
-        '404':
+        "404":
           description: Distributor not found
     delete:
       summary: Delete distributor by ID
@@ -312,26 +314,26 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Distributor deleted
-        '404':
+        "404":
           description: Distributor not found
   /main:
     get:
       summary: Home controller
       responses:
-        '200':
+        "200":
           description: Hello Hono!
   /any-route:
     get:
       summary: Any route GET
       responses:
-        '200':
+        "200":
           description: Hello Any Route!
     post:
       summary: Any route POST
       responses:
-        '200':
+        "200":
           description: Hello Any Route!
   /event-invitations:
     get:
@@ -350,7 +352,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: List of event invitations
     post:
       summary: Create a new event invitation
@@ -359,9 +361,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventInvitation'
+              $ref: "#/components/schemas/EventInvitation"
       responses:
-        '201':
+        "201":
           description: Event invitation created
   /event-invitations/{id}:
     get:
@@ -373,9 +375,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Event invitation found
-        '404':
+        "404":
           description: Event invitation not found
     put:
       summary: Respond to invitation
@@ -396,9 +398,9 @@ paths:
                   type: string
                   enum: [accepted, declined]
       responses:
-        '200':
+        "200":
           description: Invitation responded
-        '404':
+        "404":
           description: Invitation not found
     delete:
       summary: Delete event invitation
@@ -409,9 +411,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Event invitation deleted
-        '404':
+        "404":
           description: Event invitation not found
   /event-attendees:
     get:
@@ -426,7 +428,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of event attendees
     post:
       summary: Create a new event attendee
@@ -435,9 +437,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventAttendee'
+              $ref: "#/components/schemas/EventAttendee"
       responses:
-        '201':
+        "201":
           description: Event attendee created
   /event-attendees/{id}:
     get:
@@ -449,9 +451,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Event attendee found
-        '404':
+        "404":
           description: Event attendee not found
     delete:
       summary: Delete event attendee
@@ -462,41 +464,46 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Event attendee deleted
-        '404':
+        "404":
           description: Event attendee not found
   /game-modes:
     get:
       summary: Get all game modes
       responses:
-        '200':
+        "200":
           description: List of game modes
   /languages:
     get:
       summary: Get all languages
       responses:
-        '200':
+        "200":
           description: List of languages
   /lobbies:
     get:
       summary: Get all lobbies
       responses:
-        '200':
+        "200":
           description: List of lobbies
   /game-platforms:
     get:
       summary: Get all game platforms
       responses:
-        '200':
+        "200":
           description: List of game platforms
   /game-regions:
     get:
       summary: Get all game regions
       responses:
-        '200':
+        "200":
           description: List of game regions
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Game:
       type: object
