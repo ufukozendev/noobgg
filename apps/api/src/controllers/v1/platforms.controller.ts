@@ -3,11 +3,12 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db";
 import { platforms } from "../../db/schemas/platforms.drizzle";
 import { createPlatformSchema, updatePlatformSchema } from "@repo/shared";
+import { convertBigIntToNumber } from "../../utils/bigint-serializer";
 
 export const getAllPlatformsController = async (c: Context) => {
   try {
     const result = await db.select().from(platforms);
-    return c.json(result);
+    return c.json(convertBigIntToNumber(result));
   } catch {
     return c.json({ error: "Internal server error" }, 500);
   }
@@ -26,7 +27,8 @@ export const getPlatformByIdController = async (c: Context) => {
       .where(eq(platforms.id, id));
     if (result.length === 0)
       return c.json({ error: "Platform not found" }, 404);
-    return c.json(result[0]);
+
+    return c.json(convertBigIntToNumber(result[0]));
   } catch {
     return c.json({ error: "Internal server error" }, 500);
   }
@@ -43,8 +45,8 @@ export const createPlatformController = async (c: Context) => {
       .insert(platforms)
       .values(result.data)
       .returning();
-    return c.json(platform, 201);
-  } catch {
+    return c.json(convertBigIntToNumber(platform), 201);
+  } catch (error) {
     return c.json({ error: "Internal server error" }, 500);
   }
 };
@@ -70,7 +72,7 @@ export const updatePlatformController = async (c: Context) => {
       .where(eq(platforms.id, id))
       .returning();
     if (!platform) return c.json({ error: "Platform not found" }, 404);
-    return c.json(platform);
+    return c.json(convertBigIntToNumber(platform));
   } catch {
     return c.json({ error: "Internal server error" }, 500);
   }
@@ -88,7 +90,7 @@ export const deletePlatformController = async (c: Context) => {
       .where(eq(platforms.id, id))
       .returning();
     if (!platform) return c.json({ error: "Platform not found" }, 404);
-    return c.json(platform);
+    return c.json(convertBigIntToNumber(platform));
   } catch {
     return c.json({ error: "Internal server error" }, 500);
   }
