@@ -7,7 +7,7 @@ import {
   getEventAttendeesByEvent,
   createEventAttendee,
   deleteEventAttendee,
-} from "./event-attendees.controller";
+} from "./v1/event-attendees.controller";
 
 // Mock the db module
 mock.module("../db", () => ({

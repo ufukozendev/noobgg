@@ -5,9 +5,9 @@ import {
   createPlatformController,
   updatePlatformController,
   deletePlatformController,
-} from '../controllers/platforms.controller';
+} from '../../controllers/v1/platforms.controller';
 
-const platforms = new Hono().basePath('/platforms');
+const platforms = new Hono();
 
 platforms.get('/', getAllPlatformsController);
 platforms.get('/:id', getPlatformByIdController);

@@ -7,8 +7,9 @@ import {
   createEventInvitation,
   respondToInvitation,
   deleteEventInvitation,
-} from "../controllers/event-invitations.controller";
+} from "../../controllers/v1/event-invitations.controller";
 import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 import {
   createEventInvitationSchema,
   respondToInvitationSchema,
@@ -16,14 +17,20 @@ import {
 } from "@repo/shared";
 
 const eventInvitationsRouter = new Hono();
+const idParamSchema = z.object({
+  id: z.string().regex(/^\d+$/).transform(Number),
+});
 
-// Event Invitations CRUD routes
 eventInvitationsRouter.get(
   "/",
   zValidator("query", getEventInvitationsSchema),
   getEventInvitations
 );
-eventInvitationsRouter.get("/:id", getEventInvitationById);
+eventInvitationsRouter.get(
+  "/:id",
+  zValidator("param", idParamSchema),
+  getEventInvitationById
+);
 eventInvitationsRouter.post(
   "/",
   zValidator("json", createEventInvitationSchema),
@@ -35,19 +42,15 @@ eventInvitationsRouter.put(
   respondToInvitation
 );
 eventInvitationsRouter.delete("/:id", deleteEventInvitation);
-
-// User-specific invitation routes
 eventInvitationsRouter.get(
   "/users/:userId/invitations",
   zValidator("query", getEventInvitationsSchema),
   getUserInvitations
 );
-
-// Event-specific invitation routes
 eventInvitationsRouter.get(
   "/events/:eventId/invitations",
   zValidator("query", getEventInvitationsSchema),
   getEventInvitationsByEvent
 );
 
-export { eventInvitationsRouter };
+export default eventInvitationsRouter;

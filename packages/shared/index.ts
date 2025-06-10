@@ -9,23 +9,21 @@ export {
   updateDistributorSchema,
 } from "./schemas/distributor.schema";
 
-export{
-  createUserProfileSchema,
-  updateUserProfileSchema
-} from "./schemas/user-profile.schema"
-
 export {
-  createGameSchema,
-  updateGameSchema,
-} from "./schemas/game.schema";
+  createUserProfileSchema,
+  updateUserProfileSchema,
+} from "./schemas/user-profile.schema";
+
+export { createGameSchema, updateGameSchema } from "./schemas/game.schema";
 
 export {
   createGameRankSchema,
   updateGameRankSchema,
 } from "./schemas/gamerank.schema";
 
-export * from "./schemas/event-invitations";
+export * from "./schemas/event-attendees";
 
+export * from "./schemas/event-invitations";
 // OpenAPI Response Schemas
 export {
   ErrorResponseSchema,

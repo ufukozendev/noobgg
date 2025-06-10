@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { platforms } from "../db/schemas/platforms.drizzle";
+import { db } from "../../db";
+import { platforms } from "../../db/schemas/platforms.drizzle";
 import { createPlatformSchema, updatePlatformSchema } from "@repo/shared";
 
 export const getAllPlatformsController = async (c: Context) => {
@@ -20,7 +20,6 @@ export const getPlatformByIdController = async (c: Context) => {
       return c.json({ error: "Invalid id" }, 400);
     }
     const id = BigInt(idParam);
-
     const result = await db
       .select()
       .from(platforms)
@@ -40,7 +39,6 @@ export const createPlatformController = async (c: Context) => {
     if (!result.success) {
       return c.json({ error: result.error.flatten().fieldErrors }, 400);
     }
-
     const [platform] = await db
       .insert(platforms)
       .values(result.data)
@@ -58,7 +56,6 @@ export const updatePlatformController = async (c: Context) => {
       return c.json({ error: "Invalid id" }, 400);
     }
     const id = BigInt(idParam);
-
     const data = await c.req.json();
     const result = updatePlatformSchema.safeParse(data);
     if (!result.success) {
@@ -67,13 +64,11 @@ export const updatePlatformController = async (c: Context) => {
     if (Object.keys(result.data).length === 0) {
       return c.json({ error: "No data provided" }, 400);
     }
-
     const [platform] = await db
       .update(platforms)
       .set(result.data)
       .where(eq(platforms.id, id))
       .returning();
-
     if (!platform) return c.json({ error: "Platform not found" }, 404);
     return c.json(platform);
   } catch {
@@ -88,12 +83,10 @@ export const deletePlatformController = async (c: Context) => {
       return c.json({ error: "Invalid id" }, 400);
     }
     const id = BigInt(idParam);
-
     const [platform] = await db
       .delete(platforms)
       .where(eq(platforms.id, id))
       .returning();
-
     if (!platform) return c.json({ error: "Platform not found" }, 404);
     return c.json(platform);
   } catch {

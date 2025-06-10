@@ -1,8 +1,9 @@
+// v1: event-attendees controller (boş şablon)
 import { Context } from "hono";
-import { db } from "../db";
-import { eventAttendees } from "../db/schemas/event-attendees.drizzle";
+import { db } from "../../db";
+import { eventAttendees } from "../../db/schemas/event-attendees.drizzle";
 import { eq, and, desc, sql, isNull } from "drizzle-orm";
-import { createEventAttendeeSchema } from "../../../../packages/shared/schemas/event-attendees";
+import { createEventAttendeeSchema } from "@repo/shared";
 
 export const getEventAttendees = async (c: Context) => {
   try {
@@ -12,7 +13,6 @@ export const getEventAttendees = async (c: Context) => {
       Math.max(1, parseInt(c.req.query("limit") || "10") || 10)
     );
     const offset = (page - 1) * limit;
-
     const attendees = await db
       .select()
       .from(eventAttendees)
@@ -20,12 +20,10 @@ export const getEventAttendees = async (c: Context) => {
       .orderBy(desc(eventAttendees.createdAt))
       .limit(limit)
       .offset(offset);
-
     const total = await db
       .select({ count: sql`count(*)` })
       .from(eventAttendees)
       .where(isNull(eventAttendees.deletedAt));
-
     return c.json({
       data: attendees,
       pagination: {
@@ -46,7 +44,6 @@ export const getEventAttendeeById = async (c: Context) => {
     if (!id || isNaN(Number(id))) {
       return c.json({ error: "Invalid ID parameter" }, 400);
     }
-
     const attendee = await db
       .select()
       .from(eventAttendees)
@@ -54,11 +51,9 @@ export const getEventAttendeeById = async (c: Context) => {
         and(eq(eventAttendees.id, BigInt(id)), isNull(eventAttendees.deletedAt))
       )
       .limit(1);
-
     if (attendee.length === 0) {
       return c.json({ error: "Event attendee not found" }, 404);
     }
-
     return c.json({ data: attendee[0] });
   } catch (error) {
     return c.json({ error: "Failed to fetch event attendee" }, 500);
@@ -68,18 +63,15 @@ export const getEventAttendeeById = async (c: Context) => {
 export const getEventAttendeesByEvent = async (c: Context) => {
   try {
     const eventId = c.req.param("eventId");
-
     if (!eventId || isNaN(Number(eventId))) {
       return c.json({ error: "Invalid event ID parameter" }, 400);
     }
-
     const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
     const limit = Math.min(
       100,
       Math.max(1, parseInt(c.req.query("limit") || "10") || 10)
     );
     const offset = (page - 1) * limit;
-
     const attendees = await db
       .select()
       .from(eventAttendees)
@@ -92,7 +84,6 @@ export const getEventAttendeesByEvent = async (c: Context) => {
       .orderBy(desc(eventAttendees.joinedAt))
       .limit(limit)
       .offset(offset);
-
     const total = await db
       .select({ count: sql`count(*)` })
       .from(eventAttendees)
@@ -102,7 +93,6 @@ export const getEventAttendeesByEvent = async (c: Context) => {
           isNull(eventAttendees.deletedAt)
         )
       );
-
     return c.json({
       data: attendees,
       pagination: {
@@ -136,7 +126,6 @@ export const createEventAttendee = async (c: Context) => {
         joinedAt: new Date(),
       })
       .returning();
-
     return c.json({ data: newAttendee[0] }, 201);
   } catch (dbError: any) {
     if (dbError.code === "23505" || dbError.constraint) {
@@ -149,11 +138,9 @@ export const createEventAttendee = async (c: Context) => {
 export const deleteEventAttendee = async (c: Context) => {
   try {
     const id = c.req.param("id");
-
     if (!id || isNaN(Number(id))) {
       return c.json({ error: "Invalid ID parameter" }, 400);
     }
-
     const existing = await db
       .select()
       .from(eventAttendees)
@@ -161,7 +148,6 @@ export const deleteEventAttendee = async (c: Context) => {
         and(eq(eventAttendees.id, BigInt(id)), isNull(eventAttendees.deletedAt))
       )
       .limit(1);
-
     if (existing.length === 0) {
       return c.json({ error: "Event attendee not found" }, 404);
     }
@@ -173,11 +159,9 @@ export const deleteEventAttendee = async (c: Context) => {
       })
       .where(eq(eventAttendees.id, BigInt(id)))
       .returning();
-
     if (deletedAttendee.length === 0) {
       return c.json({ error: "Event attendee not found" }, 404);
     }
-
     return c.json({ message: "Event attendee removed successfully" });
   } catch (error) {
     return c.json({ error: "Failed to remove event attendee" }, 500);
