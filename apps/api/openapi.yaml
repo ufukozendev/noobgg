@@ -1,0 +1,578 @@
+openapi: 3.0.3
+info:
+  title: NoobGG API
+  version: 1.0.0
+  description: API documentation for NoobGG endpoints
+servers:
+  - url: /api/v1
+paths:
+  /games:
+    get:
+      summary: Get all games
+      responses:
+        '200':
+          description: List of games
+    post:
+      summary: Create a new game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        '201':
+          description: Game created
+  /games/{id}:
+    get:
+      summary: Get game by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game found
+        '404':
+          description: Game not found
+    put:
+      summary: Update game by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameUpdate'
+      responses:
+        '200':
+          description: Game updated
+        '404':
+          description: Game not found
+    delete:
+      summary: Delete game by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game deleted
+        '404':
+          description: Game not found
+  /game-ranks:
+    get:
+      summary: Get all game ranks
+      responses:
+        '200':
+          description: List of game ranks
+    post:
+      summary: Create a new game rank
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameRank'
+      responses:
+        '201':
+          description: Game rank created
+  /game-ranks/{id}:
+    get:
+      summary: Get game rank by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game rank found
+        '404':
+          description: Game rank not found
+    put:
+      summary: Update game rank by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameRankUpdate'
+      responses:
+        '200':
+          description: Game rank updated
+        '404':
+          description: Game rank not found
+    delete:
+      summary: Delete game rank by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game rank deleted
+        '404':
+          description: Game rank not found
+  /platforms:
+    get:
+      summary: Get all platforms
+      responses:
+        '200':
+          description: List of platforms
+    post:
+      summary: Create a new platform
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Platform'
+      responses:
+        '201':
+          description: Platform created
+  /platforms/{id}:
+    get:
+      summary: Get platform by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Platform found
+        '404':
+          description: Platform not found
+    put:
+      summary: Update platform by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatformUpdate'
+      responses:
+        '200':
+          description: Platform updated
+        '404':
+          description: Platform not found
+    delete:
+      summary: Delete platform by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Platform deleted
+        '404':
+          description: Platform not found
+  /user-profiles/{id}:
+    get:
+      summary: Get user profile by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile found
+        '404':
+          description: User profile not found
+    put:
+      summary: Update user profile by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileUpdate'
+      responses:
+        '200':
+          description: User profile updated
+        '404':
+          description: User profile not found
+    delete:
+      summary: Delete user profile by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile deleted
+        '404':
+          description: User profile not found
+  /user-profiles:
+    post:
+      summary: Create a new user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      responses:
+        '201':
+          description: User profile created
+  /distributors:
+    get:
+      summary: Get all distributors
+      responses:
+        '200':
+          description: List of distributors
+    post:
+      summary: Create a new distributor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Distributor'
+      responses:
+        '201':
+          description: Distributor created
+  /distributors/{id}:
+    get:
+      summary: Get distributor by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Distributor found
+        '404':
+          description: Distributor not found
+    put:
+      summary: Update distributor by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistributorUpdate'
+      responses:
+        '200':
+          description: Distributor updated
+        '404':
+          description: Distributor not found
+    delete:
+      summary: Delete distributor by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Distributor deleted
+        '404':
+          description: Distributor not found
+  /main:
+    get:
+      summary: Home controller
+      responses:
+        '200':
+          description: Hello Hono!
+  /any-route:
+    get:
+      summary: Any route GET
+      responses:
+        '200':
+          description: Hello Any Route!
+    post:
+      summary: Any route POST
+      responses:
+        '200':
+          description: Hello Any Route!
+  /event-invitations:
+    get:
+      summary: Get all event invitations
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of event invitations
+    post:
+      summary: Create a new event invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInvitation'
+      responses:
+        '201':
+          description: Event invitation created
+  /event-invitations/{id}:
+    get:
+      summary: Get event invitation by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event invitation found
+        '404':
+          description: Event invitation not found
+    put:
+      summary: Respond to invitation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [accepted, declined]
+      responses:
+        '200':
+          description: Invitation responded
+        '404':
+          description: Invitation not found
+    delete:
+      summary: Delete event invitation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event invitation deleted
+        '404':
+          description: Event invitation not found
+  /event-attendees:
+    get:
+      summary: Get all event attendees
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of event attendees
+    post:
+      summary: Create a new event attendee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventAttendee'
+      responses:
+        '201':
+          description: Event attendee created
+  /event-attendees/{id}:
+    get:
+      summary: Get event attendee by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event attendee found
+        '404':
+          description: Event attendee not found
+    delete:
+      summary: Delete event attendee
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event attendee deleted
+        '404':
+          description: Event attendee not found
+  /game-modes:
+    get:
+      summary: Get all game modes
+      responses:
+        '200':
+          description: List of game modes
+  /languages:
+    get:
+      summary: Get all languages
+      responses:
+        '200':
+          description: List of languages
+  /lobbies:
+    get:
+      summary: Get all lobbies
+      responses:
+        '200':
+          description: List of lobbies
+  /game-platforms:
+    get:
+      summary: Get all game platforms
+      responses:
+        '200':
+          description: List of game platforms
+  /game-regions:
+    get:
+      summary: Get all game regions
+      responses:
+        '200':
+          description: List of game regions
+components:
+  schemas:
+    Game:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    GameUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    GameRank:
+      type: object
+      properties:
+        name:
+          type: string
+        gameId:
+          type: integer
+    GameRankUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        gameId:
+          type: integer
+    Platform:
+      type: object
+      properties:
+        name:
+          type: string
+    PlatformUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+    UserProfile:
+      type: object
+      properties:
+        userKeycloakId:
+          type: string
+        userName:
+          type: string
+    UserProfileUpdate:
+      type: object
+      properties:
+        userKeycloakId:
+          type: string
+        userName:
+          type: string
+    Distributor:
+      type: object
+      properties:
+        name:
+          type: string
+    DistributorUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+    EventInvitation:
+      type: object
+      properties:
+        inviterId:
+          type: integer
+        inviteeId:
+          type: integer
+        eventId:
+          type: integer
+    EventAttendee:
+      type: object
+      properties:
+        eventId:
+          type: integer
+        userProfileId:
+          type: integer
