@@ -483,21 +483,264 @@ paths:
   /lobbies:
     get:
       summary: Get all lobbies
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
       responses:
         "200":
           description: List of lobbies
-  /game-platforms:
+    post:
+      summary: Create a new lobby
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Lobby"
+      responses:
+        "201":
+          description: Lobby created
+  /lobbies/{id}:
     get:
-      summary: Get all game platforms
+      summary: Get lobby by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: List of game platforms
-  /game-regions:
-    get:
-      summary: Get all game regions
+          description: Lobby found
+        "404":
+          description: Lobby not found
+    put:
+      summary: Update lobby by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LobbyUpdate"
       responses:
         "200":
-          description: List of game regions
+          description: Lobby updated
+        "404":
+          description: Lobby not found
+    delete:
+      summary: Delete lobby by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lobby deleted
+        "404":
+          description: Lobby not found
+  /lobby-members:
+    get:
+      summary: Get all lobby members
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of lobby members
+    post:
+      summary: Add member to lobby
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LobbyMember"
+      responses:
+        "201":
+          description: Lobby member added
+  /lobby-members/{id}:
+    get:
+      summary: Get lobby member by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lobby member found
+        "404":
+          description: Lobby member not found
+    delete:
+      summary: Remove lobby member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lobby member removed
+        "404":
+          description: Lobby member not found
+  /game-distributors:
+    get:
+      summary: Get all game distributors
+      responses:
+        "200":
+          description: List of game distributors
+    post:
+      summary: Create a new game distributor relationship
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GameDistributor"
+      responses:
+        "201":
+          description: Game distributor created
+  /game-distributors/{id}:
+    get:
+      summary: Get game distributor by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Game distributor found
+        "404":
+          description: Game distributor not found
+    delete:
+      summary: Delete game distributor
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Game distributor deleted
+        "404":
+          description: Game distributor not found
+  /events:
+    get:
+      summary: Get all events
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of events
+    post:
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "201":
+          description: Event created
+  /events/{id}:
+    get:
+      summary: Get event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event found
+        "404":
+          description: Event not found
+    put:
+      summary: Update event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventUpdate"
+      responses:
+        "200":
+          description: Event updated
+        "404":
+          description: Event not found
+    delete:
+      summary: Delete event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event deleted
+        "404":
+          description: Event not found
+  /events/{eventId}/attendees:
+    get:
+      summary: Get attendees for a specific event
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of event attendees
 components:
   securitySchemes:
     bearerAuth:
@@ -507,90 +750,470 @@ components:
   schemas:
     Game:
       type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-    GameUpdate:
-      type: object
       required:
         - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+        logo:
+          type: string
+          maxLength: 255
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+    GameUpdate:
+      type: object
       properties:
         name:
           type: string
           minLength: 1
-          maxLength: 100
+          maxLength: 150
         description:
           type: string
-          maxLength: 500
+        logo:
+          type: string
+          maxLength: 255
     GameRank:
       type: object
+      required:
+        - name
+        - image
+        - order
+        - gameId
       properties:
+        id:
+          type: integer
         name:
           type: string
+          maxLength: 100
+        image:
+          type: string
+          maxLength: 255
+        order:
+          type: integer
         gameId:
           type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
     GameRankUpdate:
       type: object
       properties:
         name:
           type: string
+          maxLength: 100
+        image:
+          type: string
+          maxLength: 255
+        order:
+          type: integer
         gameId:
           type: integer
-    Platform:
+    GameMode:
       type: object
+      required:
+        - name
+        - gameId
+        - order
+        - minTeamSize
+        - maxTeamSize
       properties:
+        id:
+          type: string
         name:
           type: string
+          maxLength: 150
+        description:
+          type: string
+        order:
+          type: integer
+        gameId:
+          type: string
+        minTeamSize:
+          type: integer
+        maxTeamSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+    Platform:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          maxLength: 100
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
     PlatformUpdate:
       type: object
       properties:
         name:
           type: string
+          maxLength: 100
     UserProfile:
       type: object
       required:
         - userKeycloakId
         - userName
+        - gender
+        - regionType
       properties:
+        id:
+          type: string
         userKeycloakId:
           type: string
+          maxLength: 100
         userName:
           type: string
+          maxLength: 50
+        firstName:
+          type: string
+          maxLength: 60
+        lastName:
+          type: string
+          maxLength: 60
+        birthDate:
+          type: string
+          format: date-time
+        profileImageUrl:
+          type: string
+          maxLength: 255
+        bannerImageUrl:
+          type: string
+          maxLength: 255
+        bio:
+          type: string
+        gender:
+          type: string
+          enum: [male, female, unknown]
+          default: unknown
+        regionType:
+          type: string
+          enum: [north_america, south_america, europe, asia, oceania, middle_east, africa, russia_cis, unknown]
+          default: unknown
+        lastOnline:
+          type: string
+          format: date-time
+        rowVersion:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
     UserProfileUpdate:
       type: object
       properties:
         userKeycloakId:
           type: string
-          format: uuid
+          maxLength: 100
         userName:
           type: string
           minLength: 1
           maxLength: 50
+        firstName:
+          type: string
+          maxLength: 60
+        lastName:
+          type: string
+          maxLength: 60
+        birthDate:
+          type: string
+          format: date-time
+        profileImageUrl:
+          type: string
+          maxLength: 255
+        bannerImageUrl:
+          type: string
+          maxLength: 255
+        bio:
+          type: string
+        gender:
+          type: string
+          enum: [male, female, unknown]
+        regionType:
+          type: string
+          enum: [north_america, south_america, europe, asia, oceania, middle_east, africa, russia_cis, unknown]
     Distributor:
       type: object
+      required:
+        - name
       properties:
+        id:
+          type: integer
         name:
           type: string
+          maxLength: 255
+        description:
+          type: string
+        website:
+          type: string
+          maxLength: 255
+        logo:
+          type: string
+          maxLength: 255
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
     DistributorUpdate:
       type: object
       properties:
         name:
           type: string
+          maxLength: 255
+        description:
+          type: string
+        website:
+          type: string
+          maxLength: 255
+        logo:
+          type: string
+          maxLength: 255
     EventInvitation:
       type: object
+      required:
+        - inviterId
+        - inviteeId
+        - eventId
       properties:
         inviterId:
-          type: integer
+          type: string
         inviteeId:
-          type: integer
+          type: string
         eventId:
-          type: integer
+          type: string
+        status:
+          type: string
+          enum: [pending, accepted, declined]
+          default: pending
     EventAttendee:
       type: object
+      required:
+        - eventId
+        - userProfileId
       properties:
         eventId:
-          type: integer
+          type: string
         userProfileId:
+          type: string
+        joinedAt:
+          type: string
+          format: date-time
+    Event:
+      type: object
+      required:
+        - title
+        - startTime
+        - endTime
+        - creatorId
+        - eventType
+      properties:
+        title:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        place:
+          type: string
+          maxLength: 255
+        isOnline:
+          type: boolean
+          default: false
+        imageUrl:
+          type: string
+          maxLength: 255
+        isOfficial:
+          type: boolean
+          default: false
+        creatorId:
+          type: string
+        minAgeRestriction:
           type: integer
+        attendeesCount:
+          type: integer
+          default: 0
+        languageId:
+          type: string
+        countryId:
+          type: string
+        cityId:
+          type: string
+        eventType:
+          type: string
+          enum: [meetup, tournament, other]
+    EventUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        place:
+          type: string
+          maxLength: 255
+        isOnline:
+          type: boolean
+        imageUrl:
+          type: string
+          maxLength: 255
+        isOfficial:
+          type: boolean
+        minAgeRestriction:
+          type: integer
+        languageId:
+          type: string
+        countryId:
+          type: string
+        cityId:
+          type: string
+        eventType:
+          type: string
+          enum: [meetup, tournament, other]
+    Lobby:
+      type: object
+      required:
+        - gameId
+        - regionId
+        - modeId
+        - minTeamSize
+        - maxTeamSize
+        - creatorId
+        - ownerId
+      properties:
+        gameId:
+          type: string
+        regionId:
+          type: string
+        modeId:
+          type: string
+        minTeamSize:
+          type: integer
+        maxTeamSize:
+          type: integer
+        type:
+          type: string
+          enum: [public, private]
+          default: public
+        minRankId:
+          type: string
+        maxRankId:
+          type: string
+        isMicRequired:
+          type: boolean
+          default: false
+        creatorId:
+          type: string
+        ownerId:
+          type: string
+        note:
+          type: string
+        discordLink:
+          type: string
+          maxLength: 255
+    LobbyUpdate:
+      type: object
+      properties:
+        gameId:
+          type: string
+        regionId:
+          type: string
+        modeId:
+          type: string
+        minTeamSize:
+          type: integer
+        maxTeamSize:
+          type: integer
+        type:
+          type: string
+          enum: [public, private]
+        minRankId:
+          type: string
+        maxRankId:
+          type: string
+        isMicRequired:
+          type: boolean
+        note:
+          type: string
+        discordLink:
+          type: string
+          maxLength: 255
+    LobbyMember:
+      type: object
+      required:
+        - lobbyId
+        - memberId
+      properties:
+        lobbyId:
+          type: string
+        memberId:
+          type: string
+        isAdmin:
+          type: boolean
+          default: false
+    GameDistributor:
+      type: object
+      required:
+        - gameId
+        - distributorId
+      properties:
+        gameId:
+          type: string
+        distributorId:
+          type: string
