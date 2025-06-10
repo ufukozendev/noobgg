@@ -923,7 +923,18 @@ components:
           default: unknown
         regionType:
           type: string
-          enum: [north_america, south_america, europe, asia, oceania, middle_east, africa, russia_cis, unknown]
+          enum:
+            [
+              north_america,
+              south_america,
+              europe,
+              asia,
+              oceania,
+              middle_east,
+              africa,
+              russia_cis,
+              unknown,
+            ]
           default: unknown
         lastOnline:
           type: string
@@ -971,7 +982,18 @@ components:
           enum: [male, female, unknown]
         regionType:
           type: string
-          enum: [north_america, south_america, europe, asia, oceania, middle_east, africa, russia_cis, unknown]
+          enum:
+            [
+              north_america,
+              south_america,
+              europe,
+              asia,
+              oceania,
+              middle_east,
+              africa,
+              russia_cis,
+              unknown,
+            ]
     Distributor:
       type: object
       required:
@@ -1046,12 +1068,18 @@ components:
     Event:
       type: object
       required:
+        - id
         - title
         - startTime
         - endTime
         - creatorId
         - eventType
+        - isOnline
+        - isOfficial
+        - attendeesCount
       properties:
+        id:
+          type: string
         title:
           type: string
           maxLength: 150
