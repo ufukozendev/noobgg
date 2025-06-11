@@ -14,6 +14,8 @@ import {
   isNull,
   SQL,
 } from "drizzle-orm";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
+
 
 // GET /api/events - List all events with advanced filtering and pagination
 export const getEvents = async (c: Context) => {
@@ -107,9 +109,9 @@ export const getEvents = async (c: Context) => {
       .select({ count: sql`count(*)` })
       .from(events)
       .where(whereCondition);
-
+    
     return c.json({
-      data: eventsList,
+      data: convertBigIntToString(eventsList),
       pagination: {
         page,
         limit,
@@ -136,6 +138,7 @@ export const getEvents = async (c: Context) => {
 export const getEventById = async (c: Context) => {
   try {
     const id = c.req.param("id");
+    
     const event = await db
       .select()
       .from(events)
@@ -145,8 +148,8 @@ export const getEventById = async (c: Context) => {
     if (event.length === 0) {
       return c.json({ error: "Event not found" }, 404);
     }
-
-    return c.json({ data: event[0] });
+    
+    return c.json({ data: convertBigIntToString(event[0]) });
   } catch {
     return c.json({ error: "Failed to fetch event" }, 500);
   }
@@ -179,7 +182,7 @@ export const getUpcomingEvents = async (c: Context) => {
       .orderBy(asc(events.startTime))
       .limit(limit);
 
-    return c.json({ data: upcomingEvents });
+    return c.json({ data: convertBigIntToString(upcomingEvents) });
   } catch {
     return c.json({ error: "Failed to fetch upcoming events" }, 500);
   }
@@ -210,7 +213,7 @@ export const getPopularEvents = async (c: Context) => {
       .orderBy(desc(events.attendeesCount))
       .limit(limit);
 
-    return c.json({ data: popularEvents });
+    return c.json({ data: convertBigIntToString(popularEvents) });
   } catch (error) {
     return c.json({ error: "Failed to fetch popular events" }, 500);
   }
@@ -287,7 +290,7 @@ export const createEvent = async (c: Context) => {
       })
       .returning();
 
-    return c.json({ data: newEvent[0] }, 201);
+    return c.json({ data: convertBigIntToString(newEvent[0] )}, 201);
   } catch (error) {
     console.log("Error creating event:", error);
     
@@ -371,7 +374,7 @@ export const updateEvent = async (c: Context) => {
       .where(eq(events.id, BigInt(id)))
       .returning();
 
-    return c.json({ data: updatedEvent[0] });
+    return c.json({ data: convertBigIntToString(updatedEvent[0]) });
   } catch (error) {
     return c.json({ error: "Failed to update event" }, 500);
   }
@@ -432,7 +435,7 @@ export const updateAttendeesCount = async (c: Context) => {
       .where(eq(events.id, BigInt(id)))
       .returning();
 
-    return c.json({ data: updatedEvent[0] });
+    return c.json({ data: convertBigIntToString(updatedEvent[0]) });
   } catch (error) {
     return c.json({ error: "Failed to update attendees count" }, 500);
   }
