@@ -12,7 +12,7 @@ import { Plus, Search, Edit, Trash2, Globe } from "lucide-react";
 import { useLanguages } from "../../../../hooks/use-languages";
 import { LanguageForm } from "../../../../components/admin/language-form";
 import type { Language } from "@repo/shared";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useSession } from "next-auth/react";
 

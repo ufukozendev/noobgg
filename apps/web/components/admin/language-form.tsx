@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Language } from "@repo/shared";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 interface Props {
   language?: Language;
