@@ -24,6 +24,7 @@
   "dependencies": {
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.8",
+    "react-focus-lock": "^2.13.6",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"
   }

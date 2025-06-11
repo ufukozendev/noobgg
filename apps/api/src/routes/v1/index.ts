@@ -6,6 +6,7 @@ import gameRanksRoutes from './game-ranks'
 import userProfilesRoutes from './user-profiles'
 import eventAttendeesRouter from './event-attendees'
 import eventInvitationsRouter from './event-invitations'
+import languagesRouter from './languages'
 
 const v1Router = new Hono()
 
@@ -16,6 +17,7 @@ v1Router.route('/game-ranks', gameRanksRoutes)
 v1Router.route('/user-profiles', userProfilesRoutes)
 v1Router.route('/event-attendees', eventAttendeesRouter)
 v1Router.route('/event-invitations', eventInvitationsRouter)
+v1Router.route('/languages', languagesRouter)
 
 
 export default v1Router

@@ -38,3 +38,11 @@ export {
   IdParamSchema,
   SuccessResponseSchema,
 } from "./schemas/openapi-responses.schema";
+
+export {
+  createLanguageSchema,
+  updateLanguageSchema,
+  getLanguagesSchema,
+} from "./schemas/languages";
+
+export type { Language } from "./schemas/languages";
