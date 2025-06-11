@@ -61,7 +61,7 @@ export function LanguageSelect({ value, onValueChange, placeholder = "Select lan
             {languages.map((lang) => (
               <CommandItem
                 key={lang.id}
-                value={lang.name}
+                data-value={lang.id}
                 onSelect={() => {
                   onValueChange(lang.id);
                   setOpen(false);
