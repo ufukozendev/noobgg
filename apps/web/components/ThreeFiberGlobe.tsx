@@ -754,10 +754,9 @@ const Starfield = React.memo(() => {
   const starsRef = useRef<THREE.Points>(null);
   const stars = useMemo(() => {
     const positions: number[] = [];
-    const colors: number[] = [];
-      // Create 400 stars scattered in a large sphere (further reduced for performance)
-    for (let i = 0; i < 400; i++) {      // Random position in a large sphere
-      const radius = 70 + Math.random() * 60; // Stars much farther from globe
+    const colors: number[] = [];    // Create 600 stars scattered in a large sphere (balanced amount)
+    for (let i = 0; i < 600; i++) {// Random position in a large sphere - much farther back
+      const radius = 150 + Math.random() * 100; // Stars very far from globe
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
       
@@ -765,21 +764,20 @@ const Starfield = React.memo(() => {
       const y = radius * Math.sin(phi) * Math.sin(theta);
       const z = radius * Math.cos(phi);
       
-      positions.push(x, y, z);
-        // Different star colors (white, blue, yellow, red giants) - reduced intensity
+      positions.push(x, y, z);      // Different star colors (white, blue, yellow, red giants) - balanced visibility
       const starType = Math.random();
       if (starType < 0.7) {
-        // White stars - dimmer
-        colors.push(0.8, 0.8, 0.8);
+        // White stars - slightly brighter
+        colors.push(0.7, 0.7, 0.7);
       } else if (starType < 0.85) {
-        // Blue stars - dimmer
-        colors.push(0.6, 0.7, 0.9);
+        // Blue stars - slightly brighter
+        colors.push(0.5, 0.6, 0.8);
       } else if (starType < 0.95) {
-        // Yellow stars - dimmer
-        colors.push(0.8, 0.8, 0.6);
+        // Yellow stars - slightly brighter
+        colors.push(0.7, 0.7, 0.5);
       } else {
-        // Red giants - dimmer
-        colors.push(0.8, 0.5, 0.4);
+        // Red giants - slightly brighter
+        colors.push(0.7, 0.4, 0.3);
       }
     }
     
@@ -815,10 +813,11 @@ const Starfield = React.memo(() => {
         size={0.6}
         sizeAttenuation={true}
         transparent={true}
-        opacity={0.5}
+        opacity={0.4}
         vertexColors={true}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
+        depthTest={true}
       />
     </points>
   );
@@ -835,9 +834,11 @@ const Scene = React.memo(({ onHubHover }: { onHubHover: (hub: any | null) => voi
       setGlobeRotation(rotation);
     }
   }, []);
-
   return (
     <>
+      {/* Stars first - rendered in background */}
+      <Starfield />
+      
       <ambientLight intensity={0.4} />
       <directionalLight position={[10, 10, 5]} intensity={0.6} />
       <pointLight position={[-10, -10, -5]} intensity={0.3} color="#4fc3f7" />
@@ -845,7 +846,6 @@ const Scene = React.memo(({ onHubHover }: { onHubHover: (hub: any | null) => voi
       <EarthGlobe onRotationUpdate={handleRotationUpdate} />
       <DottedContinents globeRotation={globeRotation} />
       <Atmosphere />
-      <Starfield />
       
       {GAMING_HUBS.map((hub, index) => (
         <GamingHub 
