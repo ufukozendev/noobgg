@@ -1,33 +1,47 @@
 import { describe, it, expect, mock, beforeEach } from "bun:test";
 
-/* 1) db'yi önce mock'la */
-const selectMock   = mock().mockReturnThis();
-const fromMock     = mock().mockReturnThis();
-const whereMock    = mock().mockReturnThis();
-const orderByMock  = mock().mockReturnThis();
-const limitMock    = mock().mockReturnThis();
-const offsetMock   = mock().mockReturnThis();
-const insertMock   = mock().mockImplementation(() => ({
-values: mock().mockImplementation(() => ({ returning: mock() })),
-}));
-const updateMock   = mock().mockImplementation(() => ({
-set: mock().mockImplementation(() => ({
-    where: mock().mockImplementation(() => ({ returning: mock() })),
-})),
-}));
+// Helper to generate isolated stub for db with fully chainable mocks
+function createDbStub() {
+  const stub: any = {};
+  const chainable = [
+    "select",
+    "from",
+    "where",
+    "orderBy",
+    "limit",
+    "offset",
+    "delete",
+  ];
+  chainable.forEach((m) => {
+    stub[m] = mock().mockReturnThis();
+  });
+
+  stub.insert = mock().mockImplementation(() => ({
+    values: mock().mockImplementation(() => ({ returning: mock() })),
+  }));
+
+  stub.update = mock().mockImplementation(() => ({
+    set: mock().mockImplementation(() => ({
+      where: mock().mockImplementation(() => ({ returning: mock() })),
+    })),
+  }));
+
+  return stub;
+}
+
+// Create initial stub for module mock
+let dbStub = createDbStub();
 
 mock.module("../db", () => ({
-db: {
-    select: selectMock,
-    from:   fromMock,
-    where:  whereMock,
-    orderBy: orderByMock,
-    limit:  limitMock,
-    offset: offsetMock,
-    insert: insertMock,
-    update: updateMock,
-  },
+  db: dbStub,
 }));
+
+// Utility to refresh stub between tests if needed
+function resetDbStub() {
+  dbStub = createDbStub();
+  // Overwrite properties on the exported db object so existing references stay
+  Object.assign(require("../db").db, dbStub);
+}
 
 /* 2) mock sonrası import'lar */
 import { db } from "../db";
@@ -54,9 +68,7 @@ const mockContext = (
 
 describe("Languages Controller", () => {
   beforeEach(() => {
-    selectMock.mockClear();
-    insertMock.mockClear();
-    // ...
+    resetDbStub();
     mockJson.mockClear();
     mockReqJson.mockClear();
     // clear db mocks each time
