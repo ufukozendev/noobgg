@@ -47,14 +47,17 @@ Meet our amazing contributors:
   <a href="https://github.com/Taiizor">
     <img width="60px" alt="Taiizor" src="https://github.com/Taiizor.png" style="border-radius: 50%;"/>
   </a>
-  <a href="https://github.com/Alsond5">
+     <a href="https://github.com/cserhat">
+    <img width="60px" alt="Serhat Celik" src="https://github.com/cserhat.png" style="border-radius: 50%;"/>
+  </a>
+  <a href="https://github.com/ahmtcn34">
+    <img width="60px" alt="Ahmet Can ÜZÜMCÜ" src="https://github.com/ahmtcn34.png" style="border-radius: 50%;"/>
+  </a>
+    <a href="https://github.com/Alsond5">
     <img width="60px" alt="Ahmet" src="https://github.com/Alsond5.png" style="border-radius: 50%;"/>
   </a>
   <a href="https://github.com/Abhishek85805">
     <img width="60px" alt="Abhishek85805" src="https://github.com/Abhishek85805.png" style="border-radius: 50%;"/>
-  </a>
-  <a href="https://github.com/ahmtcn34">
-    <img width="60px" alt="Ahmet Can ÜZÜMCÜ" src="https://github.com/ahmtcn34.png" style="border-radius: 50%;"/>
   </a>
     <a href="https://github.com/soydali">
     <img width="60px" alt="Efe" src="https://github.com/soydali.png" style="border-radius: 50%;"/>
