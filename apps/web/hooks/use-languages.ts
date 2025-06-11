@@ -48,7 +48,7 @@ export function useLanguages(options: UseLanguagesOptions = {}) {
       if (options.sortOrder) params.append("sortOrder", options.sortOrder);
 
       const base = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const res = await fetch(`${base}/api/languages?${params.toString()}`);
+      const res = await fetch(`${base}/api/v1/languages?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch languages");
       const data: LanguagesResponse = await res.json();
       setLanguages(data.data);
@@ -67,7 +67,7 @@ export function useLanguages(options: UseLanguagesOptions = {}) {
     flagUrl?: string;
   }) => {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "";
-    const res = await fetch(`${base}/api/languages`, {
+    const res = await fetch(`${base}/api/v1/languages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -85,7 +85,7 @@ export function useLanguages(options: UseLanguagesOptions = {}) {
     payload: Partial<{ name: string; code: string; flagUrl?: string }>
   ) => {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "";
-    const res = await fetch(`${base}/api/languages/${id}`, {
+    const res = await fetch(`${base}/api/v1/languages/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -100,7 +100,7 @@ export function useLanguages(options: UseLanguagesOptions = {}) {
 
   const deleteLanguage = async (id: string) => {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "";
-    const res = await fetch(`${base}/api/languages/${id}`, { method: "DELETE" });
+    const res = await fetch(`${base}/api/v1/languages/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const err = await res.json();
       throw new Error(err.error || "Failed to delete language");
@@ -136,7 +136,7 @@ export function useAllLanguages() {
       try {
         setLoading(true);
         const base = process.env.NEXT_PUBLIC_API_URL ?? "";
-        const res = await fetch(`${base}/api/languages/all`);
+        const res = await fetch(`${base}/api/v1/languages/all`);
         if (!res.ok) throw new Error("Failed to fetch languages");
         const data = await res.json();
         setLanguages(data.data);

@@ -14,16 +14,23 @@ export const CommandEmpty = ({ children }: { children: React.ReactNode }) => (
 export const CommandGroup = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col gap-1 py-1">{children}</div>
 );
-export interface CommandItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CommandItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value?: string;
   onSelect?: () => void;
 }
-export const CommandItem = ({ children, onSelect, className, ...props }: CommandItemProps) => (
-  <div
-    {...props}
-    onClick={onSelect}
-    className={cn("cursor-pointer rounded px-2 py-1 hover:bg-muted", className)}
-  >
-    {children}
-  </div>
-); 
+export const CommandItem = ({ children, onSelect, className, value, ...rest }: CommandItemProps) => {
+  return (
+    <button
+      type="button"
+      data-value={value}
+      onClick={onSelect}
+      className={cn(
+        "text-left w-full cursor-pointer rounded px-2 py-1 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring",
+        className
+      )}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+}; 

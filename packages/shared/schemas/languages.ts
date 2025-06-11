@@ -14,8 +14,8 @@ export const createLanguageSchema = z.object({
 export const updateLanguageSchema = createLanguageSchema.partial();
 
 export const getLanguagesSchema = z.object({
-  page: z.string().optional().default("1"),
-  limit: z.string().optional().default("10"),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).default(10),
   search: z.string().optional(),
   sortBy: z.enum(["name", "code", "createdAt"]).default("name"),
   sortOrder: z.enum(["asc", "desc"]).default("asc"),

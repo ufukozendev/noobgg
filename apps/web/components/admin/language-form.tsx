@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Language } from "@repo/shared";
+import { toast } from "sonner";
 
 interface Props {
   language?: Language;
@@ -44,11 +45,17 @@ export function LanguageForm({ language, onSubmit, onCancel, isLoading }: Props)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    await onSubmit({
-      name: formData.name.trim(),
-      code: formData.code.trim().toLowerCase(),
-      flagUrl: formData.flagUrl.trim() || undefined,
-    });
+    try {
+      await onSubmit({
+        name: formData.name.trim(),
+        code: formData.code.trim().toLowerCase(),
+        flagUrl: formData.flagUrl.trim() || undefined,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Bir hata oluştu";
+      toast.error(message);
+      // Optionally rethrow if upstream handlers need it
+    }
   };
 
   return (

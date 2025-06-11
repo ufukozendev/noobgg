@@ -1,8 +1,8 @@
 "use client";
 import * as React from "react";
 export interface PopoverProps {
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
+  open?: boolean;
+  onOpenChange?: (v: boolean) => void;
   children: React.ReactNode;
 }
 export function Popover({ children }: PopoverProps) {
