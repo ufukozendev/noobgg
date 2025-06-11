@@ -54,6 +54,20 @@ describe('Platforms Controller', () => {
   beforeEach(() => {
     mockJson.mockClear();
     mockReqJson.mockClear();
+
+    // Reset db spies to a clean baseline to prevent cross-test bleed
+    (db.select as any).mockReset().mockReturnValue(createQueryBuilderMock());
+    (db.insert as any).mockReset().mockReturnValue({
+      values: mock().mockReturnValue({ returning: mock() }),
+    });
+    (db.update as any).mockReset().mockReturnValue({
+      set: mock().mockReturnValue({
+        where: mock().mockReturnValue({ returning: mock() }),
+      }),
+    });
+    (db.delete as any).mockReset().mockReturnValue({
+      where: mock().mockReturnValue({ returning: mock() }),
+    });
   });
 
   describe('getAllPlatformsController', () => {
