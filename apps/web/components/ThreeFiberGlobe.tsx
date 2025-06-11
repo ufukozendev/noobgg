@@ -1240,8 +1240,14 @@ export default function OptimizedGamingGlobe() {
       </div>
       
       {/* WebGL Status Indicator - Bottom right on desktop, centered on mobile */}
-      <div className={`absolute bottom-4 ${isMobile ? 'left-1/2 transform -translate-x-1/2' : 'right-4 left-auto transform-none'} flex items-center gap-2 bg-black/70 backdrop-blur-md rounded-lg px-3 py-1.5 sm:px-3 sm:py-2 border border-purple-500/30 shadow-md`}
-           style={{ touchAction: 'pan-y' }}>
+      <div
+        className={`absolute bottom-4 ${
+          isMobile
+            ? 'left-1/2 transform -translate-x-1/2'
+            : 'right-4 left-auto transform-none'
+        } flex items-center gap-2 bg-black/70 backdrop-blur-md rounded-lg px-3 py-1.5 sm:px-3 sm:py-2 border border-purple-500/30 shadow-md z-30`}
+        style={{ touchAction: 'pan-y' }}
+      >
         <div className={`w-2 h-2 rounded-full ${isContextLost ? 'bg-yellow-400 animate-pulse' : webglError ? 'bg-red-400' : 'bg-green-400 animate-pulse'}`}></div>
         <span className="text-green-400 text-xs font-medium">
           {isContextLost ? 'Restoring...' : webglError ? 'Error' : 'WebGL Active'}
