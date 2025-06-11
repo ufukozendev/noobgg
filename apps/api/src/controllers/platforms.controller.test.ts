@@ -1,5 +1,34 @@
 import { describe, it, expect, mock, beforeEach } from 'bun:test';
 import { Context } from 'hono';
+
+// Helper function for query builder mock
+function createQueryBuilderMock() {
+  return {
+    from: mock().mockReturnThis(),
+    where: mock().mockReturnThis(),
+    returning: mock(),
+  };
+}
+
+// Mock the db module BEFORE importing anything that depends on it
+mock.module('../db', () => ({
+  db: {
+    select: mock().mockReturnValue(createQueryBuilderMock()),
+    insert: mock().mockReturnValue({
+      values: mock().mockReturnValue({ returning: mock() })
+    }),
+    update: mock().mockReturnValue({
+      set: mock().mockReturnValue({
+        where: mock().mockReturnValue({ returning: mock() })
+      })
+    }),
+    delete: mock().mockReturnValue({
+      where: mock().mockReturnValue({ returning: mock() })
+    }),
+  }
+}));
+
+// Import AFTER mocking
 import { db } from '../db';
 import {
   getAllPlatformsController,
@@ -8,32 +37,6 @@ import {
   updatePlatformController,
   deletePlatformController,
 } from './v1/platforms.controller';
-
-// Mock the db module
-mock.module('../db', () => ({
-  db: {
-    select: mock().mockReturnThis(),
-    from: mock().mockReturnThis(),
-    where: mock().mockReturnThis(),
-    insert: mock().mockImplementation(() => ({
-      values: mock().mockImplementation(() => ({
-        returning: mock()
-      }))
-    })),
-    update: mock().mockImplementation(() => ({
-      set: mock().mockImplementation(() => ({
-        where: mock().mockImplementation(() => ({
-          returning: mock()
-        }))
-      }))
-    })),
-    delete: mock().mockImplementation(() => ({
-      where: mock().mockImplementation(() => ({
-        returning: mock()
-      }))
-    })),
-  }
-}));
 
 // Mock Hono's context
 const mockJson = mock();
