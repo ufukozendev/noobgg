@@ -2948,7 +2948,7 @@ paths:
           description: User profile not found
         '500':
           description: Internal server error
-    put:
+    patch:
       tags:
         - UserProfiles
       summary: Update a user profile
