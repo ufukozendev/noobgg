@@ -1,23 +1,38 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { auth } from "./auth";
 
-export function middleware(request: NextRequest) {
-  // Cookie'den locale'i kontrol et
-  const locale = request.cookies.get("NEXT_LOCALE")?.value || "tr";
+const protectedRoutes = ["/dashboard"];
 
-  // Response'u oluştur
+export default auth((req) => {
+  const locale = req.cookies.get("NEXT_LOCALE")?.value || "tr";
+  const { pathname } = req.nextUrl;
+
+  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+    if (!req.auth && !req.nextUrl.pathname.startsWith("/login")) {
+      const newUrl = new URL("/login", req.nextUrl);
+      const redirectResponse = NextResponse.redirect(newUrl);
+      redirectResponse.cookies.set("NEXT_LOCALE", locale, {
+        maxAge: 60 * 60 * 24 * 365,
+        path: "/",
+      });
+
+      return redirectResponse;
+    }
+  }
+
   const response = NextResponse.next();
-
-  // Eğer cookie yoksa veya farklıysa, cookie'yi set et
-  if (!request.cookies.get("NEXT_LOCALE")) {
+  if (!req.cookies.get("NEXT_LOCALE")) {
     response.cookies.set("NEXT_LOCALE", locale, {
-      maxAge: 60 * 60 * 24 * 365, // 1 yıl
+      maxAge: 60 * 60 * 24 * 365,
       path: "/",
     });
   }
 
   return response;
-}
+});
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };

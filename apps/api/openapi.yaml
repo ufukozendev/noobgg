@@ -1,0 +1,3053 @@
+openapi: 3.0.3
+info:
+  title: NoobGG API
+  version: 1.0.0
+  description: API documentation for NoobGG endpoints
+security:
+  - bearerAuth: []
+servers:
+  - url: /api/v1
+tags:
+  - name: Distributors
+    description: Operations related to game distributors
+  - name: Events
+    description: Operations related to events and event management
+  - name: EventAttendees
+    description: Operations related to event attendees
+  - name: EventInvitations
+    description: Operations related to event invitations
+  - name: Games
+    description: Operations related to games
+  - name: Platforms
+    description: Operations related to platforms
+  - name: UserProfiles
+    description: Operations related to user profiles
+     ##TO BE IMPLEMENTED
+  # - name: GameDistributors
+  #   description: Operations related to game distributors
+  # - name: GameModes
+  #   description: Operations related to game modes
+  # - name: GamePlatforms
+  #   description: Operations related to game platforms
+  # - name: GameRanks
+  #   description: Operations related to game ranks
+  # - name: Languages
+  #   description: Operations related to languages
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    InvitationStatus:
+      type: string
+      description: "Invitation status enum."
+      enum:
+        - pending
+        - accepted
+        - declined
+      default: pending
+    EventType:
+      type: string
+      description: "Event type enum."
+      enum:
+        - meetup
+        - tournament
+        - other
+    LobbyTypeEnum:
+      type: string
+      enum:
+        - public
+        - private
+    Distributors:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: "Primary key, auto-generated identity."
+          example: 123
+        name:
+          type: string
+          maxLength: 255
+          description: "Distributor name."
+          example: "Acme Corp"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the distributor."
+          example: "Leading distributor in electronics."
+        website:
+          type: string
+          nullable: true
+          maxLength: 255
+          format: uri
+          description: "Website URL."
+          example: "https://acme.example.com"
+        logo:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "URL or path to distributor logo."
+          example: "https://acme.example.com/logo.png"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+      required:
+        - id
+        - name
+        - createdAt
+    CreateDistributor:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          description: "Distributor name."
+          example: "Acme Corp"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the distributor."
+          example: "Leading distributor in electronics."
+        website:
+          type: string
+          nullable: true
+          maxLength: 255
+          format: uri
+          description: "Website URL."
+          example: "https://acme.example.com"
+        logo:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "URL or path to distributor logo."
+          example: "https://acme.example.com/logo.png"
+      required:
+        - name
+    UpdateDistributor:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          description: "Distributor name."
+          example: "Acme Corp"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the distributor."
+          example: "Leading distributor in electronics."
+        website:
+          type: string
+          nullable: true
+          maxLength: 255
+          format: uri
+          description: "Website URL."
+          example: "https://acme.example.com"
+        logo:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "URL or path to distributor logo."
+    EventAttendees:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated identity."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        eventId:
+          type: string
+          format: int64
+          description: "Foreign key to events.id."
+          example: "9876543210987654321"
+        userProfileId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id."
+          example: "1122334455667788990"
+        joinedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the user joined the event."
+          example: "2025-06-11T14:00:00Z"
+      required:
+        - id
+        - createdAt
+        - eventId
+        - userProfileId
+        - joinedAt
+    CreateEventAttendee:
+      type: object
+      properties:
+        eventId:
+          type: string
+          format: int64
+          description: "Foreign key to events.id."
+          example: "9876543210987654321"
+        userProfileId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id."
+          example: "1122334455667788990"
+        joinedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the user joined the event."
+          example: "2025-06-11T14:00:00Z"
+      required:
+        - eventId
+        - userProfileId
+        - joinedAt
+    UpdateEventAttendee:
+      type: object
+      properties:
+        eventId:
+          type: string
+          format: int64
+          description: "Foreign key to events.id."
+          example: "9876543210987654321"
+        userProfileId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id."
+          example: "1122334455667788990"
+        joinedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the user joined the event."
+          example: "2025-06-11T14:00:00Z"
+    EventInvitations:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated identity."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        inviterId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id representing the inviter."
+          example: "1122334455667788990"
+        inviteeId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id representing the invitee."
+          example: "9988776655443322110"
+        eventId:
+          type: string
+          format: int64
+          description: "Foreign key to events.id."
+          example: "9876543210987654321"
+        sentAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the invitation was sent."
+          example: "2025-06-11T14:00:00Z"
+        respondedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Timestamp when the invitation was responded to."
+          example: "2025-06-12T09:00:00Z"
+        status:
+          $ref: "#/components/schemas/InvitationStatus"
+      required:
+        - id
+        - createdAt
+        - inviterId
+        - inviteeId
+        - eventId
+        - sentAt
+        - status
+    CreateEventInvitation:
+      type: object
+      properties:
+        inviterId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id representing the inviter."
+          example: "1122334455667788990"
+        inviteeId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id representing the invitee."
+          example: "9988776655443322110"
+        eventId:
+          type: string
+          format: int64
+          description: "Foreign key to events.id."
+          example: "9876543210987654321"
+        sentAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the invitation was sent."
+          example: "2025-06-11T14:00:00Z"
+        status:
+          $ref: "#/components/schemas/InvitationStatus"
+      required:
+        - inviterId
+        - inviteeId
+        - eventId
+        - sentAt
+        - status
+    UpdateEventInvitation:
+      type: object
+      properties:
+        inviterId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id representing the inviter."
+          example: "1122334455667788990"
+        inviteeId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id representing the invitee."
+          example: "9988776655443322110"
+        eventId:
+          type: string
+          format: int64
+          description: "Foreign key to events.id."
+          example: "9876543210987654321"
+        sentAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the invitation was sent."
+          example: "2025-06-11T14:00:00Z"
+        respondedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Timestamp when the invitation was responded to."
+          example: "2025-06-12T09:00:00Z"
+        status:
+          $ref: "#/components/schemas/InvitationStatus"
+    Events:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated identity."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        title:
+          type: string
+          maxLength: 150
+          description: "Event title."
+          example: "Open Source Meetup"
+        description:
+          type: string
+          nullable: true
+          description: "Event description."
+          example: "A meetup for open source enthusiasts."
+        startTime:
+          type: string
+          format: date-time
+          description: "Event start time with timezone."
+          example: "2025-07-01T18:00:00Z"
+        endTime:
+          type: string
+          format: date-time
+          description: "Event end time with timezone."
+          example: "2025-07-01T21:00:00Z"
+        place:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "Physical place of the event."
+          example: "Community Center, Room 5"
+        isOnline:
+          type: boolean
+          description: "Whether the event is online."
+          default: false
+        imageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of event image."
+          example: "https://example.com/event.png"
+        isOfficial:
+          type: boolean
+          description: "Whether the event is official."
+          default: false
+        creatorId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id for event creator."
+          example: "9876543210987654321"
+        minAgeRestriction:
+          type: integer
+          nullable: true
+          description: "Minimum age restriction for the event."
+          example: 18
+        attendeesCount:
+          type: integer
+          description: "Number of attendees."
+          default: 0
+          example: 25
+        languageId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for language."
+          example: "1234567890123456789"
+        countryId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for country."
+          example: "1234567890123456789"
+        cityId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for city."
+          example: "1234567890123456789"
+        eventType:
+          $ref: "#/components/schemas/EventType"
+      required:
+        - id
+        - createdAt
+        - title
+        - startTime
+        - endTime
+        - isOnline
+        - isOfficial
+        - creatorId
+        - attendeesCount
+        - eventType
+    CreateEvent:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 150
+          description: "Event title."
+          example: "Open Source Meetup"
+        description:
+          type: string
+          nullable: true
+          description: "Event description."
+          example: "A meetup for open source enthusiasts."
+        startTime:
+          type: string
+          format: date-time
+          description: "Event start time with timezone."
+          example: "2025-07-01T18:00:00Z"
+        endTime:
+          type: string
+          format: date-time
+          description: "Event end time with timezone."
+          example: "2025-07-01T21:00:00Z"
+        place:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "Physical place of the event."
+          example: "Community Center, Room 5"
+        isOnline:
+          type: boolean
+          description: "Whether the event is online."
+          default: false
+        imageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of event image."
+          example: "https://example.com/event.png"
+        isOfficial:
+          type: boolean
+          description: "Whether the event is official."
+          default: false
+        creatorId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id for event creator."
+          example: "9876543210987654321"
+        minAgeRestriction:
+          type: integer
+          nullable: true
+          description: "Minimum age restriction for the event."
+          example: 18
+        languageId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for language."
+          example: "1234567890123456789"
+        countryId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for country."
+          example: "1234567890123456789"
+        cityId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for city."
+          example: "1234567890123456789"
+        eventType:
+          $ref: "#/components/schemas/EventType"
+      required:
+        - title
+        - startTime
+        - endTime
+        - isOnline
+        - isOfficial
+        - creatorId
+        - eventType
+    UpdateEvent:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 150
+          description: "Event title."
+          example: "Open Source Meetup"
+        description:
+          type: string
+          nullable: true
+          description: "Event description."
+          example: "A meetup for open source enthusiasts."
+        startTime:
+          type: string
+          format: date-time
+          description: "Event start time with timezone."
+          example: "2025-07-01T18:00:00Z"
+        endTime:
+          type: string
+          format: date-time
+          description: "Event end time with timezone."
+          example: "2025-07-01T21:00:00Z"
+        place:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "Physical place of the event."
+          example: "Community Center, Room 5"
+        isOnline:
+          type: boolean
+          description: "Whether the event is online."
+        imageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of event image."
+          example: "https://example.com/event.png"
+        isOfficial:
+          type: boolean
+          description: "Whether the event is official."
+        creatorId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles.id for event creator."
+          example: "9876543210987654321"
+        minAgeRestriction:
+          type: integer
+          nullable: true
+          description: "Minimum age restriction for the event."
+          example: 18
+        attendeesCount:
+          type: integer
+          description: "Number of attendees."
+          example: 25
+        languageId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for language."
+          example: "1234567890123456789"
+        countryId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for country."
+          example: "1234567890123456789"
+        cityId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key for city."
+          example: "1234567890123456789"
+        eventType:
+          $ref: "#/components/schemas/EventType"
+    GameDistributors:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated identity."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+        distributorId:
+          type: string
+          format: int64
+          description: "Foreign key to distributorsTable.id."
+          example: "1234567890123456789"
+      required:
+        - id
+        - createdAt
+        - gameId
+        - distributorId
+    CreateGameDistributor:
+      type: object
+      properties:
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+        distributorId:
+          type: string
+          format: int64
+          description: "Foreign key to distributorsTable.id."
+          example: "1234567890123456789"
+      required:
+        - gameId
+        - distributorId
+    UpdateGameDistributor:
+      type: object
+      properties:
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+        distributorId:
+          type: string
+          format: int64
+          description: "Foreign key to distributorsTable.id."
+          example: "1234567890123456789"
+    GameModes:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated identity."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+
+        name:
+          type: string
+          maxLength: 150
+          description: "Name of the game mode."
+          example: "Capture the Flag"
+
+        description:
+          type: string
+          nullable: true
+          description: "Description of the game mode."
+          example: "A competitive team-based game mode."
+
+        order:
+          type: integer
+          description: "Order number for sorting."
+          example: 1
+
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+
+        minTeamSize:
+          type: integer
+          description: "Minimum team size allowed."
+          example: 2
+
+        maxTeamSize:
+          type: integer
+          description: "Maximum team size allowed."
+          example: 5
+
+      required:
+        - id
+        - createdAt
+        - name
+        - order
+        - gameId
+        - minTeamSize
+        - maxTeamSize
+    CreateGameMode:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 150
+          description: "Name of the game mode."
+          example: "Capture the Flag"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the game mode."
+          example: "A competitive team-based game mode."
+        order:
+          type: integer
+          description: "Order number for sorting."
+          example: 1
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+        minTeamSize:
+          type: integer
+          description: "Minimum team size allowed."
+          example: 2
+        maxTeamSize:
+          type: integer
+          description: "Maximum team size allowed."
+          example: 5
+      required:
+        - name
+        - order
+        - gameId
+        - minTeamSize
+        - maxTeamSize
+    UpdateGameMode:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 150
+          description: "Name of the game mode."
+          example: "Capture the Flag"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the game mode."
+          example: "A competitive team-based game mode."
+        order:
+          type: integer
+          description: "Order number for sorting."
+          example: 1
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+        minTeamSize:
+          type: integer
+          description: "Minimum team size allowed."
+          example: 2
+        maxTeamSize:
+          type: integer
+          description: "Maximum team size allowed."
+          example: 5
+    GamePlatforms:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated identity."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+
+        platformId:
+          type: string
+          format: int64
+          description: "Foreign key to platforms.id."
+          example: "9876543210987654321"
+
+      required:
+        - id
+        - createdAt
+        - gameId
+        - platformId
+    CreateGamePlatform:
+      type: object
+      properties:
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+        platformId:
+          type: string
+          format: int64
+          description: "Foreign key to platforms.id."
+          example: "9876543210987654321"
+      required:
+        - gameId
+        - platformId
+    UpdateGamePlatform:
+      type: object
+      properties:
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to gamesTable.id."
+          example: "9876543210987654321"
+        platformId:
+          type: string
+          format: int64
+          description: "Foreign key to platforms.id."
+          example: "9876543210987654321"
+    GameRanks:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: "Primary key, auto-increment integer."
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+
+        name:
+          type: string
+          maxLength: 100
+          description: "Rank name."
+          example: "Gold"
+
+        image:
+          type: string
+          maxLength: 255
+          description: "URL of the rank image."
+          example: "https://example.com/images/gold_rank.png"
+
+        order:
+          type: integer
+          format: int32
+          description: "Order of the rank."
+          example: 1
+
+        gameId:
+          type: integer
+          format: int32
+          description: "Foreign key to gamesTable.id."
+          example: 42
+
+      required:
+        - id
+        - createdAt
+        - name
+        - image
+        - order
+        - gameId
+    CreateGameRank:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: "Rank name."
+          example: "Gold"
+        image:
+          type: string
+          maxLength: 255
+          description: "URL of the rank image."
+          example: "https://example.com/images/gold_rank.png"
+        order:
+          type: integer
+          format: int32
+          description: "Order of the rank."
+          example: 1
+        gameId:
+          type: integer
+          format: int32
+          description: "Foreign key to gamesTable.id."
+          example: 42
+      required:
+        - name
+        - image
+        - order
+        - gameId
+    UpdateGameRank:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: "Rank name."
+          example: "Gold"
+        image:
+          type: string
+          maxLength: 255
+          description: "URL of the rank image."
+          example: "https://example.com/images/gold_rank.png"
+        order:
+          type: integer
+          format: int32
+          description: "Order of the rank."
+          example: 1
+        gameId:
+          type: integer
+          format: int32
+          description: "Foreign key to gamesTable.id."
+          example: 42
+    Games:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: "Primary key, auto-increment integer."
+          example: 1
+        name:
+          type: string
+          maxLength: 150
+          description: "Game name."
+          example: "Super Game"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the game."
+          example: "A cool adventure game."
+        logo:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of the game's logo."
+          example: "https://example.com/logo.png"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Record creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Record last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+
+      required:
+        - id
+        - name
+        - createdAt
+    CreateGame:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 150
+          description: "Game name."
+          example: "Super Game"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the game."
+          example: "A cool adventure game."
+        logo:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of the game's logo."
+          example: "https://example.com/logo.png"
+      required:
+        - name
+    UpdateGame:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 150
+          description: "Game name."
+          example: "Super Game"
+        description:
+          type: string
+          nullable: true
+          description: "Description of the game."
+          example: "A cool adventure game."
+        logo:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of the game's logo."
+          example: "https://example.com/logo.png"
+    Languages:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        name:
+          type: string
+          maxLength: 100
+          description: "Language name."
+          example: "English"
+        code:
+          type: string
+          maxLength: 10
+          description: "Language code."
+          example: "en"
+        flagUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of the language flag image."
+          example: "https://example.com/flags/en.png"
+      required:
+        - id
+        - createdAt
+        - name
+        - code
+    CreateLanguage:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: "Language name."
+          example: "English"
+        code:
+          type: string
+          maxLength: 10
+          description: "Language code."
+          example: "en"
+        flagUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of the language flag image."
+          example: "https://example.com/flags/en.png"
+      required:
+        - name
+        - code
+    UpdateLanguage:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: "Language name."
+          example: "English"
+        code:
+          type: string
+          maxLength: 10
+          description: "Language code."
+          example: "en"
+        flagUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "URL of the language flag image."
+          example: "https://example.com/flags/en.png"
+    Lobbies:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to games table."
+          example: "101"
+        regionId:
+          type: string
+          format: int64
+          description: "Region identifier."
+          example: "1"
+        modeId:
+          type: string
+          format: int64
+          description: "Foreign key to game modes."
+          example: "5"
+        minTeamSize:
+          type: integer
+          description: "Minimum team size allowed in lobby."
+          example: 2
+        maxTeamSize:
+          type: integer
+          description: "Maximum team size allowed in lobby."
+          example: 10
+        type:
+          $ref: '#/components/schemas/LobbyTypeEnum'
+          description: "Lobby type, public or private."
+          example: "public"
+        minRankId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key to minimum game rank."
+          example: "3"
+        maxRankId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key to maximum game rank."
+          example: "7"
+        isMicRequired:
+          type: boolean
+          description: "Whether microphone is required."
+          example: false
+        creatorId:
+          type: string
+          format: int64
+          description: "User who created the lobby."
+          example: "9001"
+        ownerId:
+          type: string
+          format: int64
+          description: "Current owner of the lobby."
+          example: "9001"
+        note:
+          type: string
+          nullable: true
+          description: "Additional notes."
+          example: "Friendly players only."
+        discordLink:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "Discord invitation link."
+          example: "https://discord.gg/example"
+        rowVersion:
+          type: string
+          description: "Row version for concurrency control."
+          example: "0"
+      required:
+        - id
+        - createdAt
+        - gameId
+        - regionId
+        - modeId
+        - minTeamSize
+        - maxTeamSize
+        - type
+        - isMicRequired
+        - creatorId
+        - ownerId
+        - rowVersion
+    CreateLobby:
+      type: object
+      properties:
+        gameId:
+          type: string
+          format: int64
+          description: "Foreign key to games table."
+          example: "101"
+        regionId:
+          type: string
+          format: int64
+          description: "Region identifier."
+          example: "1"
+        modeId:
+          type: string
+          format: int64
+          description: "Foreign key to game modes."
+          example: "5"
+        minTeamSize:
+          type: integer
+          description: "Minimum team size allowed in lobby."
+          example: 2
+        maxTeamSize:
+          type: integer
+          description: "Maximum team size allowed in lobby."
+          example: 10
+        type:
+          $ref: '#/components/schemas/LobbyTypeEnum'
+          description: "Lobby type, public or private."
+          example: "public"
+        minRankId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key to minimum game rank."
+          example: "3"
+        maxRankId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key to maximum game rank."
+          example: "7"
+        isMicRequired:
+          type: boolean
+          description: "Whether microphone is required."
+          example: false
+        creatorId:
+          type: string
+          format: int64
+          description: "User who created the lobby."
+          example: "9001"
+        ownerId:
+          type: string
+          format: int64
+          description: "Current owner of the lobby."
+          example: "9001"
+        note:
+          type: string
+          nullable: true
+          description: "Additional notes."
+          example: "Friendly players only."
+        discordLink:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "Discord invitation link."
+          example: "https://discord.gg/example"
+      required:
+        - gameId
+        - regionId
+        - modeId
+        - minTeamSize
+        - maxTeamSize
+        - type
+        - isMicRequired
+        - creatorId
+        - ownerId
+    UpdateLobby:
+      type: object
+      properties:
+        regionId:
+          type: string
+          format: int64
+          description: "Region identifier."
+          example: "1"
+        modeId:
+          type: string
+          format: int64
+          description: "Foreign key to game modes."
+          example: "5"
+        minTeamSize:
+          type: integer
+          description: "Minimum team size allowed in lobby."
+          example: 2
+        maxTeamSize:
+          type: integer
+          description: "Maximum team size allowed in lobby."
+          example: 10
+        type:
+          $ref: '#/components/schemas/LobbyTypeEnum'
+          description: "Lobby type, public or private."
+          example: "public"
+        minRankId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key to minimum game rank."
+          example: "3"
+        maxRankId:
+          type: string
+          format: int64
+          nullable: true
+          description: "Foreign key to maximum game rank."
+          example: "7"
+        isMicRequired:
+          type: boolean
+          description: "Whether microphone is required."
+          example: false
+        ownerId:
+          type: string
+          format: int64
+          description: "Current owner of the lobby."
+          example: "9001"
+        note:
+          type: string
+          nullable: true
+          description: "Additional notes."
+          example: "Friendly players only."
+        discordLink:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "Discord invitation link."
+          example: "https://discord.gg/example"
+        rowVersion:
+          type: string
+          description: "Row version for concurrency control."
+          example: "0"
+      required: []
+    LobbyLanguages:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        lobbyId:
+          type: string
+          format: int64
+          description: "Foreign key to lobbies table."
+          example: "101"
+        languageId:
+          type: string
+          format: int64
+          description: "Foreign key to languages table."
+          example: "10"
+      required:
+        - id
+        - createdAt
+        - lobbyId
+        - languageId
+    CreateLobbyLanguage:
+      type: object
+      properties:
+        lobbyId:
+          type: string
+          format: int64
+          description: "Foreign key to lobbies table."
+          example: "101"
+        languageId:
+          type: string
+          format: int64
+          description: "Foreign key to languages table."
+          example: "10"
+      required:
+        - lobbyId
+        - languageId
+    UpdateLobbyLanguage:
+      type: object
+      properties:
+        lobbyId:
+          type: string
+          format: int64
+          description: "Foreign key to lobbies table."
+          example: "101"
+        languageId:
+          type: string
+          format: int64
+          description: "Foreign key to languages table."
+          example: "10"
+    LobbyMembers:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated."
+          example: "9876543210987654321"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Creation timestamp with timezone."
+          example: "2025-06-11T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Last update timestamp with timezone."
+          example: "2025-06-12T08:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        lobbyId:
+          type: string
+          format: int64
+          description: "Foreign key to lobbies table."
+          example: "101"
+        memberId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles table."
+          example: "202"
+        isAdmin:
+          type: boolean
+          description: "Indicates if the member is an admin."
+          example: false
+      required:
+        - id
+        - createdAt
+        - lobbyId
+        - memberId
+        - isAdmin
+    CreateLobbyMember:
+      type: object
+      properties:
+        lobbyId:
+          type: string
+          format: int64
+          description: "Foreign key to lobbies table."
+          example: "101"
+        memberId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles table."
+          example: "202"
+        isAdmin:
+          type: boolean
+          description: "Indicates if the member is an admin."
+          example: false
+      required:
+        - lobbyId
+        - memberId
+    UpdateLobbyMember:
+      type: object
+      properties:
+        lobbyId:
+          type: string
+          format: int64
+          description: "Foreign key to lobbies table."
+          example: "101"
+        memberId:
+          type: string
+          format: int64
+          description: "Foreign key to userProfiles table."
+          example: "202"
+        isAdmin:
+          type: boolean
+          description: "Indicates if the member is an admin."
+          example: false
+    Platforms:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated."
+          example: "1234567890123456789"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Creation timestamp with timezone."
+          example: "2025-06-11T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Last update timestamp with timezone."
+          example: "2025-06-12T08:30:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        name:
+          type: string
+          maxLength: 100
+          description: "Platform name."
+          example: "PlayStation 5"
+      required:
+        - id
+        - createdAt
+        - name
+    CreatePlatform:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: "Platform name."
+          example: "PlayStation 5"
+      required:
+        - name
+    UpdatePlatform:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: "Platform name."
+          example: "PlayStation 5"
+      required: []
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: "Primary key, bigint auto-generated."
+          example: "9876543210987654321"
+        userKeycloakId:
+          type: string
+          maxLength: 100
+          description: "Unique user Keycloak ID."
+          example: "user-1234-5678-9012"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Creation timestamp with timezone."
+          example: "2025-06-11T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Last update timestamp with timezone."
+          example: "2025-06-12T08:30:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Soft delete timestamp with timezone."
+          example: null
+        birthDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: "User's birth date with timezone."
+          example: "1990-05-15T00:00:00Z"
+        userName:
+          type: string
+          maxLength: 50
+          description: "Unique username."
+          example: "gamer123"
+        firstName:
+          type: string
+          maxLength: 60
+          nullable: true
+          example: "John"
+        lastName:
+          type: string
+          maxLength: 60
+          nullable: true
+          example: "Doe"
+        profileImageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "https://example.com/images/profile.jpg"
+        bannerImageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "https://example.com/images/banner.jpg"
+        bio:
+          type: string
+          nullable: true
+          description: "User biography or description."
+          example: "Pro gamer and streamer."
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+            - unknown
+          default: unknown
+          example: male
+        regionType:
+          type: string
+          enum:
+            - north_america
+            - south_america
+            - europe
+            - asia
+            - oceania
+            - middle_east
+            - africa
+            - russia_cis
+            - unknown
+          default: unknown
+          example: europe
+        lastOnline:
+          type: string
+          format: date-time
+          description: "Last online timestamp with timezone."
+          example: "2025-06-11T14:00:00Z"
+        rowVersion:
+          type: string
+          description: "Optimistic concurrency control version."
+          example: "0"
+      required:
+        - id
+        - userKeycloakId
+        - createdAt
+        - userName
+        - gender
+        - regionType
+        - lastOnline
+        - rowVersion
+    CreateUserProfile:
+      type: object
+      properties:
+        userKeycloakId:
+          type: string
+          maxLength: 100
+          description: "Unique user Keycloak ID."
+          example: "user-1234-5678-9012"
+        birthDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: "User's birth date with timezone."
+          example: "1990-05-15T00:00:00Z"
+        userName:
+          type: string
+          maxLength: 50
+          description: "Unique username."
+          example: "gamer123"
+        firstName:
+          type: string
+          maxLength: 60
+          nullable: true
+          example: "John"
+        lastName:
+          type: string
+          maxLength: 60
+          nullable: true
+          example: "Doe"
+        profileImageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "https://example.com/images/profile.jpg"
+        bannerImageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "https://example.com/images/banner.jpg"
+        bio:
+          type: string
+          nullable: true
+          description: "User biography or description."
+          example: "Pro gamer and streamer."
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+            - unknown
+          default: unknown
+          example: male
+        regionType:
+          type: string
+          enum:
+            - north_america
+            - south_america
+            - europe
+            - asia
+            - oceania
+            - middle_east
+            - africa
+            - russia_cis
+            - unknown
+          default: unknown
+          example: europe
+        lastOnline:
+          type: string
+          format: date-time
+          description: "Last online timestamp with timezone."
+          example: "2025-06-11T14:00:00Z"
+      required:
+        - userKeycloakId
+        - userName
+        - gender
+        - regionType
+        - lastOnline
+    UpdateUserProfile:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: "User's birth date with timezone."
+          example: "1990-05-15T00:00:00Z"
+        userName:
+          type: string
+          maxLength: 50
+          description: "Unique username."
+          example: "gamer123"
+        firstName:
+          type: string
+          maxLength: 60
+          nullable: true
+          example: "John"
+        lastName:
+          type: string
+          maxLength: 60
+          nullable: true
+          example: "Doe"
+        profileImageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "https://example.com/images/profile.jpg"
+        bannerImageUrl:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "https://example.com/images/banner.jpg"
+        bio:
+          type: string
+          nullable: true
+          description: "User biography or description."
+          example: "Pro gamer and streamer."
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+            - unknown
+          example: male
+        regionType:
+          type: string
+          enum:
+            - north_america
+            - south_america
+            - europe
+            - asia
+            - oceania
+            - middle_east
+            - africa
+            - russia_cis
+            - unknown
+          example: europe
+        lastOnline:
+          type: string
+          format: date-time
+          description: "Last online timestamp with timezone."
+          example: "2025-06-11T14:00:00Z"
+      required: []
+
+paths:
+  /distributors:
+    get:
+      tags:
+        - Distributors
+      summary: Get all distributors
+      operationId: getAllDistributors
+      tags:
+        - Distributors
+      responses:
+        '200':
+          description: A list of distributors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Distributors'
+        '500':
+          description: Internal server error
+
+    post:
+      tags:
+        - Distributors
+      summary: Create a new distributor
+      operationId: createDistributor
+      tags:
+        - Distributors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDistributor'
+      responses:
+        '201':
+          description: Distributor created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Distributors'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /distributors/{id}:
+    get:
+      tags:
+        - Distributors
+      summary: Get distributor by ID
+      operationId: getDistributorById
+      tags:
+        - Distributors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+      responses:
+        '200':
+          description: Distributor found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Distributors'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Distributor not found
+        '500':
+          description: Internal server error
+
+    put:
+      tags:
+        - Distributors
+      summary: Update a distributor
+      operationId: updateDistributor
+      tags:
+        - Distributors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDistributor'
+      responses:
+        '200':
+          description: Distributor updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Distributors'
+        '400':
+          description: Invalid input or ID
+        '404':
+          description: Distributor not found
+        '500':
+          description: Internal server error
+
+    delete:
+      tags:
+        - Distributors
+      summary: Delete a distributor
+      operationId: deleteDistributor
+      tags:
+        - Distributors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+      responses:
+        '200':
+          description: Distributor deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Distributors'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Distributor not found
+        '500':
+          description: Internal server error
+    /event-attendees:
+    get:
+      tags:
+        - EventAttendees
+      summary: EventAttendee - Get all event attendees
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of records per page
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+    post:
+      tags:
+        - EventAttendees
+      summary: EventAttendee - Create a new event attendee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventAttendee'
+      responses:
+        '201':
+          description: Created successfully
+        '400':
+          description: Invalid input
+        '409':
+          description: Duplicate attendee
+
+  /events:
+    get:
+      tags:
+        - Events
+      summary: Get all events with filtering and pagination
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: eventType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/EventType'
+        - name: isOnline
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: isOfficial
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: creatorId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: countryId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: cityId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [startTime, attendeesCount, createdAt]
+        - name: sortOrder
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Events'
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+                      totalPages:
+                        type: integer
+                  filters:
+                    type: object
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - Events
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEvent'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Events'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /events/{id}:
+    get:
+      tags:
+        - Events
+      summary: Get event by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Events'
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - Events
+      summary: Update event by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEvent'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Events'
+        '400':
+          description: Invalid input
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Events
+      summary: Delete (soft) event by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /events/upcoming:
+    get:
+      tags:
+        - Events
+      summary: Get upcoming events
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: eventType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/EventType'
+        - name: isOnline
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Events'
+        '500':
+          description: Internal server error
+  /events/popular:
+    get:
+      tags:
+        - Events
+      summary: Get popular events
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: timeframe
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [week, month, all]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Events'
+        '500':
+          description: Internal server error
+  /events/{id}/attendees-count:
+    put:
+      tags:
+        - Events
+      summary: Update attendees count for event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                increment:
+                  type: boolean
+                  description: 'If true, increment; if false, decrement.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Events'
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /event-attendees/{id}:
+    get:
+      tags:
+        - EventAttendees
+      summary: EventAttendee - Get attendee by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Attendee found
+        '400':
+          description: Invalid ID
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - EventAttendees
+      summary: EventAttendee - Delete attendee (soft delete)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Attendee deleted
+        '400':
+          description: Invalid ID
+        '404':
+          description: Not found
+  /event-attendees/event/{eventId}:
+    get:
+      tags:
+        - EventAttendees
+      summary: EventAttendee - Get attendees by event ID
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Invalid event ID
+        '500':
+          description: Server error
+  
+  /event-invitations:
+    get:
+      tags:
+        - EventInvitations
+      summary: Get all event invitations
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/InvitationStatus'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventInvitations'
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+                      totalPages:
+                        type: integer
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - EventInvitations
+      summary: Create a new event invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventInvitation'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventInvitations'
+        '400':
+          description: Invalid input
+        '409':
+          description: Invitation already exists
+        '500':
+          description: Internal server error
+  /event-invitations/{id}:
+    get:
+      tags:
+        - EventInvitations
+      summary: Get event invitation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventInvitations'
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - EventInvitations
+      summary: Delete (soft) event invitation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /event-invitations/{id}/respond:
+    put:
+      tags:
+        - EventInvitations
+      summary: Respond to an event invitation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  $ref: '#/components/schemas/InvitationStatus'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventInvitations'
+        '400':
+          description: Invalid status
+        '404':
+          description: Not found
+        '409':
+          description: Already responded
+        '500':
+          description: Internal server error
+  /event-invitations/users/{userId}/invitations:
+    get:
+      tags:
+        - EventInvitations
+      summary: Get invitations for a user (sent/received)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [sent, received]
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/InvitationStatus'
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventInvitations'
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+                      totalPages:
+                        type: integer
+        '500':
+          description: Internal server error
+  /event-invitations/events/{eventId}/invitations:
+    get:
+      tags:
+        - EventInvitations
+      summary: Get invitations for an event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/InvitationStatus'
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventInvitations'
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+                      totalPages:
+                        type: integer
+        '500':
+          description: Internal server error
+  
+  /games:
+    get:
+      tags:
+        - Games
+      summary: Get all games
+      operationId: getAllGames
+      responses:
+        '200':
+          description: A list of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Games'
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - Games
+      summary: Create a new game
+      operationId: createGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGame'
+      responses:
+        '201':
+          description: Game created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Games'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /games/{id}:
+    get:
+      tags:
+        - Games
+      summary: Get game by ID
+      operationId: getGameById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Game found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Games'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - Games
+      summary: Update a game
+      operationId: updateGame
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGame'
+      responses:
+        '200':
+          description: Game updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Games'
+        '400':
+          description: Invalid input or ID
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Games
+      summary: Delete a game
+      operationId: deleteGame
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Game deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Games'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+
+  /platforms:
+    get:
+      tags:
+        - Platforms
+      summary: Get all platforms
+      operationId: getAllPlatforms
+      responses:
+        '200':
+          description: A list of platforms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Platforms'
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - Platforms
+      summary: Create a new platform
+      operationId: createPlatform
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePlatform'
+      responses:
+        '201':
+          description: Platform created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Platforms'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /platforms/{id}:
+    get:
+      tags:
+        - Platforms
+      summary: Get platform by ID
+      operationId: getPlatformById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        '200':
+          description: Platform found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Platforms'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Platform not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - Platforms
+      summary: Update a platform
+      operationId: updatePlatform
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePlatform'
+      responses:
+        '200':
+          description: Platform updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Platforms'
+        '400':
+          description: Invalid input or ID
+        '404':
+          description: Platform not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Platforms
+      summary: Delete a platform
+      operationId: deletePlatform
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        '200':
+          description: Platform deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Platforms'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Platform not found
+        '500':
+          description: Internal server error
+
+  /user-profiles/{id}:
+    get:
+      tags:
+        - UserProfiles
+      summary: Get user profile by ID
+      operationId: getUserProfile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        '200':
+          description: User profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User profile not found
+        '500':
+          description: Internal server error
+    patch:
+      tags:
+        - UserProfiles
+      summary: Update a user profile
+      operationId: updateUserProfile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserProfile'
+      responses:
+        '200':
+          description: User profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid input or ID
+        '404':
+          description: User profile not found
+        '409':
+          description: Conflict (duplicate username or keycloak id)
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - UserProfiles
+      summary: Delete a user profile (soft delete)
+      operationId: deleteUserProfile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        '200':
+          description: User profile deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User profile not found
+        '500':
+          description: Internal server error
+  /user-profiles:
+    post:
+      tags:
+        - UserProfiles
+      summary: Create a new user profile
+      operationId: createUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserProfile'
+      responses:
+        '201':
+          description: User profile created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Validation error
+        '409':
+          description: Conflict (duplicate username or keycloak id)
+        '500':
+          description: Internal server error
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

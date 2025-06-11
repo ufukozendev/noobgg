@@ -10,15 +10,20 @@ export {
 } from "./schemas/distributor.schema";
 
 export {
-  createGameSchema,
-  updateGameSchema,
-} from "./schemas/game.schema";
+  createUserProfileSchema,
+  updateUserProfileSchema,
+} from "./schemas/user-profile.schema";
+
+export { createGameSchema, updateGameSchema } from "./schemas/game.schema";
 
 export {
   createGameRankSchema,
   updateGameRankSchema,
 } from "./schemas/gamerank.schema";
 
+export * from "./schemas/event-attendees";
+
+export * from "./schemas/event-invitations";
 // OpenAPI Response Schemas
 export {
   ErrorResponseSchema,
@@ -33,3 +38,11 @@ export {
   IdParamSchema,
   SuccessResponseSchema,
 } from "./schemas/openapi-responses.schema";
+
+export {
+  createLanguageSchema,
+  updateLanguageSchema,
+  getLanguagesSchema,
+} from "./schemas/languages";
+
+export type { Language } from "./schemas/languages";

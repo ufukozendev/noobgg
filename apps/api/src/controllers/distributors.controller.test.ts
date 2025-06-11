@@ -4,10 +4,7 @@ import { db } from '../db';
 import {
   createDistributorController,
   updateDistributorController,
-  // getDistributorByIdController, // Not tested in this suite
-  // getAllDistributorsController, // Not tested in this suite
-  // deleteDistributorController   // Not tested in this suite
-} from './distributors.controller';
+} from './v1/distributors.controller';
 
 // Mock the db module
 mock.module('../db', () => ({

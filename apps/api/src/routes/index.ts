@@ -1,19 +1,17 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
-import { homeController } from "../controllers/main.controller";
-import anyRoutes from "./any-route";
-import gamesRoutes from "./games";
-import distributorsRoutes from "./distributors";
-import platformsRoutes from "./platforms";
-import gameRanksRoutes from "./game-ranks";
+import { Hono } from 'hono'
+import { homeController } from '../controllers/v1/main.controller'
+import v1Router from './v1'
 
+const router = new Hono()
 
-const router = new OpenAPIHono();
+router.get('/', homeController)
+router.get('/health', homeController)
 
-router.get("/", homeController);
-router.route("/", anyRoutes);
-router.route("/", gamesRoutes);
-router.route("/", distributorsRoutes);
-router.route("/", platformsRoutes);
-router.route("/", gameRanksRoutes);
+router.route('/api/v1', v1Router)
 
-export default router;
+router.get('/api/*', (c) => {
+  const path = c.req.path.replace(/^\/api\//, '/api/v1/')
+  return c.redirect(path, 301)
+})
+
+export default router
