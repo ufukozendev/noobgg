@@ -13,6 +13,7 @@ import {
 import { gamesTable } from "./games.drizzle";
 import { gameModes } from "./game-modes.drizzle";
 import { gameRanks } from "./game-ranks.drizzle";
+import { gameRegions } from "./game-regions.drizzle";
 import { userProfiles } from "./user-profile.drizzle";
 
 export const lobbyTypeEnum = pgEnum("lobby_type", ["public", "private"]);
@@ -55,6 +56,12 @@ export const lobbies = pgTable(
       columns: [table.gameId],
       foreignColumns: [gamesTable.id],
       name: "fk_lobbies_game_id",
+    }),
+
+    regionIdFk: foreignKey({
+      columns: [table.regionId],
+      foreignColumns: [gameRegions.id],
+      name: "fk_lobbies_region_id",
     }),
 
     modeIdFk: foreignKey({
