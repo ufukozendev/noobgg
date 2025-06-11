@@ -17,5 +17,7 @@ v1Router.route("/user-profiles", userProfilesRoutes);
 v1Router.route("/event-attendees", eventAttendeesRouter);
 v1Router.route("/event-invitations", eventInvitationsRouter);
 v1Router.route("/events", eventsRouter);
+v1Router.route('/languages', languagesRouter);
 
 export default v1Router;
+

@@ -12,6 +12,7 @@ import {
   Monitor,
   Settings,
   Users,
+  Globe,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { TeamSwitcher } from "./team-switcher";
@@ -99,6 +100,12 @@ const data = {
           url: "#",
         },
       ],
+    },
+    {
+      title: "Languages",
+      url: "/dashboard/admin/languages",
+      icon: Globe,
+      items: [],
     },
   ],
 };

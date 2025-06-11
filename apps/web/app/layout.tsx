@@ -4,8 +4,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Poppins, Exo_2 } from "next/font/google";
 import "@/styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: { template: "%s | noob.gg", default: "noob.gg" },
@@ -33,12 +35,15 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
-  themeColor: "#ffffff",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "noob.gg",
   },
+};
+
+export const viewport = {
+  themeColor: "#ffffff",
 };
 
 const poppins = Poppins({
@@ -71,6 +76,7 @@ export default async function RootLayout({
             <QueryProvider>
               <NextIntlClientProvider>{children}</NextIntlClientProvider>
             </QueryProvider>
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar newestOnTop closeOnClick pauseOnHover theme="colored" />
           </ThemeProvider>
         </SessionProvider>
       </body>
