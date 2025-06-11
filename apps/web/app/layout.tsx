@@ -33,12 +33,15 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
-  themeColor: "#ffffff",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "noob.gg",
   },
+};
+
+export const viewport = {
+  themeColor: "#ffffff",
 };
 
 const poppins = Poppins({
