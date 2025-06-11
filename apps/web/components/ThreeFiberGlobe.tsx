@@ -10,6 +10,7 @@ import {
   Billboard
 } from '@react-three/drei';
 import * as THREE from 'three';
+import { Globe, Users, MapPin, Link, Gamepad2, Mouse, ZoomIn, Target } from 'lucide-react';
 
 // Gaming hubs data
 const GAMING_HUBS = [
@@ -748,6 +749,83 @@ const Atmosphere = React.memo(() => {
   );
 });
 
+// Starfield background component
+const Starfield = React.memo(() => {
+  const starsRef = useRef<THREE.Points>(null);
+  const stars = useMemo(() => {
+    const positions: number[] = [];
+    const colors: number[] = [];
+      // Create 400 stars scattered in a large sphere (further reduced for performance)
+    for (let i = 0; i < 400; i++) {      // Random position in a large sphere
+      const radius = 70 + Math.random() * 60; // Stars much farther from globe
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta);
+      const z = radius * Math.cos(phi);
+      
+      positions.push(x, y, z);
+        // Different star colors (white, blue, yellow, red giants) - reduced intensity
+      const starType = Math.random();
+      if (starType < 0.7) {
+        // White stars - dimmer
+        colors.push(0.8, 0.8, 0.8);
+      } else if (starType < 0.85) {
+        // Blue stars - dimmer
+        colors.push(0.6, 0.7, 0.9);
+      } else if (starType < 0.95) {
+        // Yellow stars - dimmer
+        colors.push(0.8, 0.8, 0.6);
+      } else {
+        // Red giants - dimmer
+        colors.push(0.8, 0.5, 0.4);
+      }
+    }
+    
+    return {
+      positions: new Float32Array(positions),
+      colors: new Float32Array(colors)
+    };
+  }, []);
+    // Gentle twinkling animation - optimized for performance
+  useFrame((state) => {
+    if (starsRef.current) {
+      starsRef.current.rotation.y += 0.0001; // Very slow rotation
+      
+      // Less frequent size updates for better performance
+      if (Math.floor(state.clock.elapsedTime * 2) % 3 === 0) {
+        const material = starsRef.current.material as THREE.PointsMaterial;
+        material.opacity = 0.6 + Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+      }
+    }
+  });
+  
+  return (
+    <points ref={starsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[stars.positions, 3]}
+        />        <bufferAttribute
+          attach="attributes-color"
+          args={[stars.colors, 3]}
+        />
+      </bufferGeometry>      <pointsMaterial
+        size={0.6}
+        sizeAttenuation={true}
+        transparent={true}
+        opacity={0.5}
+        vertexColors={true}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+});
+
+Starfield.displayName = 'Starfield';
+
 // Main Scene Component - Memoized to prevent unnecessary re-renders with Globe Rotation Sync
 const Scene = React.memo(({ onHubHover }: { onHubHover: (hub: any | null) => void }) => {
   const [globeRotation, setGlobeRotation] = useState(0);
@@ -767,6 +845,7 @@ const Scene = React.memo(({ onHubHover }: { onHubHover: (hub: any | null) => voi
       <EarthGlobe onRotationUpdate={handleRotationUpdate} />
       <DottedContinents globeRotation={globeRotation} />
       <Atmosphere />
+      <Starfield />
       
       {GAMING_HUBS.map((hub, index) => (
         <GamingHub 
@@ -958,7 +1037,7 @@ export default function OptimizedGamingGlobe() {
   }, []);
 
   return(    <WebGLErrorBoundary>
-      <div className="relative w-full h-[800px] bg-[#0a0613]">
+      <div className="relative w-full h-[800px] bg-transparent">
         {/* WebGL Context Lost Overlay */}
         {isContextLost && (
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -983,10 +1062,7 @@ export default function OptimizedGamingGlobe() {
               // Add context loss simulation for testing (remove in production)
               // const ext = gl.getExtension('WEBGL_lose_context');
               // setTimeout(() => ext?.loseContext(), 5000);
-            }}
-          >
-            <color attach="background" args={['#0a0613']} />
-            <fog attach="fog" args={['#0a0613', 30, 100]} />
+            }}          >
             <Scene {...sceneProps} />
           </Canvas>
         ) : (
@@ -1003,24 +1079,33 @@ export default function OptimizedGamingGlobe() {
             </div>
           </div>
         )}
-      
-      {/* Stats Panel */}
+        {/* Stats Panel */}
       <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md rounded-xl p-4 border border-purple-500/30 shadow-2xl">
         <h3 className="text-purple-400 font-bold text-lg mb-3 flex items-center gap-2">
-          🌍 noob.gg Gaming Network
+          <Globe className="w-5 h-5" />
+          noob.gg Gaming Network
         </h3>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between items-center">
-            <span className="text-gray-300">👥 Total Players:</span>
+            <span className="text-gray-300 flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Total Players:
+            </span>
             <span className="text-purple-400 font-semibold">
               {GAMING_HUBS.reduce((sum, hub) => sum + hub.players, 0).toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-gray-300">🌎 Active Hubs:</span>
+            <span className="text-gray-300 flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              Active Hubs:
+            </span>
             <span className="text-blue-400 font-semibold">{GAMING_HUBS.length}</span>
           </div>          <div className="flex justify-between items-center">
-            <span className="text-gray-300">🔗 Connections:</span>
+            <span className="text-gray-300 flex items-center gap-2">
+              <Link className="w-4 h-4" />
+              Connections:
+            </span>
             <span className="text-blue-400 font-semibold">Live</span>
           </div>
         </div>
@@ -1042,11 +1127,13 @@ export default function OptimizedGamingGlobe() {
               </div>
             </div>
           </div>
-          
-          <div className="space-y-4">
+            <div className="space-y-4">
             <div className="bg-purple-500/20 rounded-lg p-3">
               <div className="flex justify-between items-center">
-                <span className="text-gray-300">👥 Active Players</span>
+                <span className="text-gray-300 flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Active Players
+                </span>
                 <span className="text-purple-400 font-bold text-xl">
                   {hoveredHub.players.toLocaleString()}
                 </span>
@@ -1054,7 +1141,10 @@ export default function OptimizedGamingGlobe() {
             </div>
             
             <div>
-              <p className="text-gray-400 text-sm mb-3">🎮 Popular Games</p>
+              <p className="text-gray-400 text-sm mb-3 flex items-center gap-2">
+                <Gamepad2 className="w-4 h-4" />
+                Popular Games
+              </p>
               <div className="flex flex-wrap gap-2">
                 {hoveredHub.games.map((game: string) => (
                   <span 
@@ -1068,19 +1158,30 @@ export default function OptimizedGamingGlobe() {
             </div>
             
             <div className="pt-3 border-t border-gray-700">
-              <p className="text-gray-400 text-xs leading-relaxed">
-                🌐 Join this thriving gaming community and connect with {hoveredHub.players.toLocaleString()} active players from {hoveredHub.name}!
+              <p className="text-gray-400 text-xs leading-relaxed flex items-start gap-2">
+                <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                Join this thriving gaming community and connect with {hoveredHub.players.toLocaleString()} active players from {hoveredHub.name}!
               </p>
             </div>
           </div>
         </div>
-      )}
-        {/* Controls */}
+      )}        {/* Controls */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-md rounded-full px-6 py-3 border border-purple-500/30">
-        <p className="text-gray-300 text-sm text-center">
-          🖱️ Drag to rotate • 🔍 Scroll to zoom • 🎯 Hover hubs for info
+        <p className="text-gray-300 text-sm text-center flex items-center justify-center gap-4">
+          <span className="flex items-center gap-1">
+            <Mouse className="w-3 h-3" />
+            Drag to rotate
+          </span>
+          <span className="flex items-center gap-1">
+            <ZoomIn className="w-3 h-3" />
+            Scroll to zoom
+          </span>
+          <span className="flex items-center gap-1">
+            <Target className="w-3 h-3" />
+            Hover hubs for info
+          </span>
         </p>
-      </div>        {/* Performance indicator */}
+      </div>{/* Performance indicator */}
         <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/70 backdrop-blur-md rounded-lg px-3 py-2 border border-purple-500/30">
           <div className={`w-2 h-2 rounded-full ${isContextLost ? 'bg-yellow-400 animate-pulse' : webglError ? 'bg-red-400' : 'bg-purple-400 animate-pulse'}`}></div>
           <span className="text-purple-400 text-xs font-medium">
