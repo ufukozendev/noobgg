@@ -11,6 +11,7 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { Globe, Users, MapPin, Link, Gamepad2, Mouse, ZoomIn, Target } from 'lucide-react';
+import { useIsMobile } from '../hooks/use-mobile';
 
 // Gaming hubs data
 const GAMING_HUBS = [
@@ -826,7 +827,7 @@ const Starfield = React.memo(() => {
 Starfield.displayName = 'Starfield';
 
 // Main Scene Component - Memoized to prevent unnecessary re-renders with Globe Rotation Sync
-const Scene = React.memo(({ onHubHover }: { onHubHover: (hub: any | null) => void }) => {
+const Scene = React.memo(({ onHubHover, isMobile }: { onHubHover: (hub: any | null) => void, isMobile: boolean }) => {
   const [globeRotation, setGlobeRotation] = useState(0);
 
   const handleRotationUpdate = useCallback((rotation: number) => {
@@ -863,8 +864,8 @@ const Scene = React.memo(({ onHubHover }: { onHubHover: (hub: any | null) => voi
         enableRotate={true}
         zoomSpeed={0.8}
         rotateSpeed={0.5}
-        minDistance={8}
-        maxDistance={30}
+        minDistance={isMobile ? 15 : 8}
+        maxDistance={isMobile ? 40 : 30}
         autoRotate={false}
         makeDefault      />
     </>
@@ -939,22 +940,21 @@ export default function OptimizedGamingGlobe() {
   const [isContextLost, setIsContextLost] = useState(false);
   const [canvasKey, setCanvasKey] = useState(0); // Force remount canvas
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isMobile = useIsMobile();
 
   // Memoize hover handler to prevent unnecessary re-renders
   const handleHubHover = useCallback((hub: any | null) => {
     setHoveredHub(hub);
   }, []);
-
   // Memoize scene props to prevent Canvas re-creation
   const sceneProps = useMemo(() => ({
-    onHubHover: handleHubHover
-  }), [handleHubHover]);
-
-  // Memoize camera settings to prevent re-creation
+    onHubHover: handleHubHover,
+    isMobile: isMobile
+  }), [handleHubHover, isMobile]);  // Memoize camera settings to prevent re-creation - Mobile Responsive
   const cameraSettings = useMemo(() => ({
-    position: [0, 0, 15] as [number, number, number],
+    position: [0, 0, isMobile ? 24 : 15] as [number, number, number], // 80% zoom out on mobile (24 vs 15)
     fov: 50
-  }), []);
+  }), [isMobile]);
 
   // Enhanced GL settings with context loss handling
   const glSettings = useMemo(() => ({
@@ -1043,7 +1043,7 @@ export default function OptimizedGamingGlobe() {
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
             <div className="text-center">
               <div className="text-yellow-400 text-lg mb-4">⚠️ Context Restoring...</div>
-              <p className="text-white text-sm mb-2">WebGL context is being restored</p>
+              <p className="text-white text-sm mb-2 sm:mb-3">WebGL context is being restored</p>
               <div className="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto"></div>
             </div>
           </div>
@@ -1078,78 +1078,130 @@ export default function OptimizedGamingGlobe() {
               </button>
             </div>
           </div>
-        )}
-        {/* Stats Panel */}
-      <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md rounded-xl p-4 border border-purple-500/30 shadow-2xl">
-        <h3 className="text-purple-400 font-bold text-lg mb-3 flex items-center gap-2">
-          <Globe className="w-5 h-5" />
-          noob.gg Gaming Network
+        )}        {/* Stats Panel - Mobile Optimized */}
+      <div className={`absolute transition-all duration-200 bg-black/85 backdrop-blur-md rounded-lg border border-purple-500/30 shadow-2xl ${
+        isMobile 
+          ? 'top-2 left-2 right-2 p-3' 
+          : 'top-4 left-4 p-4 rounded-xl max-w-[280px]'
+      }`}
+           style={{ touchAction: 'pan-y' }}>
+        <h3 className={`text-purple-400 font-bold mb-2 flex items-center gap-2 ${
+          isMobile ? 'text-sm justify-center' : 'text-base md:text-lg justify-start'
+        }`}>
+          <Globe className={`${isMobile ? 'w-4 h-4' : 'w-4 h-4 md:w-5 md:h-5'}`} />
+          <span className={isMobile ? '' : 'hidden md:inline'}>
+            {isMobile ? 'noob.gg' : 'noob.gg Gaming Network'}
+          </span>
+          {!isMobile && <span className="hidden sm:inline md:hidden">noob.gg Network</span>}
         </h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-300 flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Total Players:
+        
+        {/* Mobile: Grid Layout, Desktop: List Layout */}
+        <div className={isMobile 
+          ? 'grid grid-cols-3 gap-2 text-xs' 
+          : 'space-y-2 text-sm'
+        }>
+          <div className={`${isMobile 
+            ? 'flex flex-col items-center text-center p-2 bg-purple-500/10 rounded-lg' 
+            : 'flex justify-between items-center gap-2'
+          }`}>
+            <span className={`text-gray-300 flex items-center gap-1.5 ${
+              isMobile ? 'flex-col mb-1' : 'flex-shrink-0'
+            }`}>
+              <Users className="w-3.5 h-3.5" />
+              <span className={isMobile ? 'text-xs' : 'hidden md:inline'}>
+                {isMobile ? 'Players' : 'Total Players:'}
+              </span>
+              {!isMobile && <span className="hidden sm:inline md:hidden">Players:</span>}
             </span>
-            <span className="text-purple-400 font-semibold">
-              {GAMING_HUBS.reduce((sum, hub) => sum + hub.players, 0).toLocaleString()}
+            <span className={`text-purple-400 font-semibold ${
+              isMobile ? 'text-sm' : 'text-sm whitespace-nowrap'
+            }`}>
+              {(GAMING_HUBS.reduce((sum, hub) => sum + hub.players, 0) / 1000).toFixed(0)}k
             </span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-300 flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Active Hubs:
+          
+          <div className={`${isMobile 
+            ? 'flex flex-col items-center text-center p-2 bg-blue-500/10 rounded-lg' 
+            : 'flex justify-between items-center gap-2'
+          }`}>
+            <span className={`text-gray-300 flex items-center gap-1.5 ${
+              isMobile ? 'flex-col mb-1' : 'flex-shrink-0'
+            }`}>
+              <MapPin className="w-3.5 h-3.5" />
+              <span className={isMobile ? 'text-xs' : 'hidden md:inline'}>
+                {isMobile ? 'Hubs' : 'Active Hubs:'}
+              </span>
+              {!isMobile && <span className="hidden sm:inline md:hidden">Hubs:</span>}
             </span>
-            <span className="text-blue-400 font-semibold">{GAMING_HUBS.length}</span>
-          </div>          <div className="flex justify-between items-center">
-            <span className="text-gray-300 flex items-center gap-2">
-              <Link className="w-4 h-4" />
-              Connections:
+            <span className={`text-blue-400 font-semibold ${
+              isMobile ? 'text-sm' : 'text-sm'
+            }`}>
+              {GAMING_HUBS.length}
             </span>
-            <span className="text-blue-400 font-semibold">Live</span>
+          </div>
+          
+          <div className={`${isMobile 
+            ? 'flex flex-col items-center text-center p-2 bg-green-500/10 rounded-lg' 
+            : 'flex justify-between items-center gap-2'
+          }`}>
+            <span className={`text-gray-300 flex items-center gap-1.5 ${
+              isMobile ? 'flex-col mb-1' : 'flex-shrink-0'
+            }`}>
+              <Link className="w-3.5 h-3.5" />
+              <span className={isMobile ? 'text-xs' : 'hidden sm:inline'}>
+                {isMobile ? 'Status' : 'Connections:'}
+              </span>
+              {!isMobile && <span className="sm:hidden">Connect:</span>}
+            </span>
+            <span className={`text-green-400 font-semibold flex items-center gap-1 ${
+              isMobile ? 'text-sm' : 'text-sm'
+            }`}>
+              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+              Live
+            </span>
           </div>
         </div>
-      </div>
-      
-      {/* Hub Info Panel */}
+      </div>{/* Hub Info Panel - Full Width Centered */}
       {hoveredHub && (
-        <div className="absolute top-1/2 right-6 transform -translate-y-1/2 bg-black/90 backdrop-blur-lg text-white rounded-2xl p-6 border-2 border-purple-500/50 shadow-2xl min-w-[320px] max-w-[400px]">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="text-3xl">{hoveredHub.flag}</div>
+        <div className="absolute bottom-20 left-0 right-0 mx-0 w-full sm:top-1/2 sm:left-1/2 sm:right-auto sm:bottom-auto sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 sm:mx-0 bg-black/95 backdrop-blur-lg text-white rounded-2xl p-4 sm:p-6 border-2 border-purple-500/50 shadow-2xl sm:w-[95vw] sm:max-w-[700px]"
+             style={{ touchAction: 'pan-y' }}><div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+            <div className="text-2xl sm:text-3xl">{hoveredHub.flag}</div>
             <div>
-              <h3 className="text-xl font-bold">{hoveredHub.name}</h3>
+              <h3 className="text-lg sm:text-xl font-bold">{hoveredHub.name}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <div 
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: hoveredHub.color }}
                 ></div>
-                <span className="text-sm text-gray-400">Gaming Hub</span>
+                <span className="text-xs sm:text-sm text-gray-400">Gaming Hub</span>
               </div>
             </div>
           </div>
-            <div className="space-y-4">
-            <div className="bg-purple-500/20 rounded-lg p-3">
+            <div className="space-y-3 sm:space-y-4">
+            <div className="bg-purple-500/20 rounded-lg p-2.5 sm:p-3">
               <div className="flex justify-between items-center">
-                <span className="text-gray-300 flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Active Players
+                <span className="text-gray-300 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                  <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Active Players</span>
+                  <span className="sm:hidden">Players</span>
                 </span>
-                <span className="text-purple-400 font-bold text-xl">
+                <span className="text-purple-400 font-bold text-lg sm:text-xl">
                   {hoveredHub.players.toLocaleString()}
                 </span>
               </div>
             </div>
             
             <div>
-              <p className="text-gray-400 text-sm mb-3 flex items-center gap-2">
-                <Gamepad2 className="w-4 h-4" />
-                Popular Games
+              <p className="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
+                <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Popular Games</span>
+                <span className="sm:hidden">Games</span>
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {hoveredHub.games.map((game: string) => (
                   <span 
                     key={game}
-                    className="px-3 py-1 bg-gradient-to-r from-purple-500/30 to-blue-500/30 text-white rounded-full text-sm border border-purple-400/50 backdrop-blur-sm"
+                    className="px-2 py-0.5 sm:px-3 sm:py-1 bg-gradient-to-r from-purple-500/30 to-blue-500/30 text-white rounded-full text-xs sm:text-sm border border-purple-400/50 backdrop-blur-sm"
                   >
                     {game}
                   </span>
@@ -1157,7 +1209,7 @@ export default function OptimizedGamingGlobe() {
               </div>
             </div>
             
-            <div className="pt-3 border-t border-gray-700">
+            <div className="pt-2 sm:pt-3 border-t border-gray-700">
               <p className="text-gray-400 text-xs leading-relaxed flex items-start gap-2">
                 <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
                 Join this thriving gaming community and connect with {hoveredHub.players.toLocaleString()} active players from {hoveredHub.name}!
@@ -1165,29 +1217,36 @@ export default function OptimizedGamingGlobe() {
             </div>
           </div>
         </div>
-      )}        {/* Controls */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-md rounded-full px-6 py-3 border border-purple-500/30">
-        <p className="text-gray-300 text-sm text-center flex items-center justify-center gap-4">
-          <span className="flex items-center gap-1">
-            <Mouse className="w-3 h-3" />
-            Drag to rotate
+      )}      {/* Controls - Mobile Optimized and Higher Position */}
+      <div className="absolute bottom-16 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-md rounded-full px-4 py-2.5 sm:px-6 sm:py-3 border border-purple-500/40 shadow-lg"
+           style={{ touchAction: 'pan-y' }}>
+        <p className="text-gray-300 text-sm sm:text-sm text-center flex items-center justify-center gap-3 sm:gap-4">
+          <span className="flex items-center gap-1.5">
+            <Mouse className="w-4 h-4 sm:w-3 sm:h-3" />
+            <span className="hidden sm:inline">Drag to rotate</span>
+            <span className="sm:hidden">Drag</span>
           </span>
-          <span className="flex items-center gap-1">
-            <ZoomIn className="w-3 h-3" />
-            Scroll to zoom
+          <span className="flex items-center gap-1.5">
+            <ZoomIn className="w-4 h-4 sm:w-3 sm:h-3" />
+            <span className="hidden sm:inline">Scroll to zoom</span>
+            <span className="sm:hidden">Zoom</span>
           </span>
-          <span className="flex items-center gap-1">
-            <Target className="w-3 h-3" />
-            Hover hubs for info
+          <span className="flex items-center gap-1.5">
+            <Target className="w-4 h-4 sm:w-3 sm:h-3" />
+            <span className="hidden sm:inline">Hover hubs for info</span>
+            <span className="sm:hidden">Touch</span>
           </span>
         </p>
-      </div>{/* Performance indicator */}
-        <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/70 backdrop-blur-md rounded-lg px-3 py-2 border border-purple-500/30">
-          <div className={`w-2 h-2 rounded-full ${isContextLost ? 'bg-yellow-400 animate-pulse' : webglError ? 'bg-red-400' : 'bg-purple-400 animate-pulse'}`}></div>
-          <span className="text-purple-400 text-xs font-medium">
-            {isContextLost ? 'Restoring...' : webglError ? 'Error' : 'WebGL Active'}
-          </span>
-        </div>
+      </div>
+      
+      {/* WebGL Status Indicator - Bottom right on desktop, centered on mobile */}
+      <div className={`absolute bottom-4 ${isMobile ? 'left-1/2 transform -translate-x-1/2' : 'right-4 left-auto transform-none'} flex items-center gap-2 bg-black/70 backdrop-blur-md rounded-lg px-3 py-1.5 sm:px-3 sm:py-2 border border-purple-500/30 shadow-md`}
+           style={{ touchAction: 'pan-y' }}>
+        <div className={`w-2 h-2 rounded-full ${isContextLost ? 'bg-yellow-400 animate-pulse' : webglError ? 'bg-red-400' : 'bg-green-400 animate-pulse'}`}></div>
+        <span className="text-green-400 text-xs font-medium">
+          {isContextLost ? 'Restoring...' : webglError ? 'Error' : 'WebGL Active'}
+        </span>
+      </div>
     </div>
     </WebGLErrorBoundary>
   );
