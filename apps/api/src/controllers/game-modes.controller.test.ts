@@ -1,6 +1,15 @@
 import { describe, it, expect, mock, beforeEach } from 'bun:test';
 import { Context } from 'hono';
 
+// Helper function for query builder mock
+function createQueryBuilderMock() {
+  return {
+    from: mock().mockReturnThis(),
+    where: mock().mockReturnThis(),
+    returning: mock(),
+  };
+}
+
 // Mock the db module BEFORE importing anything that depends on it
 mock.module('../db', () => ({
   db: {
@@ -8,6 +17,7 @@ mock.module('../db', () => ({
     insert: mock(),
     update: mock(),
     delete: mock(),
+    transaction: mock(),
   }
 }));
 
@@ -28,11 +38,38 @@ describe('Game Modes Controller', () => {
   beforeEach(() => {
     mockJson.mockReset();
 
-    // Reset db mocks to prevent cross-test bleed
-    (db.select as any).mockReset();
-    (db.insert as any).mockReset();
-    (db.update as any).mockReset();
-    (db.delete as any).mockReset();
+    // Reset db mocks to prevent cross-test bleed using mockImplementation for factory pattern
+    (db.select as any).mockReset().mockImplementation(createQueryBuilderMock);
+    (db.insert as any).mockReset().mockReturnValue({
+      values: mock().mockReturnValue({ returning: mock() }),
+    });
+    (db.update as any).mockReset().mockReturnValue({
+      set: mock().mockReturnValue({
+        where: mock().mockReturnValue({ returning: mock() }),
+      }),
+    });
+    (db.delete as any).mockReset().mockReturnValue({
+      where: mock().mockReturnValue({ returning: mock() }),
+    });
+
+    // Provide default happy-path implementation for db.transaction to prevent false-negatives
+    (db.transaction as any).mockReset().mockImplementation(async (cb: any) => {
+      const txMock = {
+        select: mock().mockImplementation(createQueryBuilderMock),
+        insert: mock().mockReturnValue({
+          values: mock().mockReturnValue({ returning: mock() }),
+        }),
+        update: mock().mockReturnValue({
+          set: mock().mockReturnValue({
+            where: mock().mockReturnValue({ returning: mock() }),
+          }),
+        }),
+        delete: mock().mockReturnValue({
+          where: mock().mockReturnValue({ returning: mock() }),
+        }),
+      };
+      return await cb(txMock);
+    });
   });
 
   describe('getAllGameModesController', () => {
