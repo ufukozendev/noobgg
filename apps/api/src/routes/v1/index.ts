@@ -7,6 +7,7 @@ import userProfilesRoutes from "./user-profiles";
 import eventAttendeesRouter from "./event-attendees";
 import eventInvitationsRouter from "./event-invitations";
 import eventsRouter from "./events";
+import languagesRouter from "./languages";
 const v1Router = new Hono();
 
 v1Router.route("/games", gamesRoutes);

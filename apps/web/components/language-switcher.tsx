@@ -24,11 +24,11 @@ export default function LanguageSwitcher({
 
     setFlagKey(newLocale);
 
-    router.refresh();
+    window.location.reload();
   };
 
-  const currentLang = locale === "tr" ? "TR" : "EN";
-  const flagSrc = locale === "tr" ? "/flags/tr.svg" : "/flags/en.svg";
+  const currentLang = flagKey === "tr" ? "TR" : "EN";
+  const flagSrc = flagKey === "tr" ? "/flags/tr.svg" : "/flags/en.svg";  
 
   return (
     <Button

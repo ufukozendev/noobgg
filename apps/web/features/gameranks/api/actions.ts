@@ -1,13 +1,19 @@
 import { createGameRankSchema, updateGameRankSchema } from "@repo/shared";
 import type { GameRank, GameRanksResponse } from "@/types/gamerank";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+import { getCurrentLanguage } from "@/lib/utils";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
 
 export async function getAllGameRanks(): Promise<GameRanksResponse> {
+  const language = getCurrentLanguage();
   try {
     const res = await fetch(`${API_BASE_URL}/game-ranks`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       cache: "no-store",
     });
     if (!res.ok) {
@@ -21,10 +27,15 @@ export async function getAllGameRanks(): Promise<GameRanksResponse> {
 }
 
 export async function getGameRank(id: number): Promise<GameRank> {
+  const language = getCurrentLanguage();
   try {
     const res = await fetch(`${API_BASE_URL}/game-ranks/${id}`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       cache: "no-store",
     });
     if (!res.ok) {
@@ -38,11 +49,16 @@ export async function getGameRank(id: number): Promise<GameRank> {
 }
 
 export async function createGameRank(data: unknown): Promise<GameRank> {
+  const language = getCurrentLanguage();
   try {
     const parsed = createGameRankSchema.parse(data);
     const res = await fetch(`${API_BASE_URL}/game-ranks`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       body: JSON.stringify(parsed),
     });
     if (!res.ok) {
@@ -57,13 +73,18 @@ export async function createGameRank(data: unknown): Promise<GameRank> {
 
 export async function updateGameRank(
   id: number,
-  data: unknown,
+  data: unknown
 ): Promise<GameRank> {
+  const language = getCurrentLanguage();
   try {
     const parsed = updateGameRankSchema.parse(data);
     const res = await fetch(`${API_BASE_URL}/game-ranks/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       body: JSON.stringify(parsed),
     });
     if (!res.ok) {
@@ -77,9 +98,16 @@ export async function updateGameRank(
 }
 
 export async function deleteGameRank(id: number): Promise<void> {
+  const language = getCurrentLanguage();
   try {
     const res = await fetch(`${API_BASE_URL}/game-ranks/${id}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
+      cache: "no-store",
     });
     if (!res.ok) {
       throw new Error(`Failed to delete game rank: ${res.status}`);
