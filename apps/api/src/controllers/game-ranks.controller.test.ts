@@ -13,18 +13,18 @@ function createQueryBuilderMock() {
 // Mock the db module BEFORE importing anything that depends on it
 mock.module('../db', () => ({
   db: {
-    select: mock().mockReturnValue(createQueryBuilderMock()),
-    insert: mock().mockReturnValue({
+    select: mock().mockImplementation(() => createQueryBuilderMock()),
+    insert: mock().mockImplementation(() => ({
       values: mock().mockReturnValue({ returning: mock() })
-    }),
-    update: mock().mockReturnValue({
+    })),
+    update: mock().mockImplementation(() => ({
       set: mock().mockReturnValue({
         where: mock().mockReturnValue({ returning: mock() })
       })
-    }),
-    delete: mock().mockReturnValue({
+    })),
+    delete: mock().mockImplementation(() => ({
       where: mock().mockReturnValue({ returning: mock() })
-    }),
+    })),
   }
 }));
 
@@ -54,11 +54,20 @@ describe('Game Ranks Controller', () => {
   beforeEach(() => {
     mockJson.mockReset();
     mockReqJson.mockReset();
-    // Reset all db mock calls
-    (db.select as any).mockReset();
-    (db.insert as any).mockReset();
-    (db.update as any).mockReset();
-    (db.delete as any).mockReset();
+
+    // Reset all db mock calls and regenerate fresh query builders
+    (db.select as any).mockReset().mockImplementation(() => createQueryBuilderMock());
+    (db.insert as any).mockReset().mockImplementation(() => ({
+      values: mock().mockReturnValue({ returning: mock() })
+    }));
+    (db.update as any).mockReset().mockImplementation(() => ({
+      set: mock().mockReturnValue({
+        where: mock().mockReturnValue({ returning: mock() })
+      })
+    }));
+    (db.delete as any).mockReset().mockImplementation(() => ({
+      where: mock().mockReturnValue({ returning: mock() })
+    }));
   });
 
   describe('getAllGameRanksController', () => {
