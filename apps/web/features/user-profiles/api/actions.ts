@@ -1,12 +1,18 @@
 import type { UserProfile, UserProfileResponse } from "@/types/user-profile";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+import { getCurrentLanguage } from "@/lib/utils";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/v1";
 
 export async function getUserProfile(id: string): Promise<UserProfile> {
+  const language = getCurrentLanguage();
   try {
     const res = await fetch(`${API_BASE_URL}/user-profiles/${id}`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       cache: "no-store",
     });
     if (!res.ok) {
@@ -19,13 +25,24 @@ export async function getUserProfile(id: string): Promise<UserProfile> {
   }
 }
 
-export async function getUserProfileByUsername(username: string): Promise<UserProfile> {
+export async function getUserProfileByUsername(
+  username: string
+): Promise<UserProfile> {
+  const language = getCurrentLanguage();
+
   try {
-    const res = await fetch(`${API_BASE_URL}/user-profiles/username/${username}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${API_BASE_URL}/user-profiles/username/${username}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Preferred-Language": language,
+          "Accept-Language": language,
+        },
+        cache: "no-store",
+      }
+    );
     if (!res.ok) {
       throw new Error(`Failed to fetch user profile: ${res.status}`);
     }
@@ -37,10 +54,16 @@ export async function getUserProfileByUsername(username: string): Promise<UserPr
 }
 
 export async function getAllUserProfiles(): Promise<UserProfileResponse> {
+  const language = getCurrentLanguage();
+
   try {
     const res = await fetch(`${API_BASE_URL}/user-profiles`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       cache: "no-store",
     });
     if (!res.ok) {
@@ -52,5 +75,3 @@ export async function getAllUserProfiles(): Promise<UserProfileResponse> {
     throw error;
   }
 }
-
- 
