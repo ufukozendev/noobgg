@@ -342,10 +342,41 @@ export default function GameShowcase() {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const currentGameData = games[currentGame];
-
   return (
     <section className="relative w-full py-20 bg-gradient-to-b from-transparent via-slate-900/20 to-transparent">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-7xl">        {/* Section Title and Description */}
+        <div className="text-center mb-16">
+          <motion.h2 
+            key={`title-${currentGame}`}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
+          >
+            Lorem Ipsum Dolor Sit Amet
+          </motion.h2>
+          <motion.p 
+            key={`desc-${currentGame}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg text-gray-300 max-w-3xl mx-auto mb-4"
+          >
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            <span className="text-purple-400 font-semibold"> Ut enim ad minim veniam</span> quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-full px-6 py-2 text-sm font-medium text-red-200"
+          >
+            <span className="animate-pulse">✨</span>
+            Duis aute irure dolor in reprehenderit
+            <span className="animate-pulse">✨</span>
+          </motion.div>
+        </div>
+        
         {/* Game Selection Bar */}
         <div className="flex justify-center mb-16">
           <div className="flex bg-black/40 backdrop-blur-md rounded-2xl p-2 border border-purple-500/20">
@@ -422,14 +453,13 @@ export default function GameShowcase() {
                 </motion.p>
               </div>
 
-              {/* Features List */}
-              <motion.div
+              {/* Features List */}              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
                 className="space-y-4"
               >
-                <h3 className="text-2xl font-bold text-white">Why Choose NoobGG for {currentGameData.name}?</h3>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-fuchsia-300 to-blue-400 bg-clip-text text-transparent">Lorem Ipsum Consectetur {currentGameData.name} Adipiscing?</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {currentGameData.features.map((feature, index) => (
                     <motion.div
@@ -449,23 +479,35 @@ export default function GameShowcase() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.5 }}
-              >
-                <button 
-                  className={`${getGameButtonStyle(currentGameData.id)} text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg`}
+              >                <button 
+                  className={`text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                    currentGameData.id === 'valorant' 
+                      ? 'bg-gradient-to-r from-[#ff4655] to-[#ff6b81] hover:from-[#ff4655] hover:to-[#ff5a7b] shadow-[#ff4655]/25'
+                      : currentGameData.id === 'lol'
+                      ? 'bg-gradient-to-r from-[#c89b3c] to-[#e6c66e] hover:from-[#c89b3c] hover:to-[#d9b860] shadow-[#c89b3c]/25'
+                      : currentGameData.id === 'fortnite'
+                      ? 'bg-gradient-to-r from-[#6f52f4] to-[#9b73f9] hover:from-[#6f52f4] hover:to-[#8a62f7] shadow-[#6f52f4]/25'
+                      : currentGameData.id === 'pubg'
+                      ? 'bg-gradient-to-r from-[#f97316] to-[#facc15] hover:from-[#f97316] hover:to-[#f9b815] shadow-[#f97316]/25'
+                      : currentGameData.id === 'cs2'
+                      ? 'bg-gradient-to-r from-[#374151] to-[#4b5563] hover:from-[#374151] hover:to-[#556270] shadow-[#374151]/25'
+                      : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-purple-500/25'
+                  }`}
                 >
-                  Find {currentGameData.name} Squad
+                  Lorem {currentGameData.name} Ipsum (Finally!)
                 </button>
               </motion.div>
-            </div>            {/* Right Side - 3D Model Showcase - Kompakt Kart */}
-            <div className="relative w-full h-[500px]">
+            </div>            {/* Right Side - 3D Model Showcase - Normal Boyut */}
+            <div className="relative w-full h-[400px]">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
                 className="absolute inset-0 rounded-2xl border border-purple-500/40 backdrop-blur-lg shadow-xl overflow-hidden"
               >
-                {/* Canvas - Full Container Coverage */}                <Canvas
-                  camera={{ position: [0, 4, 18], fov: 50, far: 5000 }}style={{ 
+                {/* Canvas - Normal Boyut */}                <Canvas
+                  camera={{ position: [0, 4, 18], fov: 50, far: 5000 }}
+                  style={{ 
                     background: 'linear-gradient(135deg, rgba(88, 28, 135, 0.3) 0%, rgba(30, 58, 138, 0.3) 100%)',
                     width: '150%', 
                     height: '150%',
@@ -501,18 +543,23 @@ export default function GameShowcase() {
                     <Environment preset="city" background={false} />
                     
                   </Suspense>
-                </Canvas>
-                  {/* UI Overlays - Kompakt Boyut */}
-                <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md rounded-md px-2 py-1 border border-purple-500/30 z-20">
-                  <span className="text-purple-300 text-xs font-medium">Map View</span>
+                </Canvas>                  {/* UI Overlays - Modern Glassmorphism */}
+                <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-xl rounded-lg px-2.5 py-1.5 border border-purple-500/30 z-20"
+                     style={{ boxShadow: '0 4px 10px rgba(123, 31, 162, 0.15)' }}>
+                  <span className="text-xs font-medium bg-gradient-to-r from-purple-400 to-blue-300 bg-clip-text text-transparent">3D Map View</span>
                 </div>
                 
-                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md rounded-md px-2 py-1 border border-purple-500/30 z-20">
-                  <span className="text-green-400 text-xs font-medium">● Live</span>
+                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-xl rounded-lg px-2.5 py-1.5 border border-green-500/30 z-20"
+                     style={{ boxShadow: '0 4px 10px rgba(34, 197, 94, 0.15)' }}>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-medium bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Live Preview</span>
+                  </div>
                 </div>
 
-                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md rounded-md px-2 py-1 border border-purple-500/30 z-20">
-                  <span className="text-gray-300 text-xs">Drag • Pan • Zoom</span>
+                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-xl rounded-lg px-2.5 py-1.5 border border-blue-500/30 z-20"
+                     style={{ boxShadow: '0 4px 10px rgba(59, 130, 246, 0.15)' }}>
+                  <span className="text-xs font-medium text-gray-200">Drag • Pan • Zoom</span>
                 </div>
 
                 {/* Animated Background Effects */}
@@ -584,7 +631,7 @@ export default function GameShowcase() {
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="text-purple-300 font-medium"
                 >
-                  Squad Connected • Ready to Play
+                  Lorem Ipsum • Dolor Sit Amet
                 </motion.p>
               </motion.div>
             </div>
