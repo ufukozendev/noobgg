@@ -13,7 +13,7 @@ const mockContext = () => ({
 
 describe('Main Controller', () => {
   beforeEach(() => {
-    mockText.mockClear();
+    mockText.mockReset();
   });
 
   describe('homeController', () => {
