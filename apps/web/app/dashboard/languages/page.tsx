@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Plus, Search, Edit, Trash2, Globe } from "lucide-react";
@@ -26,8 +27,7 @@ export default function LanguagesPage() {
   const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { data: session } = useSession();
-  const isAdmin = (session?.user as any)?.isAdmin ?? false;
-
+  const isAdmin = (session?.user as { isAdmin?: boolean })?.isAdmin ?? false;
   const { languages, pagination, loading, error, createLanguage, updateLanguage, deleteLanguage } = useLanguages({
     page,
     limit: 10,
@@ -161,7 +161,14 @@ export default function LanguagesPage() {
                       </TableCell>
                       <TableCell>
                         {lang.flagUrl ? (
-                          <img src={lang.flagUrl} alt={`${lang.name} flag`} className="h-6 w-8 object-cover rounded" />
+                          <Image
+                            src={lang.flagUrl}
+                            alt={`${lang.name} flag`}
+                            width={32}
+                            height={24}
+                            className="h-6 w-8 object-cover rounded"
+                            unoptimized
+                          />
                         ) : (
                           <span className="text-muted-foreground text-sm">No flag</span>
                         )}
@@ -194,7 +201,7 @@ export default function LanguagesPage() {
                             <AlertDialogContent>
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Delete Language</AlertDialogTitle>
-                                <AlertDialogDescription>Are you sure you want to delete "{lang.name}"? This action cannot be undone.</AlertDialogDescription>
+                                <AlertDialogDescription>Are you sure you want to delete &quot;{lang.name}&quot;? This action cannot be undone.</AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
