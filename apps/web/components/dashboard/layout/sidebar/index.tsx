@@ -103,7 +103,7 @@ const data = {
     },
     {
       title: "Languages",
-      url: "/dashboard/admin/languages",
+      url: "/dashboard/languages",
       icon: Globe,
       items: [],
     },
