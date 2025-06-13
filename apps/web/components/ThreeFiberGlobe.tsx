@@ -1,17 +1,14 @@
 'use client';
 
 import React, { useRef, useState, useMemo, useCallback, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { 
-  OrbitControls, 
-  Text, 
-  useTexture,
-  Sphere,
+import { Canvas, useFrame } from '@react-three/fiber';
+import {
+  OrbitControls,
+  Text,
   Billboard,
-  Html
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { Globe, Users, MapPin, Link, Gamepad2, Mouse, ZoomIn, Target } from 'lucide-react';
+import { Globe, Users, MapPin, Gamepad2, Mouse, ZoomIn, Target } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 
 // GeoJSON Feature interface
@@ -71,7 +68,7 @@ const MAJOR_CITIES: CityData[] = [
   { name: 'Tehran', country: 'Iran', lat: 35.6892, lng: 51.3890, population: 9500000, type: 'capital' },
   { name: 'Dhaka', country: 'Bangladesh', lat: 23.8103, lng: 90.4125, population: 9500000, type: 'capital' },
   { name: 'Karachi', country: 'Pakistan', lat: 24.8607, lng: 67.0011, population: 16100000, type: 'megacity' },
-  
+
   // Europe
   { name: 'Istanbul', country: 'Turkey', lat: 41.0082, lng: 28.9784, population: 15500000, type: 'megacity' },
   { name: 'Moscow', country: 'Russia', lat: 55.7558, lng: 37.6176, population: 12500000, type: 'capital' },
@@ -80,27 +77,27 @@ const MAJOR_CITIES: CityData[] = [
   { name: 'Berlin', country: 'Germany', lat: 52.5200, lng: 13.4050, population: 3700000, type: 'capital' },
   { name: 'Madrid', country: 'Spain', lat: 40.4168, lng: -3.7038, population: 6700000, type: 'capital' },
   { name: 'Rome', country: 'Italy', lat: 41.9028, lng: 12.4964, population: 4300000, type: 'capital' },
-  
+
   // North America
   { name: 'New York', country: 'United States of America', lat: 40.7128, lng: -74.0060, population: 18800000, type: 'megacity' },
   { name: 'Los Angeles', country: 'United States of America', lat: 34.0522, lng: -118.2437, population: 12400000, type: 'major' },
   { name: 'Mexico City', country: 'Mexico', lat: 19.4326, lng: -99.1332, population: 21800000, type: 'capital' },
   { name: 'Toronto', country: 'Canada', lat: 43.6532, lng: -79.3832, population: 6200000, type: 'major' },
   { name: 'Chicago', country: 'United States of America', lat: 41.8781, lng: -87.6298, population: 9500000, type: 'major' },
-  
+
   // South America
   { name: 'São Paulo', country: 'Brazil', lat: -23.5558, lng: -46.6396, population: 22400000, type: 'megacity' },
   { name: 'Buenos Aires', country: 'Argentina', lat: -34.6118, lng: -58.3960, population: 15200000, type: 'capital' },
   { name: 'Rio de Janeiro', country: 'Brazil', lat: -22.9068, lng: -43.1729, population: 13300000, type: 'major' },
   { name: 'Lima', country: 'Peru', lat: -12.0464, lng: -77.0428, population: 11000000, type: 'capital' },
   { name: 'Bogotá', country: 'Colombia', lat: 4.7110, lng: -74.0721, population: 11000000, type: 'capital' },
-  
+
   // Africa
   { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lng: 3.3792, population: 15400000, type: 'megacity' },
   { name: 'Cairo', country: 'Egypt', lat: 30.0444, lng: 31.2357, population: 21300000, type: 'capital' },
   { name: 'Kinshasa', country: 'Dem. Rep. Congo', lat: -4.4419, lng: 15.2663, population: 15600000, type: 'capital' },
   { name: 'Johannesburg', country: 'South Africa', lat: -26.2041, lng: 28.0473, population: 10000000, type: 'major' },
-  
+
   // Oceania
   { name: 'Sydney', country: 'Australia', lat: -33.8688, lng: 151.2093, population: 5400000, type: 'major' },
 ];
@@ -112,14 +109,14 @@ async function loadRealCountriesFromGeoJSON(): Promise<CountryData[]> {
     if (!response.ok) {
       throw new Error(`Failed to fetch GeoJSON: ${response.status}`);
     }
-    
+
     const geoData: GeoJSONData = await response.json();
-    
+
     const countries: CountryData[] = [];
-    
+
     geoData.features.forEach((feature) => {
       const coordinates: number[][] = [];
-      
+
       // Extract coordinates from different geometry types
       if (feature.geometry.type === 'Polygon') {
         const coords = feature.geometry.coordinates[0] as number[][];
@@ -131,7 +128,7 @@ async function loadRealCountriesFromGeoJSON(): Promise<CountryData[]> {
           coordinates.push(...coords);
         });
       }
-      
+
       // Assign continent-based colors
       const getContinentColor = (continent: string): string => {
         switch (continent) {
@@ -143,14 +140,15 @@ async function loadRealCountriesFromGeoJSON(): Promise<CountryData[]> {
           case 'Oceania': return '#06b6d4'; // Cyan
           case 'Antarctica': return '#6b7280'; // Gray
           default: return '#9ca3af'; // Gray default
-        }      };        // Only keep countries with population > 10M (reduced to show more countries)
+        }
+      };        // Only keep countries with population > 10M (reduced to show more countries)
       const population = feature.properties.POP_EST || 0;
-      
+
       // Skip low population countries
       if (population < 10000000) {
         return;
       }
-      
+
       countries.push({
         name: feature.properties.NAME,
         coordinates,
@@ -159,7 +157,7 @@ async function loadRealCountriesFromGeoJSON(): Promise<CountryData[]> {
         color: getContinentColor(feature.properties.CONTINENT || 'Unknown')
       });
     });
-    
+
     return countries;
   } catch (error) {
     console.error('Error loading countries from GeoJSON:', error);
@@ -171,7 +169,7 @@ async function loadRealCountriesFromGeoJSON(): Promise<CountryData[]> {
 function latLngToVector3(lat: number, lng: number, radius: number = 5) {
   const phi = (90 - lat) * (Math.PI / 180);
   const theta = (lng + 180) * (Math.PI / 180);
-  
+
   return new THREE.Vector3(
     -(radius * Math.sin(phi) * Math.cos(theta)),
     radius * Math.cos(phi),
@@ -199,8 +197,8 @@ const EarthGlobe = React.memo(({ onRotationUpdate }: { onRotationUpdate?: (rotat
   return (
     <mesh ref={earthRef}>
       <sphereGeometry args={[5, 16, 8]} />
-      <meshBasicMaterial 
-        color="#2563eb" 
+      <meshBasicMaterial
+        color="#2563eb"
         wireframe={true}
         transparent={true}
         opacity={0.3}
@@ -212,7 +210,7 @@ const EarthGlobe = React.memo(({ onRotationUpdate }: { onRotationUpdate?: (rotat
 EarthGlobe.displayName = 'EarthGlobe';
 
 // Real Countries from GeoJSON - Renders actual country boundaries as dots
-const RealCountries = React.memo(({ globeRotation, countries }: { 
+const RealCountries = React.memo(({ globeRotation, countries }: {
   globeRotation: number;
   countries: CountryData[];
 }) => {
@@ -224,15 +222,15 @@ const RealCountries = React.memo(({ globeRotation, countries }: {
       groupRef.current.rotation.y = globeRotation;
     }
   });
-  
+
   // Convert GeoJSON coordinates to 3D points on sphere with 2x density
   const countryPoints = useMemo(() => {
     const points: THREE.Vector3[] = [];
     const colors: THREE.Color[] = [];
-    
+
     countries.forEach((country) => {
       const color = new THREE.Color(country.color);
-      
+
       // Sample coordinates for better performance - doubled density
       country.coordinates.forEach((coord, index) => {
         if (coord.length >= 2) {
@@ -241,16 +239,16 @@ const RealCountries = React.memo(({ globeRotation, countries }: {
             // Convert lat/lng to 3D sphere coordinates
             const phi = (90 - lat) * (Math.PI / 180);
             const theta = (lng + 180) * (Math.PI / 180);
-            
+
             const point = new THREE.Vector3(
               -(5.05 * Math.sin(phi) * Math.cos(theta)),
               5.05 * Math.cos(phi),
               5.05 * Math.sin(phi) * Math.sin(theta)
             );
-            
+
             points.push(point);
             colors.push(color);
-              // Add multiple interpolated points between coordinates for 4x density
+            // Add multiple interpolated points between coordinates for 4x density
             if (index > 0) {
               const prevCoord = country.coordinates[index - 1];
               if (prevCoord && prevCoord.length >= 2) {
@@ -261,16 +259,16 @@ const RealCountries = React.memo(({ globeRotation, countries }: {
                     const ratio = i / 4; // 0.25, 0.5, 0.75
                     const interpLat = prevLat + (lat - prevLat) * ratio;
                     const interpLng = prevLng + (lng - prevLng) * ratio;
-                    
+
                     const interpPhi = (90 - interpLat) * (Math.PI / 180);
                     const interpTheta = (interpLng + 180) * (Math.PI / 180);
-                    
+
                     const interpPoint = new THREE.Vector3(
                       -(5.05 * Math.sin(interpPhi) * Math.cos(interpTheta)),
                       5.05 * Math.cos(interpPhi),
                       5.05 * Math.sin(interpPhi) * Math.sin(interpTheta)
                     );
-                    
+
                     points.push(interpPoint);
                     colors.push(color);
                   }
@@ -281,7 +279,7 @@ const RealCountries = React.memo(({ globeRotation, countries }: {
         }
       });
     });
-    
+
     return { points, colors };
   }, [countries]);
 
@@ -289,21 +287,21 @@ const RealCountries = React.memo(({ globeRotation, countries }: {
     const geom = new THREE.BufferGeometry();
     const positions = new Float32Array(countryPoints.points.length * 3);
     const colorArray = new Float32Array(countryPoints.points.length * 3);
-    
+
     countryPoints.points.forEach((point, i) => {
       positions[i * 3] = point.x;
       positions[i * 3 + 1] = point.y;
       positions[i * 3 + 2] = point.z;
-      
+
       const color = countryPoints.colors[i];
       colorArray[i * 3] = color.r;
       colorArray[i * 3 + 1] = color.g;
       colorArray[i * 3 + 2] = color.b;
     });
-    
+
     geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geom.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-    
+
     return geom;
   }, [countryPoints]);
   return (
@@ -324,7 +322,7 @@ const RealCountries = React.memo(({ globeRotation, countries }: {
 RealCountries.displayName = 'RealCountries';
 
 // City Hubs - Shows major cities as simple dots
-const CityHubs = React.memo(({ globeRotation, onCityClick }: { 
+const CityHubs = React.memo(({ globeRotation, onCityClick }: {
   globeRotation: number;
   onCityClick?: (city: CityData) => void;
 }) => {
@@ -340,9 +338,9 @@ const CityHubs = React.memo(({ globeRotation, onCityClick }: {
   return (
     <group ref={groupRef}>
       {MAJOR_CITIES.map((city, index) => (
-        <CityHub 
-          key={`${city.name}-${index}`} 
-          city={city} 
+        <CityHub
+          key={`${city.name}-${index}`}
+          city={city}
           onClick={onCityClick}
         />
       ))}
@@ -353,10 +351,10 @@ const CityHubs = React.memo(({ globeRotation, onCityClick }: {
 CityHubs.displayName = 'CityHubs';
 
 // Individual City Hub Component - Simple dots with labels
-const CityHub = React.memo(({ 
-  city, 
-  onClick 
-}: { 
+const CityHub = React.memo(({
+  city,
+  onClick
+}: {
   city: CityData;
   onClick?: (city: CityData) => void;
 }) => {
@@ -364,7 +362,7 @@ const CityHub = React.memo(({
   const position = useMemo(() => {
     const phi = (90 - city.lat) * (Math.PI / 180);
     const theta = (city.lng + 180) * (Math.PI / 180);
-    
+
     return new THREE.Vector3(
       -(5.1 * Math.sin(phi) * Math.cos(theta)),
       5.1 * Math.cos(phi),
@@ -399,19 +397,19 @@ const CityHub = React.memo(({
   return (
     <group position={position}>
       {/* Simple bright dot for city */}
-      <mesh 
+      <mesh
         onClick={handleClick}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
       >
         <sphereGeometry args={[size, 8, 8]} />
-        <meshBasicMaterial 
-          color={color} 
+        <meshBasicMaterial
+          color={color}
           transparent={true}
           opacity={0.9}
         />
       </mesh>
-      
+
       {/* City name label */}
       <Billboard
         position={[0, size + 0.15, 0]}
@@ -441,22 +439,22 @@ const CityHub = React.memo(({
 CityHub.displayName = 'CityHub';
 
 // Country Information Marker - Shows country details on hover
-const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: { 
-  country: CountryData, 
+const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: {
+  country: CountryData,
   onHover: (country: CountryData | null) => void,
   globeRotation: number,
   onClick?: () => void
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
-  
+
   // Use first coordinate as center point for the marker
   const basePosition = useMemo(() => {
     if (country.coordinates.length > 0) {
       const [lng, lat] = country.coordinates[0];
       const phi = (90 - lat) * (Math.PI / 180);
       const theta = (lng + 180) * (Math.PI / 180);
-      
+
       return new THREE.Vector3(
         -(5.15 * Math.sin(phi) * Math.cos(theta)),
         5.15 * Math.cos(phi),
@@ -465,20 +463,20 @@ const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: 
     }
     return new THREE.Vector3(0, 0, 0);
   }, [country.coordinates]);
-  
+
   useFrame((state) => {
     // Apply globe rotation to the marker group
     if (groupRef.current) {
       groupRef.current.rotation.y = globeRotation;
     }
-    
+
     if (meshRef.current) {
       const scale = 1 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
       meshRef.current.scale.setScalar(scale);
       meshRef.current.lookAt(state.camera.position);
     }
   });
-  
+
   return (
     <group ref={groupRef}>
       <group position={basePosition}>
@@ -491,7 +489,7 @@ const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: 
           <sphereGeometry args={[0.03, 8, 6]} />
           <meshBasicMaterial color={country.color} />
         </mesh>
-          <Billboard position={[0, 0.15, 0]}>
+        <Billboard position={[0, 0.15, 0]}>
           <Text
             fontSize={0.05}
             color="white"
@@ -500,9 +498,9 @@ const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: 
             outlineWidth={0.005}
             outlineColor="#000000"
           >
-            {country.name === 'United States of America' || 
-             country.name === 'United States' || 
-             country.name === 'USA' ? '' : country.name}
+            {country.name === 'United States of America' ||
+              country.name === 'United States' ||
+              country.name === 'USA' ? '' : country.name}
           </Text>
         </Billboard>
       </group>
@@ -516,7 +514,7 @@ CountryMarker.displayName = 'CountryMarker';
 const Atmosphere = React.memo(() => {
   const atm1Ref = useRef<THREE.Mesh>(null);
   const atm2Ref = useRef<THREE.Mesh>(null);
-  
+
   useFrame((state) => {
     if (atm1Ref.current) {
       atm1Ref.current.rotation.y += 0.0003;
@@ -532,20 +530,20 @@ const Atmosphere = React.memo(() => {
     <>
       <mesh ref={atm1Ref}>
         <sphereGeometry args={[5.2, 32, 16]} />
-        <meshBasicMaterial 
-          color="#4fc3f7" 
-          transparent 
+        <meshBasicMaterial
+          color="#4fc3f7"
+          transparent
           opacity={0.1}
           side={THREE.BackSide}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
-      
+
       <mesh ref={atm2Ref}>
         <sphereGeometry args={[5.4, 24, 12]} />
-        <meshBasicMaterial 
-          color="#3f51b5" 
-          transparent 
+        <meshBasicMaterial
+          color="#3f51b5"
+          transparent
           opacity={0.05}
           side={THREE.BackSide}
           blending={THREE.AdditiveBlending}
@@ -564,11 +562,11 @@ const Starfield = React.memo(() => {
       const radius = 150 + Math.random() * 100; // Stars very far from globe
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
-      
+
       const x = radius * Math.sin(phi) * Math.cos(theta);
       const y = radius * Math.sin(phi) * Math.sin(theta);
       const z = radius * Math.cos(phi);
-      
+
       positions.push(x, y, z);      // Different star colors (white, blue, yellow, red giants) - balanced visibility
       const starType = Math.random();
       if (starType < 0.7) {
@@ -585,17 +583,17 @@ const Starfield = React.memo(() => {
         colors.push(0.7, 0.4, 0.3);
       }
     }
-    
+
     return {
       positions: new Float32Array(positions),
       colors: new Float32Array(colors)
     };
   }, []);
-    // Gentle twinkling animation - optimized for performance
+  // Gentle twinkling animation - optimized for performance
   useFrame((state) => {
     if (starsRef.current) {
       starsRef.current.rotation.y += 0.0001; // Very slow rotation
-      
+
       // Less frequent size updates for better performance
       if (Math.floor(state.clock.elapsedTime * 2) % 3 === 0) {
         const material = starsRef.current.material as THREE.PointsMaterial;
@@ -603,7 +601,7 @@ const Starfield = React.memo(() => {
       }
     }
   });
-  
+
   return (
     <points ref={starsRef}>
       <bufferGeometry>
@@ -631,24 +629,26 @@ const Starfield = React.memo(() => {
 Starfield.displayName = 'Starfield';
 
 // Main Scene Component - Refactored for Real Countries
-const Scene = React.memo(({ 
-  onCountryHover, 
-  isMobile, 
-  selectedCountry, 
-  setSelectedCountry, 
+const Scene = React.memo(({
+  onCountryHover,
+  isMobile,
+  selectedCountry,
+  setSelectedCountry,
   showCountries = true,
   countries = [],
   isLoadingCountries = false,
-  onCityClick
-}: { 
-  onCountryHover: (country: CountryData | null) => void, 
+  onCityClick,
+  selectedCity
+}: {
+  onCountryHover: (country: CountryData | null) => void,
   isMobile: boolean,
   selectedCountry: CountryData | null,
   setSelectedCountry: (country: CountryData | null) => void,
   showCountries?: boolean,
   countries?: CountryData[],
   isLoadingCountries?: boolean,
-  onCityClick?: (city: CityData) => void
+  onCityClick?: (city: CityData) => void,
+  selectedCity?: CityData | null
 }) => {
   const [globeRotation, setGlobeRotation] = useState(0);
   const [isMouseOver, setIsMouseOver] = useState(false);
@@ -667,25 +667,25 @@ const Scene = React.memo(({
     >
       {/* Stars first - rendered in background */}
       <Starfield />
-      
+
       <ambientLight intensity={0.4} />
       <directionalLight position={[10, 10, 5]} intensity={0.6} />
       <pointLight position={[-10, -10, -5]} intensity={0.3} color="#4fc3f7" />
-      
+
       <EarthGlobe onRotationUpdate={handleRotationUpdate} />
-        {/* Render real countries if enabled and data is available */}
+      {/* Render real countries if enabled and data is available */}
       {showCountries && countries.length > 0 && (
         <RealCountries globeRotation={globeRotation} countries={countries} />
       )}
-      
+
       {/* Render city hubs */}
       <CityHubs globeRotation={globeRotation} onCityClick={onCityClick} />
-        {/* Render country markers for interaction - reduced number */}
+      {/* Render country markers for interaction - reduced number */}
       {countries.length > 0 && countries.slice(0, 5).map((country, index) => (
-        <CountryMarker 
-          key={`country-${index}`} 
+        <CountryMarker
+          key={`country-${index}`}
           country={country}
-          onHover={selectedCountry ? () => {} : onCountryHover}
+          onHover={selectedCountry ? () => { } : onCountryHover}
           globeRotation={globeRotation}
           onClick={() => {
             setSelectedCountry(country);
@@ -693,9 +693,9 @@ const Scene = React.memo(({
           }}
         />
       ))}
-      
+
       <Atmosphere />
-      
+
       <OrbitControls
         ref={orbitControlsRef}
         enableZoom={true}
@@ -705,7 +705,7 @@ const Scene = React.memo(({
         rotateSpeed={0.5}
         minDistance={isMobile ? 15 : 8}
         maxDistance={isMobile ? 40 : 30}
-        autoRotate={!isMouseOver}
+        autoRotate={!isMouseOver && !selectedCountry && !selectedCity}
         autoRotateSpeed={0.5}
         makeDefault
       />
@@ -727,15 +727,15 @@ class WebGLErrorBoundary extends React.Component<
 
   static getDerivedStateFromError(error: Error) {
     console.error('WebGL Error Boundary caught:', error);
-    return { 
-      hasError: true, 
+    return {
+      hasError: true,
       errorInfo: error.message.includes('context') ? 'WebGL Context Issue' : 'Rendering Error'
     };
   }
 
   componentDidCatch(error: Error, errorInfo: any) {
     console.error('WebGL Error Details:', error, errorInfo);
-    
+
     // Attempt automatic recovery for context loss
     if (error.message.includes('context') || error.message.includes('WebGL')) {
       setTimeout(() => {
@@ -751,14 +751,14 @@ class WebGLErrorBoundary extends React.Component<
           <div className="text-center">
             <div className="text-red-400 text-lg mb-4">⚠️ {this.state.errorInfo || 'WebGL Error'}</div>
             <p className="text-white text-sm mb-4">
-              {this.state.errorInfo === 'WebGL Context Issue' 
-                ? 'Graphics context will be restored automatically...' 
+              {this.state.errorInfo === 'WebGL Context Issue'
+                ? 'Graphics context will be restored automatically...'
                 : 'Unable to load 3D Globe'}
             </p>
             {this.state.errorInfo === 'WebGL Context Issue' ? (
               <div className="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto"></div>
             ) : (
-              <button 
+              <button
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
               >
@@ -792,20 +792,20 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
   useEffect(() => {
     const updatePlayerCount = () => {
       const time = Date.now() / 1000;
-      
+
       // Multiple wave patterns for realistic fluctuation
       const baseWave = Math.sin(time * 0.05) * 0.3; // Slow base wave
       const fastWave = Math.sin(time * 0.3) * 0.1; // Faster fluctuation
       const randomWave = Math.sin(time * 0.15 + Math.sin(time * 0.08) * 2) * 0.15; // Complex wave
-      
+
       // Combine waves for natural variation
       const totalVariation = baseWave + fastWave + randomWave;
-      
+
       // Map to 40k-90k range
       const baseCount = 65000; // Middle point
       const range = 25000; // ±25k from base
       const newCount = Math.round(baseCount + (totalVariation * range));
-      
+
       // Ensure bounds
       const clampedCount = Math.max(40000, Math.min(90000, newCount));
       setTotalPlayers(clampedCount);
@@ -818,7 +818,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
   // Load real countries from GeoJSON on component mount
   useEffect(() => {
     let isMounted = true;
-    
+
     const loadCountries = async () => {
       try {
         const countryData = await loadRealCountriesFromGeoJSON();
@@ -833,9 +833,9 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
         }
       }
     };
-    
+
     loadCountries();
-    
+
     return () => {
       isMounted = false;
     };
@@ -864,8 +864,11 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
     showCountries: showCountries,
     countries: countries,
     isLoadingCountries: isLoadingCountries,
-    onCityClick: handleCityClick
-  }), [handleCountryHover, handleCityClick, isMobile, selectedCountry, showCountries, countries, isLoadingCountries]);// Memoize camera settings to prevent re-creation - Mobile Responsive
+    onCityClick: handleCityClick,
+    selectedCity: selectedCity
+  }), [handleCountryHover, handleCityClick, isMobile, selectedCountry, selectedCity, showCountries, countries, isLoadingCountries]);
+
+  // Memoize camera settings to prevent re-creation - Mobile Responsive
   const cameraSettings = useMemo(() => ({
     position: [0, 0, isMobile ? 24 : 15] as [number, number, number], // 80% zoom out on mobile (24 vs 15)
     fov: 50
@@ -888,7 +891,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
       console.warn('WebGL context lost, preventing default and remounting...');
       event.preventDefault();
       setIsContextLost(true);
-      
+
       // Force canvas remount after a delay
       setTimeout(() => {
         setCanvasKey(prev => prev + 1);
@@ -951,7 +954,8 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
     };
   }, []);
 
-  return(    <WebGLErrorBoundary>
+  return (
+    <WebGLErrorBoundary>
       <div className="relative w-full h-[800px] bg-transparent">        {/* Loading Countries Overlay */}
         {isLoadingCountries && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
@@ -962,7 +966,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
             </div>
           </div>
         )}
-        
+
         {/* WebGL Context Lost Overlay */}
         {isContextLost && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -973,7 +977,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
             </div>
           </div>
         )}
-        
+
         {!webglError && !isContextLost ? (
           <Canvas
             ref={canvasRef}
@@ -995,7 +999,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
             <div className="text-center">
               <div className="text-red-400 text-lg mb-4">⚠️ WebGL Error</div>
               <p className="text-white text-sm mb-4">Graphics context encountered an issue</p>
-              <button 
+              <button
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
               >
@@ -1004,317 +1008,334 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
             </div>
           </div>
         )}      {/* Stats Panel - Gaming Network Style */}
-      <div className={`absolute transition-all duration-200 bg-black/80 backdrop-blur-lg rounded-xl border border-purple-500/40 shadow-xl ${
-        isMobile 
-          ? 'top-2 left-2 right-2 p-3' 
-          : 'top-3 left-3 p-4 rounded-xl max-w-[280px]'
-      }`}
-           style={{ touchAction: 'pan-y', boxShadow: '0 4px 30px rgba(123, 31, 162, 0.15)' }}>
-        
-        {/* Header */}
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center">
-            <Globe className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-white font-semibold text-sm">noob.gg Gaming Network</span>
-        </div>
-        
-        {/* Stats Grid */}
-        <div className="space-y-3">          {/* Total Players */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-blue-400" />
-              <span className="text-gray-300 text-sm">Total Players:</span>
+        <div className={`absolute transition-all duration-200 bg-black/80 backdrop-blur-lg rounded-xl border border-purple-500/40 shadow-xl 
+        ${isMobile
+            ? 'top-2 left-2 right-2 p-3'
+            : 'top-3 left-3 p-4 rounded-xl max-w-[280px]'
+          }`}
+          style={{ touchAction: 'pan-y', boxShadow: '0 4px 30px rgba(123, 31, 162, 0.15)' }}>
+
+          {/* Header */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center">
+              <Globe className="w-4 h-4 text-white" />
             </div>
-            <span className="text-blue-400 font-bold text-lg">
-              {totalPlayers.toLocaleString()}
+            <span className="text-white font-semibold text-sm">noob.gg Gaming Network</span>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="space-y-3">          {/* Total Players */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-blue-400" />
+                <span className="text-gray-300 text-sm">Total Players:</span>
+              </div>
+              <span className="text-blue-400 font-bold text-lg">
+                {totalPlayers.toLocaleString()}
+              </span>
+            </div>
+
+            {/* Active Hubs */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-purple-400" />
+                <span className="text-gray-300 text-sm">Active Hubs:</span>
+              </div>
+              <span className="text-purple-400 font-bold text-lg">{MAJOR_CITIES.length}</span>
+            </div>
+
+            {/* Connections */}          <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-gray-300 text-sm">Connections:</span>
+              </div>
+              <span className="text-green-400 font-bold text-lg">Live</span>
+            </div>
+          </div>
+        </div>{/* Country Info Panel - Modern Glassmorphism */}
+        {hoveredCountry && !selectedCountry && (
+          <div className="absolute bottom-20 left-4 right-4 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 bg-black/75 backdrop-blur-xl text-white rounded-xl p-3.5 sm:p-4 border border-purple-500/50 sm:w-80 sm:max-w-sm"
+            style={{ touchAction: 'pan-y', boxShadow: '0 8px 32px rgba(123, 31, 162, 0.25)' }}>
+            <div className="flex items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">
+              <div className="text-xl sm:text-2xl drop-shadow-glow">🌍</div>
+              <div>
+                <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  {hoveredCountry.name === 'United States of America' ||
+                    hoveredCountry.name === 'United States' ||
+                    hoveredCountry.name === 'USA' ? 'USA' : hoveredCountry.name}
+                </h3>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: hoveredCountry.color, boxShadow: `0 0 5px ${hoveredCountry.color}` }}
+                  ></div>
+                  <span className="text-xs text-gray-300">{hoveredCountry.continent}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2.5 sm:space-y-3">
+              <div className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/10 rounded-lg p-2.5 border border-purple-500/20">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-200 flex items-center gap-1.5 text-xs sm:text-sm">
+                    <Users className="w-3 h-3 text-purple-300" />
+                    <span className="hidden sm:inline">Population</span>
+                    <span className="sm:hidden">Pop.</span>
+                  </span>
+                  <span className="bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent font-bold text-sm sm:text-base">
+                    {(hoveredCountry.population / 1000000).toFixed(1)}M
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-purple-500/20">
+                <p className="text-gray-300 text-xs leading-relaxed flex items-start gap-1.5">
+                  <Globe className="w-3 h-3 mt-0.5 flex-shrink-0 text-blue-300" />
+                  Hover over countries for quick info, click for details!
+                </p>
+              </div>
+            </div>
+          </div>
+        )}      {/* Selected Country Modal - Full Details */}
+        {selectedCountry && (
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedCountry(null)}
+          >
+            <div
+              className="bg-black/90 backdrop-blur-xl text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
+              style={{ boxShadow: '0 20px 40px rgba(123, 31, 162, 0.4)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl drop-shadow-glow">🌍</div>
+                  <div>                  <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    {selectedCountry.name === 'United States of America' ||
+                      selectedCountry.name === 'United States' ||
+                      selectedCountry.name === 'USA' ? 'USA' : selectedCountry.name}
+                  </h2>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: selectedCountry.color, boxShadow: `0 0 8px ${selectedCountry.color}` }}
+                      ></div>
+                      <span className="text-sm text-gray-300">{selectedCountry.continent}</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedCountry(null)}
+                  className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/10 rounded-xl p-4 border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-5 h-5 text-purple-300" />
+                    <span className="text-sm text-gray-300">Population</span>
+                  </div>
+                  <div className="text-2xl font-bold bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
+                    {(selectedCountry.population / 1000000).toFixed(1)}M
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-xl p-4 border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Globe className="w-5 h-5 text-blue-300" />
+                    <span className="text-sm text-gray-300">Continent</span>
+                  </div>
+                  <div className="text-2xl font-bold bg-gradient-to-br from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                    {selectedCountry.continent}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setSelectedCountry(null)}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all transform hover:scale-105"
+                  style={{ boxShadow: '0 4px 15px rgba(123, 31, 162, 0.3)' }}
+                >
+                  Explore
+                </button>
+                <button
+                  onClick={() => setSelectedCountry(null)}
+                  className="px-4 py-3 border border-gray-500 text-gray-300 font-semibold rounded-lg hover:bg-white/10 hover:border-gray-400 transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Selected City Modal - Gaming Hub Details */}
+        {selectedCity && (
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedCity(null)}
+          >
+            <div
+              className="bg-black/90 backdrop-blur-xl text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
+              style={{ boxShadow: '0 20px 40px rgba(123, 31, 162, 0.4)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl drop-shadow-glow">🎮</div>
+                  <div>
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                      {selectedCity.name}
+                    </h2>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                      <span className="text-sm text-purple-300 font-medium">Gaming Hub</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setSelectedCity(null);
+                  }}
+                  className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/10 rounded-xl p-4 border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-5 h-5 text-purple-300" />
+                    <span className="text-sm text-gray-300">Active Players</span>
+                  </div>
+                  <div className="text-2xl font-bold bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
+                    {Math.floor(selectedCity.population / 100)}
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-xl p-4 border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Gamepad2 className="w-5 h-5 text-blue-300" />
+                    <span className="text-sm text-gray-300">Popular Games</span>
+                  </div>
+                  <div className="text-2xl font-bold bg-gradient-to-br from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                    3
+                  </div>
+                </div>
+              </div>
+
+              {/* Popular Games List */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Gamepad2 className="w-4 h-4 text-purple-300" />
+                  <span className="text-sm text-gray-300 font-medium">Popular Games</span>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-500/10 to-transparent rounded-lg border border-purple-500/20">
+                    <span className="text-white font-medium">CS2</span>
+                    <span className="text-purple-300 text-sm font-bold">#1</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-500/10 to-transparent rounded-lg border border-blue-500/20">
+                    <span className="text-white font-medium">LOL</span>
+                    <span className="text-blue-300 text-sm font-bold">#2</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 to-transparent rounded-lg border border-green-500/20">
+                    <span className="text-white font-medium">Valorant</span>
+                    <span className="text-green-300 text-sm font-bold">#3</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setSelectedCity(null)}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all transform hover:scale-105"
+                  style={{ boxShadow: '0 4px 15px rgba(123, 31, 162, 0.3)' }}
+                >
+                  Join Hub
+                </button>
+                <button
+                  onClick={() => setSelectedCity(null)}
+                  className="px-4 py-3 border border-gray-500 text-gray-300 font-semibold rounded-lg hover:bg-white/10 hover:border-gray-400 transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Controls - Modern Glassmorphism */}
+        <div className="absolute bottom-16 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-2.5 border border-purple-500/30 shadow-lg"
+          style={{ touchAction: 'pan-y', boxShadow: '0 4px 20px rgba(123, 31, 162, 0.2)' }}>
+          <p className="text-gray-200 text-xs sm:textsm text-center flex items-center justify-center gap-3 sm:gap-4">
+            <span className="flex items-center gap-1.5">
+              <Mouse className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-purple-300" />
+              <span className="hidden sm:inline">Drag to rotate</span>
+              <span className="sm:hidden">Drag</span>
             </span>
-          </div>
-          
-          {/* Active Hubs */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-purple-400" />
-              <span className="text-gray-300 text-sm">Active Hubs:</span>
-            </div>
-            <span className="text-purple-400 font-bold text-lg">{MAJOR_CITIES.length}</span>
-          </div>
-          
-          {/* Connections */}          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-gray-300 text-sm">Connections:</span>
-            </div>
-            <span className="text-green-400 font-bold text-lg">Live</span>
-          </div>
+            <span className="flex items-center gap-1.5">
+              <ZoomIn className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-blue-300" />
+              <span className="hidden sm:inline">Scroll to zoom</span>
+              <span className="sm:hidden">Zoom</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-green-300" />
+              <span className="hidden sm:inline">Click hubs for info</span>
+              <span className="sm:hidden">Click</span>
+            </span>
+          </p>
         </div>
-      </div>{/* Country Info Panel - Modern Glassmorphism */}
-      {hoveredCountry && !selectedCountry && (
-        <div className="absolute bottom-20 left-4 right-4 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 bg-black/75 backdrop-blur-xl text-white rounded-xl p-3.5 sm:p-4 border border-purple-500/50 sm:w-80 sm:max-w-sm"
-             style={{ touchAction: 'pan-y', boxShadow: '0 8px 32px rgba(123, 31, 162, 0.25)' }}>
-          <div className="flex items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">
-            <div className="text-xl sm:text-2xl drop-shadow-glow">🌍</div>
-            <div>
-              <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                {hoveredCountry.name === 'United States of America' || 
-                 hoveredCountry.name === 'United States' || 
-                 hoveredCountry.name === 'USA' ? 'USA' : hoveredCountry.name}
-              </h3>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <div 
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: hoveredCountry.color, boxShadow: `0 0 5px ${hoveredCountry.color}` }}
-                ></div>
-                <span className="text-xs text-gray-300">{hoveredCountry.continent}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="space-y-2.5 sm:space-y-3">
-            <div className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/10 rounded-lg p-2.5 border border-purple-500/20">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-200 flex items-center gap-1.5 text-xs sm:text-sm">
-                  <Users className="w-3 h-3 text-purple-300" />
-                  <span className="hidden sm:inline">Population</span>
-                  <span className="sm:hidden">Pop.</span>
-                </span>
-                <span className="bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent font-bold text-sm sm:text-base">
-                  {(hoveredCountry.population / 1000000).toFixed(1)}M
-                </span>
-              </div>
-            </div>
-            
-            <div className="pt-2 border-t border-purple-500/20">
-              <p className="text-gray-300 text-xs leading-relaxed flex items-start gap-1.5">
-                <Globe className="w-3 h-3 mt-0.5 flex-shrink-0 text-blue-300" />
-                Hover over countries for quick info, click for details!
-              </p>
-            </div>
-          </div>
-        </div>
-      )}      {/* Selected Country Modal - Full Details */}
-      {selectedCountry && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-black/90 backdrop-blur-xl text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
-               style={{ boxShadow: '0 20px 40px rgba(123, 31, 162, 0.4)' }}>
-            
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="text-3xl drop-shadow-glow">🌍</div>
-                <div>                  <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                    {selectedCountry.name === 'United States of America' || 
-                     selectedCountry.name === 'United States' || 
-                     selectedCountry.name === 'USA' ? 'USA' : selectedCountry.name}
-                  </h2>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div 
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: selectedCountry.color, boxShadow: `0 0 8px ${selectedCountry.color}` }}
-                    ></div>
-                    <span className="text-sm text-gray-300">{selectedCountry.continent}</span>
-                  </div>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedCountry(null)}
-                className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
-              >
-                ✕
-              </button>
-            </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/10 rounded-xl p-4 border border-purple-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="w-5 h-5 text-purple-300" />
-                  <span className="text-sm text-gray-300">Population</span>
-                </div>
-                <div className="text-2xl font-bold bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
-                  {(selectedCountry.population / 1000000).toFixed(1)}M
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-xl p-4 border border-blue-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Globe className="w-5 h-5 text-blue-300" />
-                  <span className="text-sm text-gray-300">Continent</span>
-                </div>
-                <div className="text-2xl font-bold bg-gradient-to-br from-blue-400 to-cyan-500 bg-clip-text text-transparent">
-                  {selectedCountry.continent}
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button 
-                onClick={() => setSelectedCountry(null)}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all transform hover:scale-105"
-                style={{ boxShadow: '0 4px 15px rgba(123, 31, 162, 0.3)' }}
-              >
-                Explore
-              </button>
-              <button 
-                onClick={() => setSelectedCountry(null)}
-                className="px-4 py-3 border border-gray-500 text-gray-300 font-semibold rounded-lg hover:bg-white/10 hover:border-gray-400 transition-all"
-              >
-                Close
-              </button>            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Selected City Modal - Gaming Hub Details */}
-      {selectedCity && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-black/90 backdrop-blur-xl text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
-               style={{ boxShadow: '0 20px 40px rgba(123, 31, 162, 0.4)' }}>
-            
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="text-3xl drop-shadow-glow">🎮</div>
-                <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                    {selectedCity.name}
-                  </h2>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                    <span className="text-sm text-purple-300 font-medium">Gaming Hub</span>
-                  </div>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedCity(null)}
-                className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/10 rounded-xl p-4 border border-purple-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="w-5 h-5 text-purple-300" />
-                  <span className="text-sm text-gray-300">Active Players</span>
-                </div>
-                <div className="text-2xl font-bold bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
-                  {Math.floor(selectedCity.population / 100)}
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-xl p-4 border border-blue-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Gamepad2 className="w-5 h-5 text-blue-300" />
-                  <span className="text-sm text-gray-300">Popular Games</span>
-                </div>
-                <div className="text-2xl font-bold bg-gradient-to-br from-blue-400 to-cyan-500 bg-clip-text text-transparent">
-                  3
-                </div>
-              </div>
-            </div>
-
-            {/* Popular Games List */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Gamepad2 className="w-4 h-4 text-purple-300" />
-                <span className="text-sm text-gray-300 font-medium">Popular Games</span>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-500/10 to-transparent rounded-lg border border-purple-500/20">
-                  <span className="text-white font-medium">CS2</span>
-                  <span className="text-purple-300 text-sm font-bold">#1</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-500/10 to-transparent rounded-lg border border-blue-500/20">
-                  <span className="text-white font-medium">LOL</span>
-                  <span className="text-blue-300 text-sm font-bold">#2</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 to-transparent rounded-lg border border-green-500/20">
-                  <span className="text-white font-medium">Valorant</span>
-                  <span className="text-green-300 text-sm font-bold">#3</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button 
-                onClick={() => setSelectedCity(null)}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all transform hover:scale-105"
-                style={{ boxShadow: '0 4px 15px rgba(123, 31, 162, 0.3)' }}
-              >
-                Join Hub
-              </button>
-              <button 
-                onClick={() => setSelectedCity(null)}
-                className="px-4 py-3 border border-gray-500 text-gray-300 font-semibold rounded-lg hover:bg-white/10 hover:border-gray-400 transition-all"
-              >
-                Close
-              </button>            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Controls - Modern Glassmorphism */}
-      <div className="absolute bottom-16 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-2.5 border border-purple-500/30 shadow-lg"
-           style={{ touchAction: 'pan-y', boxShadow: '0 4px 20px rgba(123, 31, 162, 0.2)' }}>
-        <p className="text-gray-200 text-xs sm:textsm text-center flex items-center justify-center gap-3 sm:gap-4">
-          <span className="flex items-center gap-1.5">
-            <Mouse className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-purple-300" />
-            <span className="hidden sm:inline">Drag to rotate</span>
-            <span className="sm:hidden">Drag</span>
+        {/* WebGL Status Indicator - Modern Pill */}
+        <div
+          className={`absolute bottom-4 
+            ${isMobile
+              ? 'left-1/2 transform -translate-x-1/2'
+              : 'right-4 left-auto transform-none'
+            } flex items-center gap-2 bg-black/60 backdrop-blur-xl rounded-full px-3 py-1.5 sm:px-3.5 sm:py-1.5 border border-purple-500/30 shadow-md z-30`}
+          style={{ touchAction: 'pan-y', boxShadow: '0 4px 12px rgba(123, 31, 162, 0.15)' }}
+        >
+          <div className={`w-2 h-2 rounded-full 
+          ${isContextLost
+              ? 'bg-yellow-400'
+              : webglError
+                ? 'bg-red-400'
+                : 'bg-emerald-400'
+            }`} style={{
+              boxShadow: isContextLost
+                ? '0 0 5px #facc15'
+                : webglError
+                  ? '0 0 5px #f87171'
+                  : '0 0 5px #34d399'
+            }}></div>
+          <span className={`text-xs font-medium 
+          ${isContextLost
+              ? 'text-yellow-400'
+              : webglError
+                ? 'text-red-400'
+                : 'bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent'
+            }`}>
+            {isContextLost ? 'Restoring...' : webglError ? 'Error' : 'WebGL Active'}
           </span>
-          <span className="flex items-center gap-1.5">
-            <ZoomIn className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-blue-300" />
-            <span className="hidden sm:inline">Scroll to zoom</span>
-            <span className="sm:hidden">Zoom</span>
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Target className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-green-300" />
-            <span className="hidden sm:inline">Click hubs for info</span>
-            <span className="sm:hidden">Click</span>
-          </span>
-        </p>
+        </div>
       </div>
-
-      {/* WebGL Status Indicator - Modern Pill */}
-      <div
-        className={`absolute bottom-4 ${
-          isMobile
-            ? 'left-1/2 transform -translate-x-1/2'
-            : 'right-4 left-auto transform-none'
-        } flex items-center gap-2 bg-black/60 backdrop-blur-xl rounded-full px-3 py-1.5 sm:px-3.5 sm:py-1.5 border border-purple-500/30 shadow-md z-30`}
-        style={{ touchAction: 'pan-y', boxShadow: '0 4px 12px rgba(123, 31, 162, 0.15)' }}
-      >        <div className={`w-2 h-2 rounded-full ${
-          isContextLost 
-            ? 'bg-yellow-400' 
-            : webglError 
-            ? 'bg-red-400' 
-            : 'bg-emerald-400'
-        }`} style={{ 
-          boxShadow: isContextLost 
-            ? '0 0 5px #facc15' 
-            : webglError 
-            ? '0 0 5px #f87171' 
-            : '0 0 5px #34d399' 
-        }}></div>
-        <span className={`text-xs font-medium ${
-          isContextLost 
-            ? 'text-yellow-400' 
-            : webglError 
-            ? 'text-red-400' 
-            : 'bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent'
-        }`}>
-          {isContextLost ? 'Restoring...' : webglError ? 'Error' : 'WebGL Active'}
-        </span>
-      </div>
-    </div>
     </WebGLErrorBoundary>
   );
 }
