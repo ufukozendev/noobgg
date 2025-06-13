@@ -10,6 +10,7 @@ import {
 import * as THREE from 'three';
 import { Globe, Users, MapPin, Gamepad2, Mouse, ZoomIn, Target } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 // GeoJSON Feature interface
 interface GeoJSONFeature {
@@ -180,22 +181,10 @@ function latLngToVector3(lat: number, lng: number, radius: number = 5) {
 // Globe rotation context for syncing all elements
 const GlobeRotationContext = React.createContext<{ rotation: number }>({ rotation: 0 });
 
-// Wireframe Earth Globe - Ultra Optimized with Rotation Sync
-const EarthGlobe = React.memo(({ onRotationUpdate }: { onRotationUpdate?: (rotation: number) => void }) => {
-  const earthRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (earthRef.current) {
-      // Remove or comment out the auto-rotation:
-      // earthRef.current.rotation.y += 0.002;
-      if (onRotationUpdate && typeof onRotationUpdate === 'function') {
-        onRotationUpdate(earthRef.current.rotation.y);
-      }
-    }
-  });
-
+// Wireframe Earth Globe - now a simple static component
+const EarthGlobe = React.memo(() => {
   return (
-    <mesh ref={earthRef}>
+    <mesh>
       <sphereGeometry args={[5, 16, 8]} />
       <meshBasicMaterial
         color="#2563eb"
@@ -210,16 +199,16 @@ const EarthGlobe = React.memo(({ onRotationUpdate }: { onRotationUpdate?: (rotat
 EarthGlobe.displayName = 'EarthGlobe';
 
 // Real Countries from GeoJSON - Renders actual country boundaries as dots
-const RealCountries = React.memo(({ globeRotation, countries }: {
-  globeRotation: number;
+const RealCountries = React.memo(({ orbitControlsRef, countries }: {
+  orbitControlsRef: React.RefObject<OrbitControlsImpl | null>;
   countries: CountryData[];
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Apply rotation to match the globe
+  // Apply rotation to match the globe view from OrbitControls
   useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = globeRotation;
+    if (groupRef.current && orbitControlsRef.current) {
+      groupRef.current.rotation.y = -orbitControlsRef.current.getAzimuthalAngle();
     }
   });
 
@@ -322,16 +311,16 @@ const RealCountries = React.memo(({ globeRotation, countries }: {
 RealCountries.displayName = 'RealCountries';
 
 // City Hubs - Shows major cities as simple dots
-const CityHubs = React.memo(({ globeRotation, onCityClick }: {
-  globeRotation: number;
+const CityHubs = React.memo(({ orbitControlsRef, onCityClick }: {
+  orbitControlsRef: React.RefObject<OrbitControlsImpl | null>;
   onCityClick?: (city: CityData) => void;
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Apply rotation to match the globe
+  // Apply rotation to match the globe view from OrbitControls
   useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = globeRotation;
+    if (groupRef.current && orbitControlsRef.current) {
+      groupRef.current.rotation.y = -orbitControlsRef.current.getAzimuthalAngle();
     }
   });
 
@@ -439,10 +428,10 @@ const CityHub = React.memo(({
 CityHub.displayName = 'CityHub';
 
 // Country Information Marker - Shows country details on hover
-const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: {
+const CountryMarker = React.memo(({ country, onHover, orbitControlsRef, onClick }: {
   country: CountryData,
   onHover: (country: CountryData | null) => void,
-  globeRotation: number,
+  orbitControlsRef: React.RefObject<OrbitControlsImpl | null>,
   onClick?: () => void
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -466,8 +455,8 @@ const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: 
 
   useFrame((state) => {
     // Apply globe rotation to the marker group
-    if (groupRef.current) {
-      groupRef.current.rotation.y = globeRotation;
+    if (groupRef.current && orbitControlsRef.current) {
+      groupRef.current.rotation.y = -orbitControlsRef.current.getAzimuthalAngle();
     }
 
     if (meshRef.current) {
@@ -551,6 +540,8 @@ const Atmosphere = React.memo(() => {
     </>
   );
 });
+
+Atmosphere.displayName = 'Atmosphere';
 
 // Starfield background component
 const Starfield = React.memo(() => {
@@ -638,7 +629,8 @@ const Scene = React.memo(({
   countries = [],
   isLoadingCountries = false,
   onCityClick,
-  selectedCity
+  selectedCity,
+  isMouseOverRef
 }: {
   onCountryHover: (country: CountryData | null) => void,
   isMobile: boolean,
@@ -648,23 +640,24 @@ const Scene = React.memo(({
   countries?: CountryData[],
   isLoadingCountries?: boolean,
   onCityClick?: (city: CityData) => void,
-  selectedCity?: CityData | null
+  selectedCity?: CityData | null,
+  isMouseOverRef: React.RefObject<boolean>
 }) => {
-  const [globeRotation, setGlobeRotation] = useState(0);
-  const [isMouseOver, setIsMouseOver] = useState(false);
-  const orbitControlsRef = useRef<any>(null);
+  const orbitControlsRef = useRef<OrbitControlsImpl>(null);
 
-  const handleRotationUpdate = useCallback((rotation: number) => {
-    if (typeof rotation === 'number' && !isNaN(rotation)) {
-      setGlobeRotation(rotation);
+  // Directly manipulate OrbitControls to avoid re-renders on hover
+  useFrame(() => {
+    if (orbitControlsRef.current) {
+      const controls = orbitControlsRef.current;
+      const shouldAutoRotate = !isMouseOverRef.current && !selectedCountry && !selectedCity;
+      if (controls.autoRotate !== shouldAutoRotate) {
+        controls.autoRotate = shouldAutoRotate;
+      }
     }
-  }, []);
+  });
 
   return (
-    <group
-      onPointerEnter={() => setIsMouseOver(true)}
-      onPointerLeave={() => setIsMouseOver(false)}
-    >
+    <group>
       {/* Stars first - rendered in background */}
       <Starfield />
 
@@ -672,21 +665,21 @@ const Scene = React.memo(({
       <directionalLight position={[10, 10, 5]} intensity={0.6} />
       <pointLight position={[-10, -10, -5]} intensity={0.3} color="#4fc3f7" />
 
-      <EarthGlobe onRotationUpdate={handleRotationUpdate} />
+      <EarthGlobe />
       {/* Render real countries if enabled and data is available */}
       {showCountries && countries.length > 0 && (
-        <RealCountries globeRotation={globeRotation} countries={countries} />
+        <RealCountries orbitControlsRef={orbitControlsRef} countries={countries} />
       )}
 
       {/* Render city hubs */}
-      <CityHubs globeRotation={globeRotation} onCityClick={onCityClick} />
+      <CityHubs orbitControlsRef={orbitControlsRef} onCityClick={onCityClick} />
       {/* Render country markers for interaction - reduced number */}
       {countries.length > 0 && countries.slice(0, 5).map((country, index) => (
         <CountryMarker
           key={`country-${index}`}
           country={country}
           onHover={selectedCountry ? () => { } : onCountryHover}
-          globeRotation={globeRotation}
+          orbitControlsRef={orbitControlsRef}
           onClick={() => {
             setSelectedCountry(country);
             if (typeof onCountryHover === 'function') onCountryHover(null);
@@ -705,7 +698,6 @@ const Scene = React.memo(({
         rotateSpeed={0.5}
         minDistance={isMobile ? 15 : 8}
         maxDistance={isMobile ? 40 : 30}
-        autoRotate={!isMouseOver && !selectedCountry && !selectedCity}
         autoRotateSpeed={0.5}
         makeDefault
       />
@@ -787,6 +779,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
   const [totalPlayers, setTotalPlayers] = useState(65000); // Starting value between 40k-90k
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isMobile = useIsMobile();
+  const isMouseOverRef = useRef(false);
 
   // Dynamic player count animation (40k - 90k with realistic fluctuation)
   useEffect(() => {
@@ -865,7 +858,8 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
     countries: countries,
     isLoadingCountries: isLoadingCountries,
     onCityClick: handleCityClick,
-    selectedCity: selectedCity
+    selectedCity: selectedCity,
+    isMouseOverRef: isMouseOverRef,
   }), [handleCountryHover, handleCityClick, isMobile, selectedCountry, selectedCity, showCountries, countries, isLoadingCountries]);
 
   // Memoize camera settings to prevent re-creation - Mobile Responsive
@@ -956,7 +950,12 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
 
   return (
     <WebGLErrorBoundary>
-      <div className="relative w-full h-[800px] bg-transparent">        {/* Loading Countries Overlay */}
+      <div
+        className="relative w-full h-[800px] bg-transparent"
+        onMouseEnter={() => (isMouseOverRef.current = true)}
+        onMouseLeave={() => (isMouseOverRef.current = false)}
+      >
+        {/* Loading Countries Overlay */}
         {isLoadingCountries && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
             <div className="text-center">
@@ -981,6 +980,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: { showCou
         {!webglError && !isContextLost ? (
           <Canvas
             ref={canvasRef}
+            key={canvasKey}
             camera={cameraSettings}
             gl={glSettings}
             dpr={[1, 1.5]} // Slightly increased for better quality
