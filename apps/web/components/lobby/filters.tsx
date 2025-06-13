@@ -35,8 +35,8 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
 
   return (
     <div className="mb-6 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
-      <div className="flex flex-nowrap gap-4 items-end overflow-x-auto">
-        <div className="flex-shrink-0">
+      <div className="flex flex-nowrap gap-4 items-center overflow-x-auto">
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <Label htmlFor="searchTerm" className="text-sm font-medium">
             Search
           </Label>
@@ -45,10 +45,10 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             placeholder="Search by name, game, notes..."
             value={filters.searchTerm}
             onChange={(e) => onFilterChange("searchTerm", e.target.value)}
-            className="mt-1"
+            className="h-12 sm:h-10"
           />
         </div>
-        <div>
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <Label htmlFor="gameFilter" className="text-sm font-medium">
             Game
           </Label>
@@ -56,7 +56,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.game}
             onValueChange={(v) => onFilterChange("game", v)}
           >
-            <SelectTrigger id="gameFilter" className="mt-1">
+            <SelectTrigger id="gameFilter" className="h-12 sm:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -69,7 +69,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             </SelectContent>
           </Select>
         </div>
-        <div>
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <Label htmlFor="platformFilter" className="text-sm font-medium">
             Platform
           </Label>
@@ -77,7 +77,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.platform}
             onValueChange={(v) => onFilterChange("platform", v)}
           >
-            <SelectTrigger id="platformFilter" className="mt-1">
+            <SelectTrigger id="platformFilter" className="h-12 sm:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -90,7 +90,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             </SelectContent>
           </Select>
         </div>
-        <div>
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <MultiSelectorInput
             label="Regions"
             suggestions={regions.map((r) => ({ id: r, label: r }))}
@@ -103,7 +103,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             }
           />
         </div>
-        <div>
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <MultiSelectorInput
             label="Languages"
             suggestions={languages.map((l) => ({ id: l, label: l }))}
@@ -116,7 +116,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             }
           />
         </div>
-        <div>
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <Label htmlFor="modeFilter" className="text-sm font-medium">
             Game Mode
           </Label>
@@ -124,7 +124,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.mode}
             onValueChange={(v) => onFilterChange("mode", v)}
           >
-            <SelectTrigger id="modeFilter" className="mt-1">
+            <SelectTrigger id="modeFilter" className="h-12 sm:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -136,7 +136,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             </SelectContent>
           </Select>
         </div>
-        <div>
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <Label htmlFor="playingForFilter" className="text-sm font-medium">
             Playing For
           </Label>
@@ -144,7 +144,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.playingFor}
             onValueChange={(v) => onFilterChange("playingFor", v)}
           >
-            <SelectTrigger id="playingForFilter" className="mt-1">
+            <SelectTrigger id="playingForFilter" className="h-12 sm:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -156,7 +156,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             </SelectContent>
           </Select>
         </div>
-        <div>
+        <div className="flex-shrink-0 space-y-2 w-40 sm:w-44 md:w-48">
           <Label htmlFor="micFilter" className="text-sm font-medium">
             Mic Required
           </Label>
@@ -164,7 +164,7 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.micRequired}
             onValueChange={(v) => onFilterChange("micRequired", v)}
           >
-            <SelectTrigger id="micFilter" className="mt-1">
+            <SelectTrigger id="micFilter" className="h-12 sm:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -174,10 +174,9 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
             </SelectContent>
           </Select>
         </div>
-
-        </div>
-        <div className="mt-4">
-          <RankRangeFilter
+      </div>
+      <div className="mt-4">
+        <RankRangeFilter
           currentRanks={currentRanks}
           rankRange={filters.rankRange}
           onRankRangeChange={(value) => onFilterChange("rankRange", value)}
