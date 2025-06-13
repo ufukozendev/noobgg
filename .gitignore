@@ -12,6 +12,7 @@ node_modules
 .env.test.local
 .env.production.local
 
+
 # Testing
 coverage
 
@@ -36,3 +37,8 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Drizzle migrations (keep _journal.json in repo)
+apps/api/drizzle/*.sql
+# Ensure journal remains tracked
+!apps/api/drizzle/_journal.json
