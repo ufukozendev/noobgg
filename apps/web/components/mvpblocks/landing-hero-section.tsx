@@ -7,7 +7,7 @@ import StarWarsButton from "../syntax-ui/starwars-button";
 import dynamic from "next/dynamic";
 
 // Dynamically import Three Fiber Globe component
-const ThreeFiberGlobe = dynamic(() => import("../ThreeFiberGlobe"), {
+const ThreeFiberGlobe = dynamic(() => import("../ThreeFiberGlobe").then(mod => ({ default: mod.default })), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center w-full h-[800px] bg-gradient-to-b from-slate-900 to-slate-800 rounded-xl">
