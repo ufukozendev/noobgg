@@ -51,17 +51,43 @@ const ctx = (opts: {
 
 // DB mock (minimal): select / insert / update chainable  helpers
 const chain = (result: unknown) => {
-  const ch: any = {
-    // Drizzle style: .from(table) returns same chainable object
-    from: () => ch,
-    where: () => ch,
-    orderBy: () => ch,
-    limit: () => ch,
-    offset: () => ch,
-    returning: () => Promise.resolve(result),
+  // Single underlying promise to satisfy any await/then chains without repeatedly wrapping
+  const promise = Promise.resolve(result);
+
+  // Handler to intercept property access and provide chainable query methods
+  const handler: ProxyHandler<Record<string, unknown>> = {
+    get(_target, prop) {
+      // Promise interoperability --------------------------------------------------
+      if (prop === "then") return promise.then.bind(promise);
+      if (prop === "catch") return promise.catch.bind(promise);
+      if (prop === "finally") return promise.finally.bind(promise);
+      if (prop === Symbol.toStringTag) return "Promise";
+
+      // Drizzle-like chainable query builder methods ------------------------------
+      if (
+        prop === "from" ||
+        prop === "where" ||
+        prop === "orderBy" ||
+        prop === "limit" ||
+        prop === "offset"
+      ) {
+        return () => proxy;
+      }
+
+      if (prop === "returning") {
+        // insert/update returning()
+        return () => promise;
+      }
+
+      // Fallback – undefined for anything else
+      return undefined;
+    },
   };
-  ch.then = Promise.resolve(result).then.bind(Promise.resolve(result));
-  return ch;
+
+  // Create proxy object (empty target is fine; behavior is all in handler)
+  const proxy = new Proxy<Record<string, unknown>>({}, handler) as any;
+
+  return proxy;
 };
 
 const dbMock = {
@@ -300,7 +326,7 @@ describe("LanguagesController", () => {
         const code = isEdge
           ? i % 200 === 0
             ? "" // empty code
-            : "𝔘𝔫𝗶𝚌��𝗱𝑒".slice(0, 3) + rndCode() // unicode prefix
+            : "𝔘𝔫𝗶𝚌𝕠𝗱𝑒".slice(0, 3) + rndCode() // unicode prefix
           : rndCode();
 
         const name = isEdge
@@ -312,13 +338,25 @@ describe("LanguagesController", () => {
         const payload = { name, code } as Record<string, unknown>;
 
         // Configure uniqueness mock and insert/response -------------------
-        (dbMock.select as any).mockReset();
+        if (typeof (dbMock.select as any).mockReset === "function") {
+          (dbMock.select as any).mockReset();
+        } else if (typeof (dbMock.select as any).mockClear === "function") {
+          (dbMock.select as any).mockClear();
+        }
+
         if (code && seen.has(code)) {
           (dbMock.select as any).mockReturnValueOnce(chain([makeLang(1)]));
         } else {
           if (code) seen.add(code);
           (dbMock.select as any).mockReturnValueOnce(chain([]));
-          (dbMock.insert as any).mockReset().mockReturnValueOnce({
+
+          if (typeof (dbMock.insert as any).mockReset === "function") {
+            (dbMock.insert as any).mockReset();
+          } else if (typeof (dbMock.insert as any).mockClear === "function") {
+            (dbMock.insert as any).mockClear();
+          }
+
+          (dbMock.insert as any).mockReturnValueOnce({
             values: () => ({
               returning: () => Promise.resolve([makeLang(i + 10)]),
             }),
