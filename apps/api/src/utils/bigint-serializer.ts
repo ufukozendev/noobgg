@@ -1,6 +1,6 @@
 type Serializable = bigint | string | number | boolean | null | undefined | Date | Serializable[] | { [key: string]: Serializable };
 
-export function convertBigIntToString(obj: Serializable): Serializable {
+export function convertBigIntToString(obj: Serializable): unknown {
   if (typeof obj === "bigint") {
     return obj.toString();
   }
@@ -11,7 +11,7 @@ export function convertBigIntToString(obj: Serializable): Serializable {
     return obj.map(convertBigIntToString);
   }
   if (obj !== null && typeof obj === "object") {
-    const converted: { [key: string]: Serializable } = {};
+    const converted: { [key: string]: unknown } = {};
     for (const [key, value] of Object.entries(obj)) {
       converted[key] = convertBigIntToString(value);
     }
@@ -20,7 +20,7 @@ export function convertBigIntToString(obj: Serializable): Serializable {
   return obj;
 }
 
-export function convertBigIntToNumber(obj: Serializable): Serializable {
+export function convertBigIntToNumber(obj: Serializable): unknown {
   if (typeof obj === "bigint") {
     if (obj > Number.MAX_SAFE_INTEGER || obj < Number.MIN_SAFE_INTEGER) {
       throw new Error(`BigInt value ${obj} is outside safe integer range`);
@@ -34,7 +34,7 @@ export function convertBigIntToNumber(obj: Serializable): Serializable {
     return obj.map(convertBigIntToNumber);
   }
   if (obj !== null && typeof obj === "object") {
-    const converted: { [key: string]: Serializable } = {};
+    const converted: { [key: string]: unknown } = {};
     for (const [key, value] of Object.entries(obj)) {
       converted[key] = convertBigIntToNumber(value);
     }
