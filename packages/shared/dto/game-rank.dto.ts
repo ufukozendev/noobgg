@@ -3,8 +3,8 @@ import { z } from "zod";
 export const createGameRankDto = z.object({
   name: z.string().min(1).max(100),
   order: z.number().int(),
-  image: z.string().min(1).max(255),
-  gameId: z.number().int(),
+  image: z.string().min(1).max(255).optional(),
+  gameId: z.number().int().optional(),
   createdAt: z.string().datetime().optional(),
   updatedAt: z.string().datetime().optional(),
   deletedAt: z.string().datetime().optional(),

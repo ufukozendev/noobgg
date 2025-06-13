@@ -8,7 +8,10 @@ import { eq, and, desc, or, isNull, SQL } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { convertBigIntToString } from "../../utils/bigint-serializer";
 import { ApiError } from "../../middleware/errorHandler";
-import { createEventInvitationDto, updateEventInvitationDto } from "@repo/shared/dto/event-invitation.dto";
+import {
+  createEventInvitationDto,
+  updateEventInvitationDto,
+} from "@repo/shared/dto/event-invitation.dto";
 
 export const getEventInvitations = async (c: Context) => {
   const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
@@ -52,6 +55,9 @@ export const getEventInvitations = async (c: Context) => {
 
 export const getEventInvitationById = async (c: Context) => {
   const id = c.req.param("id");
+  if (!id || isNaN(Number(id))) {
+    throw new ApiError("Invalid ID format", 400);
+  }
   const invitation = await db
     .select()
     .from(eventInvitations)
@@ -193,7 +199,10 @@ export const createEventInvitation = async (c: Context) => {
     )
     .limit(1);
   if (existing.length > 0) {
-    throw new ApiError("Invitation already exists for this user and event", 409);
+    throw new ApiError(
+      "Invitation already exists for this user and event",
+      409
+    );
   }
   if (BigInt(inviterId) === BigInt(inviteeId)) {
     throw new ApiError("Cannot invite yourself", 400);
@@ -204,7 +213,9 @@ export const createEventInvitation = async (c: Context) => {
     inviteeId: BigInt(inviteeId),
     eventId: BigInt(eventId),
     sentAt: result.data.sentAt ? new Date(result.data.sentAt) : new Date(),
-    respondedAt: result.data.respondedAt ? new Date(result.data.respondedAt) : undefined,
+    respondedAt: result.data.respondedAt
+      ? new Date(result.data.respondedAt)
+      : undefined,
     status: result.data.status || "pending",
   };
   const newInvitation = await db
@@ -221,7 +232,10 @@ export const respondToInvitation = async (c: Context) => {
   if (!result.success) {
     throw new ApiError(JSON.stringify(result.error.flatten().fieldErrors), 400);
   }
-  if (!result.data.status || !["accepted", "declined"].includes(result.data.status)) {
+  if (
+    !result.data.status ||
+    !["accepted", "declined"].includes(result.data.status)
+  ) {
     throw new ApiError("Invalid status. Must be 'accepted' or 'declined'", 400);
   }
   const existing = await db

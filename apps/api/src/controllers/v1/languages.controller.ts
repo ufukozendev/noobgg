@@ -1,5 +1,3 @@
-// v1: languages controller (boş şablon)
-
 import { Context } from "hono";
 import { db } from "../../db";
 import { languages } from "../../db/schemas/languages.drizzle";
