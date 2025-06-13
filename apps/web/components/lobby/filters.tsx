@@ -35,8 +35,8 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
 
   return (
     <div className="mb-6 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 items-end">
-        <div className="col-span-full xl:col-span-1">
+      <div className="flex flex-nowrap gap-4 items-end overflow-x-auto">
+        <div className="flex-shrink-0">
           <Label htmlFor="searchTerm" className="text-sm font-medium">
             Search
           </Label>
@@ -175,7 +175,9 @@ export function Filters({ filters, onFilterChange }: FiltersProps) {
           </Select>
         </div>
 
-        <RankRangeFilter
+        </div>
+        <div className="mt-4">
+          <RankRangeFilter
           currentRanks={currentRanks}
           rankRange={filters.rankRange}
           onRankRangeChange={(value) => onFilterChange("rankRange", value)}
