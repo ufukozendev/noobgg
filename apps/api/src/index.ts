@@ -5,15 +5,10 @@ import { swaggerUI } from "@hono/swagger-ui";
 import router from "./routes";
 import { versionMiddleware } from "./middleware/version";
 import { deprecationMiddleware } from "./middleware/deprecation";
+import { localeMiddleware } from "./middleware/locale";
+import { Variables } from "./middleware/locale";
 import YAML from "yamljs";
 import path from "path";
-import { messages } from "./locales";
-
-type Variables = {
-  locale: string;
-  messages: Record<string, string>;
-  version?: string;
-};
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -34,27 +29,7 @@ app.use(
   })
 );
 
-app.use("*", async (c, next) => {
-  const headers: Record<string, string> = {};
-  c.req.raw.headers.forEach((value, key) => {
-    headers[key] = value;
-  });
-
-  let detectedLocale = "en-US";
-
-  const preferredLang = c.req.header("X-Preferred-Language");
-
-  if (preferredLang === "tr") {
-    detectedLocale = "tr-TR";
-  } else if (preferredLang === "en") {
-    detectedLocale = "en-US";
-  }
-
-  c.set("locale", detectedLocale);
-  c.set("messages", messages[detectedLocale as keyof typeof messages]);
-
-  await next();
-});
+app.use("*", localeMiddleware);
 
 app.use("/api/*", versionMiddleware);
 app.use("/api/*", deprecationMiddleware);
