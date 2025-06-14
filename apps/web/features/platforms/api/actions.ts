@@ -1,13 +1,19 @@
 import { createPlatformSchema, updatePlatformSchema } from "@repo/shared";
 import type { Platform, PlatformsResponse } from "@/types/platform";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+import { getCurrentLanguage } from "@/lib/utils";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
 
 export async function getAllPlatforms(): Promise<PlatformsResponse> {
+  const language = getCurrentLanguage();
   try {
     const res = await fetch(`${API_BASE_URL}/platforms`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       cache: "no-store",
     });
     if (!res.ok) {
@@ -21,10 +27,16 @@ export async function getAllPlatforms(): Promise<PlatformsResponse> {
 }
 
 export async function getPlatform(id: number): Promise<Platform> {
+  const language = getCurrentLanguage();
+
   try {
     const res = await fetch(`${API_BASE_URL}/platforms/${id}`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       cache: "no-store",
     });
     if (!res.ok) {
@@ -38,11 +50,17 @@ export async function getPlatform(id: number): Promise<Platform> {
 }
 
 export async function createPlatform(data: unknown): Promise<Platform> {
+  const language = getCurrentLanguage();
+
   try {
     const parsed = createPlatformSchema.parse(data);
     const res = await fetch(`${API_BASE_URL}/platforms`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       body: JSON.stringify(parsed),
     });
     if (!res.ok) {
@@ -57,13 +75,19 @@ export async function createPlatform(data: unknown): Promise<Platform> {
 
 export async function updatePlatform(
   id: number,
-  data: unknown,
+  data: unknown
 ): Promise<Platform> {
+  const language = getCurrentLanguage();
+
   try {
     const parsed = updatePlatformSchema.parse(data);
     const res = await fetch(`${API_BASE_URL}/platforms/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
       body: JSON.stringify(parsed),
     });
     if (!res.ok) {
@@ -77,9 +101,17 @@ export async function updatePlatform(
 }
 
 export async function deletePlatform(id: number): Promise<void> {
+  const language = getCurrentLanguage();
+
   try {
     const res = await fetch(`${API_BASE_URL}/platforms/${id}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Preferred-Language": language,
+        "Accept-Language": language,
+      },
+      cache: "no-store",
     });
     if (!res.ok) {
       throw new Error(`Failed to delete platform: ${res.status}`);

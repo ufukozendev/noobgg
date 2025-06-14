@@ -7,87 +7,165 @@ import {
   Text, 
   useTexture,
   Sphere,
-  Billboard
+  Billboard,
+  Html
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { Globe, Users, MapPin, Link, Gamepad2, Mouse, ZoomIn, Target } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 
-// Gaming hubs data
-const GAMING_HUBS = [
-  { 
-    name: "Istanbul", 
-    lat: 41.0082, 
-    lng: 28.9784, 
-    players: 45000,
-    games: ["Valorant", "CS2", "LoL"],
-    color: "#ff6b6b",
-    flag: "🇹🇷"
-  },
-  { 
-    name: "New York", 
-    lat: 40.7128, 
-    lng: -74.006, 
-    players: 120000,
-    games: ["Valorant", "Fortnite", "Apex"],
-    color: "#4ecdc4",
-    flag: "🇺🇸"
-  },
-  { 
-    name: "London", 
-    lat: 51.5074, 
-    lng: -0.1276, 
-    players: 89000,
-    games: ["CS2", "LoL", "PUBG"],
-    color: "#45b7d1",
-    flag: "🇬🇧"
-  },
-  { 
-    name: "Tokyo", 
-    lat: 35.6895, 
-    lng: 139.6917, 
-    players: 95000,
-    games: ["LoL", "Valorant", "Street Fighter"],
-    color: "#96ceb4",
-    flag: "🇯🇵"
-  },
-  { 
-    name: "Seoul", 
-    lat: 37.5665, 
-    lng: 126.9780, 
-    players: 110000,
-    games: ["LoL", "Overwatch", "StarCraft"],
-    color: "#ffeaa7",
-    flag: "🇰🇷"
-  },
-  { 
-    name: "São Paulo", 
-    lat: -23.5505, 
-    lng: -46.6333, 
-    players: 52000,
-    games: ["CS2", "Valorant", "Free Fire"],
-    color: "#fd79a8",
-    flag: "🇧🇷"
-  },
-  { 
-    name: "Berlin", 
-    lat: 52.5200, 
-    lng: 13.4050, 
-    players: 67000,
-    games: ["CS2", "LoL", "Rocket League"],
-    color: "#a29bfe",
-    flag: "🇩🇪"
-  },
-  { 
-    name: "Sydney", 
-    lat: -33.8688, 
-    lng: 151.2093, 
-    players: 38000,
-    games: ["CS2", "Valorant", "Apex"],
-    color: "#fd6c6c",
-    flag: "🇦🇺"
-  },
+// GeoJSON Feature interface
+interface GeoJSONFeature {
+  type: 'Feature';
+  properties: {
+    NAME: string;
+    NAME_LONG: string;
+    ISO_A3: string;
+    CONTINENT: string;
+    REGION_UN: string;
+    POP_EST: number;
+    [key: string]: any;
+  };
+  geometry: {
+    type: 'Polygon' | 'MultiPolygon';
+    coordinates: number[][][] | number[][][][];
+  };
+}
+
+interface GeoJSONData {
+  type: 'FeatureCollection';
+  features: GeoJSONFeature[];
+}
+
+// Country data for rendering
+interface CountryData {
+  name: string;
+  coordinates: number[][];
+  population: number;
+  continent: string;
+  color: string;
+}
+
+// City data interface
+interface CityData {
+  name: string;
+  country: string;
+  lat: number;
+  lng: number;
+  population: number;
+  type: 'capital' | 'major' | 'megacity';
+}
+
+// Major cities data (capital cities and major population centers)
+const MAJOR_CITIES: CityData[] = [
+  // Asia
+  { name: 'Tokyo', country: 'Japan', lat: 35.6762, lng: 139.6503, population: 37400000, type: 'megacity' },
+  { name: 'Delhi', country: 'India', lat: 28.7041, lng: 77.1025, population: 32900000, type: 'megacity' },
+  { name: 'Shanghai', country: 'China', lat: 31.2304, lng: 121.4737, population: 28500000, type: 'megacity' },
+  { name: 'Beijing', country: 'China', lat: 39.9042, lng: 116.4074, population: 21700000, type: 'capital' },
+  { name: 'Mumbai', country: 'India', lat: 19.0760, lng: 72.8777, population: 21700000, type: 'megacity' },
+  { name: 'Manila', country: 'Philippines', lat: 14.5995, lng: 120.9842, population: 13400000, type: 'capital' },
+  { name: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, population: 9700000, type: 'capital' },
+  { name: 'Jakarta', country: 'Indonesia', lat: -6.2088, lng: 106.8456, population: 11000000, type: 'capital' },
+  { name: 'Bangkok', country: 'Thailand', lat: 13.7563, lng: 100.5018, population: 10700000, type: 'capital' },
+  { name: 'Tehran', country: 'Iran', lat: 35.6892, lng: 51.3890, population: 9500000, type: 'capital' },
+  { name: 'Dhaka', country: 'Bangladesh', lat: 23.8103, lng: 90.4125, population: 9500000, type: 'capital' },
+  { name: 'Karachi', country: 'Pakistan', lat: 24.8607, lng: 67.0011, population: 16100000, type: 'megacity' },
+  
+  // Europe
+  { name: 'Istanbul', country: 'Turkey', lat: 41.0082, lng: 28.9784, population: 15500000, type: 'megacity' },
+  { name: 'Moscow', country: 'Russia', lat: 55.7558, lng: 37.6176, population: 12500000, type: 'capital' },
+  { name: 'London', country: 'United Kingdom', lat: 51.5074, lng: -0.1278, population: 9500000, type: 'capital' },
+  { name: 'Paris', country: 'France', lat: 48.8566, lng: 2.3522, population: 11000000, type: 'capital' },
+  { name: 'Berlin', country: 'Germany', lat: 52.5200, lng: 13.4050, population: 3700000, type: 'capital' },
+  { name: 'Madrid', country: 'Spain', lat: 40.4168, lng: -3.7038, population: 6700000, type: 'capital' },
+  { name: 'Rome', country: 'Italy', lat: 41.9028, lng: 12.4964, population: 4300000, type: 'capital' },
+  
+  // North America
+  { name: 'New York', country: 'United States of America', lat: 40.7128, lng: -74.0060, population: 18800000, type: 'megacity' },
+  { name: 'Los Angeles', country: 'United States of America', lat: 34.0522, lng: -118.2437, population: 12400000, type: 'major' },
+  { name: 'Mexico City', country: 'Mexico', lat: 19.4326, lng: -99.1332, population: 21800000, type: 'capital' },
+  { name: 'Toronto', country: 'Canada', lat: 43.6532, lng: -79.3832, population: 6200000, type: 'major' },
+  { name: 'Chicago', country: 'United States of America', lat: 41.8781, lng: -87.6298, population: 9500000, type: 'major' },
+  
+  // South America
+  { name: 'São Paulo', country: 'Brazil', lat: -23.5558, lng: -46.6396, population: 22400000, type: 'megacity' },
+  { name: 'Buenos Aires', country: 'Argentina', lat: -34.6118, lng: -58.3960, population: 15200000, type: 'capital' },
+  { name: 'Rio de Janeiro', country: 'Brazil', lat: -22.9068, lng: -43.1729, population: 13300000, type: 'major' },
+  { name: 'Lima', country: 'Peru', lat: -12.0464, lng: -77.0428, population: 11000000, type: 'capital' },
+  { name: 'Bogotá', country: 'Colombia', lat: 4.7110, lng: -74.0721, population: 11000000, type: 'capital' },
+  
+  // Africa
+  { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lng: 3.3792, population: 15400000, type: 'megacity' },
+  { name: 'Cairo', country: 'Egypt', lat: 30.0444, lng: 31.2357, population: 21300000, type: 'capital' },
+  { name: 'Kinshasa', country: 'Dem. Rep. Congo', lat: -4.4419, lng: 15.2663, population: 15600000, type: 'capital' },
+  { name: 'Johannesburg', country: 'South Africa', lat: -26.2041, lng: 28.0473, population: 10000000, type: 'major' },
+  
+  // Oceania
+  { name: 'Sydney', country: 'Australia', lat: -33.8688, lng: 151.2093, population: 5400000, type: 'major' },
 ];
+
+// Function to load real country data from GeoJSON
+async function loadRealCountriesFromGeoJSON(): Promise<CountryData[]> {
+  try {
+    const response = await fetch('/data/all.geojson');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch GeoJSON: ${response.status}`);
+    }
+    
+    const geoData: GeoJSONData = await response.json();
+    
+    const countries: CountryData[] = [];
+    
+    geoData.features.forEach((feature) => {
+      const coordinates: number[][] = [];
+      
+      // Extract coordinates from different geometry types
+      if (feature.geometry.type === 'Polygon') {
+        const coords = feature.geometry.coordinates[0] as number[][];
+        coordinates.push(...coords);
+      } else if (feature.geometry.type === 'MultiPolygon') {
+        const multiCoords = feature.geometry.coordinates as number[][][][];
+        multiCoords.forEach((polygon) => {
+          const coords = polygon[0] as number[][];
+          coordinates.push(...coords);
+        });
+      }
+      
+      // Assign continent-based colors
+      const getContinentColor = (continent: string): string => {
+        switch (continent) {
+          case 'North America': return '#3b82f6'; // Blue
+          case 'South America': return '#10b981'; // Green
+          case 'Europe': return '#8b5cf6'; // Purple
+          case 'Asia': return '#f59e0b'; // Orange
+          case 'Africa': return '#ef4444'; // Red
+          case 'Oceania': return '#06b6d4'; // Cyan
+          case 'Antarctica': return '#6b7280'; // Gray
+          default: return '#9ca3af'; // Gray default
+        }      };        // Only keep countries with population > 10M (reduced to show more countries)
+      const population = feature.properties.POP_EST || 0;
+      
+      // Skip low population countries
+      if (population < 10000000) {
+        return;
+      }
+      
+      countries.push({
+        name: feature.properties.NAME,
+        coordinates,
+        population: feature.properties.POP_EST || 0,
+        continent: feature.properties.CONTINENT || 'Unknown',
+        color: getContinentColor(feature.properties.CONTINENT || 'Unknown')
+      });
+    });
+    
+    return countries;
+  } catch (error) {
+    console.error('Error loading countries from GeoJSON:', error);
+    return [];
+  }
+}
 
 // Convert lat/lng to 3D coordinates
 function latLngToVector3(lat: number, lng: number, radius: number = 5) {
@@ -110,7 +188,8 @@ const EarthGlobe = React.memo(({ onRotationUpdate }: { onRotationUpdate?: (rotat
 
   useFrame((state) => {
     if (earthRef.current) {
-      earthRef.current.rotation.y += 0.002;
+      // Remove or comment out the auto-rotation:
+      // earthRef.current.rotation.y += 0.002;
       if (onRotationUpdate && typeof onRotationUpdate === 'function') {
         onRotationUpdate(earthRef.current.rotation.y);
       }
@@ -132,507 +211,298 @@ const EarthGlobe = React.memo(({ onRotationUpdate }: { onRotationUpdate?: (rotat
 
 EarthGlobe.displayName = 'EarthGlobe';
 
-// GitHub-Style Dotted Continents with Real World Pattern - Synced Rotation
-const DottedContinents = React.memo(({ globeRotation }: { globeRotation: number }) => {
-  const pointsRef = useRef<THREE.Points>(null);
+// Real Countries from GeoJSON - Renders actual country boundaries as dots
+const RealCountries = React.memo(({ globeRotation, countries }: { 
+  globeRotation: number;
+  countries: CountryData[];
+}) => {
+  const groupRef = useRef<THREE.Group>(null);
 
   // Apply rotation to match the globe
   useFrame(() => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y = globeRotation;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = globeRotation;
     }
   });
   
-  const pointsData = useMemo(() => {
-    const positions: number[] = [];
-    const colors: number[] = [];
-    const radius = 5.05; // Slightly above earth surface
-      // Highly detailed and accurate continent mapping for realistic appearance
-    const continentRegions = [
-      // North America - Ultra detailed realistic mapping
-      // Canada Arctic
-      { lat: 75, lng: -100, count: 3, spread: 8 }, // Arctic Archipelago
-      { lat: 70, lng: -105, count: 5, spread: 12 }, // Northern Canada
-      { lat: 68, lng: -133, count: 4, spread: 10 }, // Northwest Territories
-      { lat: 65, lng: -125, count: 6, spread: 8 }, // Yukon/NWT
-      { lat: 65, lng: -95, count: 8, spread: 12 }, // Nunavut
-      
-      // Canada Main
-      { lat: 60, lng: -125, count: 12, spread: 15 }, // British Columbia North
-      { lat: 55, lng: -125, count: 15, spread: 12 }, // British Columbia
-      { lat: 55, lng: -110, count: 18, spread: 15 }, // Alberta
-      { lat: 55, lng: -105, count: 16, spread: 12 }, // Saskatchewan
-      { lat: 55, lng: -95, count: 18, spread: 15 }, // Manitoba
-      { lat: 50, lng: -85, count: 20, spread: 18 }, // Ontario
-      { lat: 47, lng: -70, count: 15, spread: 12 }, // Quebec
-      { lat: 46, lng: -63, count: 8, spread: 8 }, // Maritime Provinces
-      { lat: 47, lng: -53, count: 4, spread: 6 }, // Newfoundland
-      
-      // United States
-      { lat: 48, lng: -122, count: 8, spread: 6 }, // Washington
-      { lat: 45, lng: -123, count: 10, spread: 8 }, // Oregon
-      { lat: 40, lng: -120, count: 15, spread: 10 }, // California North
-      { lat: 35, lng: -118, count: 12, spread: 8 }, // California South
-      { lat: 40, lng: -111, count: 12, spread: 8 }, // Utah/Nevada
-      { lat: 45, lng: -110, count: 10, spread: 8 }, // Montana/Wyoming
-      { lat: 45, lng: -100, count: 15, spread: 12 }, // North Dakota
-      { lat: 40, lng: -100, count: 18, spread: 15 }, // Nebraska/Kansas
-      { lat: 35, lng: -100, count: 16, spread: 12 }, // Texas North
-      { lat: 30, lng: -95, count: 14, spread: 10 }, // Texas East
-      { lat: 28, lng: -100, count: 12, spread: 8 }, // Texas South
-      { lat: 35, lng: -85, count: 18, spread: 12 }, // Tennessee/Kentucky
-      { lat: 40, lng: -85, count: 20, spread: 15 }, // Great Lakes region
-      { lat: 42, lng: -75, count: 16, spread: 10 }, // New York
-      { lat: 40, lng: -75, count: 12, spread: 8 }, // Pennsylvania
-      { lat: 35, lng: -80, count: 14, spread: 10 }, // Carolinas
-      { lat: 30, lng: -85, count: 12, spread: 8 }, // Florida/Georgia
-      { lat: 28, lng: -81, count: 8, spread: 6 }, // Florida
-      { lat: 65, lng: -153, count: 6, spread: 12 }, // Alaska
-      { lat: 21, lng: -158, count: 2, spread: 3 }, // Hawaii
-      
-      // Mexico and Central America
-      { lat: 25, lng: -100, count: 12, spread: 8 }, // Mexico North
-      { lat: 20, lng: -100, count: 14, spread: 10 }, // Mexico Central
-      { lat: 18, lng: -95, count: 10, spread: 8 }, // Mexico South
-      { lat: 15, lng: -90, count: 6, spread: 6 }, // Guatemala
-      { lat: 10, lng: -85, count: 4, spread: 5 }, // Central America      // South America - Optimized realistic mapping
-      { lat: 12, lng: -72, count: 8, spread: 2 }, // Venezuela North
-      { lat: 8, lng: -68, count: 10, spread: 2 }, // Venezuela Central
-      { lat: 4, lng: -67, count: 8, spread: 2 }, // Venezuela South
-      { lat: 8, lng: -75, count: 10, spread: 2 }, // Colombia North
-      { lat: 4, lng: -73, count: 12, spread: 2 }, // Colombia Central
-      { lat: 0, lng: -72, count: 8, spread: 2 }, // Colombia South
-      { lat: -2, lng: -78, count: 6, spread: 2 }, // Ecuador
-      { lat: -8, lng: -75, count: 8, spread: 2 }, // Peru North
-      { lat: -12, lng: -76, count: 10, spread: 2 }, // Peru Central
-      { lat: -16, lng: -72, count: 8, spread: 2 }, // Peru South
-      { lat: -16, lng: -65, count: 6, spread: 2 }, // Bolivia North
-      { lat: -20, lng: -64, count: 8, spread: 2 }, // Bolivia South
-      
-      // Brazil - Optimized spread
-      { lat: 5, lng: -60, count: 15, spread: 3 }, // Amazon North
-      { lat: 0, lng: -55, count: 18, spread: 3 }, // Amazon Central
-      { lat: -5, lng: -58, count: 20, spread: 3 }, // Amazon South
-      { lat: -8, lng: -45, count: 15, spread: 3 }, // Northeast Brazil
-      { lat: -12, lng: -40, count: 12, spread: 2 }, // Bahia
-      { lat: -15, lng: -48, count: 18, spread: 3 }, // Central Brazil
-      { lat: -20, lng: -45, count: 15, spread: 2 }, // Minas Gerais
-      { lat: -23, lng: -47, count: 12, spread: 2 }, // São Paulo
-      { lat: -25, lng: -50, count: 10, spread: 2 }, // Paraná
-      { lat: -28, lng: -52, count: 8, spread: 2 }, // Rio Grande do Sul
-      
-      // Argentina & Chile - Optimized spread
-      { lat: -25, lng: -58, count: 10, spread: 2 }, // Argentina North
-      { lat: -30, lng: -62, count: 12, spread: 2 }, // Argentina Central
-      { lat: -35, lng: -65, count: 15, spread: 3 }, // Argentina Central-South
-      { lat: -40, lng: -68, count: 12, spread: 2 }, // Patagonia North
-      { lat: -45, lng: -70, count: 10, spread: 2 }, // Patagonia Central
-      { lat: -50, lng: -72, count: 6, spread: 2 }, // Patagonia South
-      { lat: -25, lng: -70, count: 8, spread: 1 }, // Chile North
-      { lat: -35, lng: -71, count: 10, spread: 4 }, // Chile Central
-      { lat: -45, lng: -73, count: 8, spread: 4 }, // Chile South
-      
-      // Other South American countries
-      { lat: -23, lng: -58, count: 6, spread: 6 }, // Paraguay
-      { lat: -33, lng: -56, count: 4, spread: 4 }, // Uruguay
-      { lat: 4, lng: -58, count: 6, spread: 6 }, // Guyana
-      { lat: 4, lng: -56, count: 4, spread: 4 }, // Suriname
-      { lat: 4, lng: -53, count: 3, spread: 3 }, // French Guiana      // Europe - Optimized realistic mapping
-      { lat: 71, lng: 8, count: 3, spread: 2 }, // Northern Norway
-      { lat: 69, lng: 20, count: 4, spread: 2 }, // Norwegian Lapland
-      { lat: 68, lng: 27, count: 3, spread: 2 }, // Finnish Lapland
-      { lat: 67, lng: 24, count: 4, spread: 2 }, // Swedish Lapland
-      { lat: 65, lng: 15, count: 8, spread: 2 }, // Central Scandinavia
-      { lat: 62, lng: 10, count: 10, spread: 2 }, // Southern Norway
-      { lat: 60, lng: 15, count: 12, spread: 2 }, // Central Sweden
-      { lat: 60, lng: 25, count: 10, spread: 2 }, // Southern Finland
-      { lat: 57, lng: 12, count: 8, spread: 2 }, // Southern Sweden
-      { lat: 56, lng: 10, count: 6, spread: 1 }, // Denmark
-      { lat: 65, lng: -18, count: 3, spread: 1 }, // Iceland
-      { lat: 62, lng: -7, count: 2, spread: 1 }, // Faroe Islands
-      
-      // British Isles - Optimized spread
-      { lat: 58, lng: -4, count: 6, spread: 2 }, // Scotland North
-      { lat: 55, lng: -4, count: 8, spread: 2 }, // Scotland Central
-      { lat: 52, lng: -2, count: 10, spread: 2 }, // England Central
-      { lat: 50, lng: -1, count: 8, spread: 2 }, // Southern England
-      { lat: 52, lng: -8, count: 6, spread: 2 }, // Ireland Central
-      { lat: 54, lng: -6, count: 5, spread: 1 }, // Northern Ireland
-      
-      // Western Europe - Optimized spread
-      { lat: 50, lng: 3, count: 8, spread: 2 }, // Northern France
-      { lat: 47, lng: 2, count: 10, spread: 2 }, // Central France
-      { lat: 44, lng: 2, count: 8, spread: 2 }, // Southern France
-      { lat: 50, lng: 8, count: 12, spread: 2 }, // Western Germany
-      { lat: 51, lng: 10, count: 15, spread: 10 }, // Central Germany
-      { lat: 48, lng: 11, count: 10, spread: 8 }, // Southern Germany
-      { lat: 47, lng: 8, count: 6, spread: 5 }, // Switzerland
-      { lat: 47, lng: 14, count: 6, spread: 6 }, // Austria
-      { lat: 50, lng: 4, count: 6, spread: 4 }, // Belgium
-      { lat: 52, lng: 5, count: 8, spread: 5 }, // Netherlands
-      { lat: 49, lng: 6, count: 3, spread: 3 }, // Luxembourg
-      
-      // Central Europe
-      { lat: 50, lng: 15, count: 10, spread: 8 }, // Czech Republic
-      { lat: 48, lng: 19, count: 6, spread: 6 }, // Slovakia
-      { lat: 52, lng: 19, count: 15, spread: 12 }, // Poland
-      { lat: 47, lng: 20, count: 8, spread: 8 }, // Hungary
-      { lat: 46, lng: 15, count: 6, spread: 6 }, // Slovenia
-      { lat: 45, lng: 16, count: 6, spread: 6 }, // Croatia
-      { lat: 44, lng: 18, count: 4, spread: 5 }, // Bosnia
-      { lat: 44, lng: 21, count: 6, spread: 6 }, // Serbia
-      { lat: 42, lng: 21, count: 4, spread: 4 }, // Montenegro/Kosovo
-      { lat: 41, lng: 20, count: 4, spread: 4 }, // Albania
-      { lat: 42, lng: 22, count: 6, spread: 6 }, // Bulgaria
-      { lat: 46, lng: 25, count: 8, spread: 8 }, // Romania
-      
-      // Italy and Mediterranean
-      { lat: 46, lng: 11, count: 6, spread: 5 }, // Northern Italy
-      { lat: 42, lng: 12, count: 8, spread: 6 }, // Central Italy
-      { lat: 40, lng: 16, count: 6, spread: 6 }, // Southern Italy
-      { lat: 37, lng: 14, count: 4, spread: 4 }, // Sicily
-      { lat: 40, lng: 9, count: 3, spread: 3 }, // Sardinia
-      { lat: 35, lng: 25, count: 4, spread: 4 }, // Crete
-      { lat: 39, lng: 22, count: 8, spread: 8 }, // Greece
-      { lat: 35, lng: 33, count: 3, spread: 3 }, // Cyprus
-      { lat: 36, lng: 28, count: 4, spread: 4 }, // Rhodes area
-      
-      // Iberian Peninsula
-      { lat: 40, lng: -4, count: 12, spread: 10 }, // Central Spain
-      { lat: 42, lng: -8, count: 6, spread: 6 }, // Northwestern Spain
-      { lat: 37, lng: -4, count: 8, spread: 8 }, // Southern Spain
-      { lat: 41, lng: 2, count: 6, spread: 6 }, // Catalonia
-      { lat: 39, lng: 3, count: 3, spread: 3 }, // Balearic Islands
-      { lat: 39, lng: -8, count: 8, spread: 8 }, // Central Portugal
-      { lat: 41, lng: -8, count: 6, spread: 6 }, // Northern Portugal
-      
-      // Eastern Europe
-      { lat: 60, lng: 30, count: 8, spread: 10 }, // Northern Russia (Karelia)
-      { lat: 55, lng: 37, count: 15, spread: 12 }, // Central Russia (Moscow area)
-      { lat: 50, lng: 30, count: 12, spread: 10 }, // Ukraine Central
-      { lat: 49, lng: 32, count: 8, spread: 8 }, // Ukraine East
-      { lat: 46, lng: 28, count: 6, spread: 6 }, // Moldova
-      { lat: 54, lng: 28, count: 8, spread: 8 }, // Belarus
-      { lat: 57, lng: 24, count: 6, spread: 6 }, // Baltic States
-      { lat: 59, lng: 26, count: 4, spread: 4 }, // Estonia
-      { lat: 57, lng: 25, count: 4, spread: 4 }, // Latvia
-      { lat: 55, lng: 24, count: 4, spread: 4 }, // Lithuania      // Africa - Optimized realistic mapping
-      { lat: 32, lng: -6, count: 8, spread: 2 }, // Morocco
-      { lat: 30, lng: 3, count: 10, spread: 2 }, // Algeria
-      { lat: 34, lng: 9, count: 6, spread: 2 }, // Tunisia
-      { lat: 32, lng: 20, count: 8, spread: 2 }, // Libya
-      { lat: 26, lng: 30, count: 12, spread: 2 }, // Egypt
-      { lat: 15, lng: 30, count: 8, spread: 2 }, // Sudan North
-      { lat: 10, lng: 30, count: 10, spread: 2 }, // Sudan South
-      { lat: 9, lng: 38, count: 8, spread: 2 }, // Ethiopia
-      { lat: 2, lng: 38, count: 6, spread: 2 }, // Kenya North
-      { lat: -1, lng: 37, count: 8, spread: 2 }, // Kenya Central
-      { lat: -6, lng: 35, count: 6, spread: 2 }, // Tanzania
-      { lat: 15, lng: 0, count: 8, spread: 2 }, // Chad
-      { lat: 12, lng: -2, count: 6, spread: 2 }, // Burkina Faso
-      { lat: 10, lng: -8, count: 8, spread: 2 }, // Guinea
-      { lat: 8, lng: -11, count: 6, spread: 2 }, // Sierra Leone
-      { lat: 6, lng: -10, count: 5, spread: 1 }, // Liberia
-      { lat: 8, lng: -1, count: 8, spread: 2 }, // Ghana
-      { lat: 9, lng: 2, count: 10, spread: 2 }, // Nigeria
-      { lat: 4, lng: 9, count: 8, spread: 2 }, // Cameroon
-      { lat: 0, lng: 15, count: 8, spread: 2 }, // Central African Republic
-      { lat: -4, lng: 15, count: 10, spread: 2 }, // Democratic Republic of Congo
-      { lat: -9, lng: 13, count: 8, spread: 2 }, // Angola
-      { lat: -22, lng: 17, count: 6, spread: 2 }, // Namibia
-      { lat: -29, lng: 24, count: 10, spread: 2 }, // South Africa
-      { lat: -19, lng: 23, count: 6, spread: 2 }, // Botswana
-      { lat: -20, lng: 30, count: 6, spread: 2 }, // Zimbabwe
-      { lat: -18, lng: 32, count: 6, spread: 2 }, // Mozambique
-      { lat: -26, lng: 32, count: 4, spread: 4 }, // eSwatini
-      { lat: -29, lng: 30, count: 4, spread: 4 }, // Lesotho
-      { lat: -20, lng: 47, count: 6, spread: 6 }, // Madagascar      // Asia - Optimized realistic mapping
-      // Siberia and Northern Asia - Optimized spread
-      { lat: 70, lng: 100, count: 8, spread: 4 }, // Siberia North
-      { lat: 68, lng: 80, count: 10, spread: 4 }, // West Siberia
-      { lat: 65, lng: 120, count: 12, spread: 4 }, // Central Siberia
-      { lat: 60, lng: 140, count: 10, spread: 4 }, // East Siberia
-      { lat: 55, lng: 90, count: 15, spread: 4 }, // South Siberia
-      
-      // Central Asia - Optimized spread
-      { lat: 50, lng: 65, count: 8, spread: 2 }, // Kazakhstan West
-      { lat: 45, lng: 75, count: 10, spread: 3 }, // Kazakhstan Central
-      { lat: 40, lng: 68, count: 6, spread: 2 }, // Uzbekistan
-      { lat: 38, lng: 58, count: 4, spread: 2 }, // Turkmenistan
-      { lat: 39, lng: 71, count: 4, spread: 2 }, // Tajikistan
-      { lat: 41, lng: 75, count: 4, spread: 2 }, // Kyrgyzstan
-      
-      // China - Optimized spread
-      { lat: 45, lng: 125, count: 12, spread: 3 }, // Northeast China (Manchuria)
-      { lat: 40, lng: 115, count: 18, spread: 3 }, // North China Plain
-      { lat: 35, lng: 110, count: 20, spread: 3 }, // Central China
-      { lat: 30, lng: 120, count: 16, spread: 3 }, // Yangtze River Delta
-      { lat: 25, lng: 115, count: 14, spread: 2 }, // South China
-      { lat: 22, lng: 113, count: 8, spread: 2 }, // Pearl River Delta
-      { lat: 35, lng: 85, count: 8, spread: 3 }, // Western China (Tibet)
-      { lat: 43, lng: 87, count: 6, spread: 2 }, // Xinjiang
-      { lat: 45, lng: 110, count: 8, spread: 3 }, // Inner Mongolia
-      
-      // Japan - Already optimized
-      { lat: 43, lng: 142, count: 4, spread: 1 }, // Hokkaido
-      { lat: 38, lng: 140, count: 6, spread: 1 }, // Honshu North
-      { lat: 35, lng: 139, count: 8, spread: 1 }, // Honshu Central (Tokyo)
-      { lat: 32, lng: 131, count: 4, spread: 1 }, // Kyushu
-      { lat: 26, lng: 127, count: 2, spread: 1 }, // Okinawa
-      
-      // Korea - Already optimized
-      { lat: 39, lng: 127, count: 4, spread: 1 }, // North Korea
-      { lat: 36, lng: 128, count: 6, spread: 1 }, // South Korea
-      
-      // India and Subcontinent
-      { lat: 32, lng: 77, count: 8, spread: 8 }, // Northern India (Kashmir)
-      { lat: 28, lng: 77, count: 12, spread: 10 }, // North India (Delhi region)
-      { lat: 26, lng: 83, count: 15, spread: 12 }, // Ganges Plain
-      { lat: 23, lng: 78, count: 18, spread: 15 }, // Central India
-      { lat: 19, lng: 73, count: 12, spread: 10 }, // Western India (Mumbai)
-      { lat: 15, lng: 77, count: 14, spread: 12 }, // Deccan Plateau
-      { lat: 11, lng: 78, count: 10, spread: 8 }, // South India
-      { lat: 9, lng: 76, count: 6, spread: 6 }, // Kerala
-      { lat: 13, lng: 80, count: 8, spread: 6 }, // Tamil Nadu
-      { lat: 8, lng: 81, count: 4, spread: 4 }, // Sri Lanka
-      
-      // Pakistan and Afghanistan
-      { lat: 30, lng: 70, count: 10, spread: 8 }, // Pakistan
-      { lat: 33, lng: 65, count: 6, spread: 8 }, // Afghanistan
-      
-      // Southeast Asia
-      { lat: 16, lng: 101, count: 8, spread: 8 }, // Thailand
-      { lat: 14, lng: 108, count: 6, spread: 6 }, // Vietnam
-      { lat: 12, lng: 105, count: 4, spread: 4 }, // Cambodia
-      { lat: 18, lng: 105, count: 4, spread: 4 }, // Laos
-      { lat: 21, lng: 106, count: 6, spread: 6 }, // Northern Vietnam
-      { lat: 4, lng: 114, count: 4, spread: 4 }, // Brunei
-      { lat: 4, lng: 102, count: 8, spread: 8 }, // Malaysia
-      { lat: 1, lng: 104, count: 2, spread: 2 }, // Singapore
-      
-      // Indonesia
-      { lat: 6, lng: 107, count: 8, spread: 6 }, // Java
-      { lat: 0, lng: 109, count: 6, spread: 8 }, // Sumatra
-      { lat: -2, lng: 115, count: 8, spread: 8 }, // Borneo (Kalimantan)
-      { lat: -8, lng: 115, count: 4, spread: 4 }, // Bali
-      { lat: -5, lng: 120, count: 6, spread: 6 }, // Sulawesi
-      { lat: -3, lng: 135, count: 4, spread: 6 }, // Papua
-      
-      // Philippines
-      { lat: 14, lng: 121, count: 6, spread: 4 }, // Luzon
-      { lat: 10, lng: 123, count: 4, spread: 4 }, // Visayas
-      { lat: 7, lng: 125, count: 4, spread: 4 }, // Mindanao
-      
-      // Middle East
-      { lat: 32, lng: 53, count: 6, spread: 6 }, // Iran
-      { lat: 33, lng: 44, count: 4, spread: 4 }, // Iraq
-      { lat: 34, lng: 36, count: 4, spread: 4 }, // Syria
-      { lat: 31, lng: 35, count: 3, spread: 3 }, // Israel/Palestine
-      { lat: 31, lng: 36, count: 3, spread: 3 }, // Jordan
-      { lat: 24, lng: 45, count: 8, spread: 8 }, // Saudi Arabia
-      { lat: 26, lng: 50, count: 2, spread: 2 }, // Bahrain
-      { lat: 25, lng: 51, count: 2, spread: 2 }, // Qatar
-      { lat: 24, lng: 54, count: 3, spread: 3 }, // UAE
-      { lat: 23, lng: 58, count: 3, spread: 3 }, // Oman
-      { lat: 15, lng: 44, count: 4, spread: 4 }, // Yemen
-      
-      // Other Asian regions
-      { lat: 40, lng: 45, count: 3, spread: 3 }, // Armenia
-      { lat: 42, lng: 43, count: 3, spread: 3 }, // Georgia
-      { lat: 40, lng: 48, count: 4, spread: 4 }, // Azerbaijan      // Australia & Oceania - Optimized realistic mapping
-      { lat: -12, lng: 133, count: 6, spread: 2 }, // Northern Territory North
-      { lat: -15, lng: 130, count: 8, spread: 2 }, // Northern Territory Central
-      { lat: -20, lng: 130, count: 8, spread: 2 }, // Northern Territory South
-      { lat: -17, lng: 142, count: 6, spread: 2 }, // Queensland North
-      { lat: -22, lng: 145, count: 10, spread: 2 }, // Queensland Central
-      { lat: -27, lng: 150, count: 8, spread: 2 }, // Queensland South (Brisbane)
-      { lat: -33, lng: 151, count: 8, spread: 2 }, // New South Wales (Sydney)
-      { lat: -37, lng: 145, count: 8, spread: 2 }, // Victoria (Melbourne)
-      { lat: -35, lng: 139, count: 6, spread: 2 }, // South Australia (Adelaide)
-      { lat: -32, lng: 116, count: 6, spread: 2 }, // Western Australia (Perth)
-      { lat: -25, lng: 120, count: 8, spread: 3 }, // Western Australia Central
-      { lat: -20, lng: 118, count: 6, spread: 2 }, // Western Australia North
-      { lat: -42, lng: 147, count: 4, spread: 1 }, // Tasmania
-      
-      // New Zealand - Already optimized
-      { lat: -37, lng: 175, count: 4, spread: 1 }, // North Island North
-      { lat: -40, lng: 176, count: 4, spread: 1 }, // North Island South
-      { lat: -43, lng: 171, count: 4, spread: 1 }, // South Island North
-      { lat: -46, lng: 169, count: 3, spread: 1 }, // South Island South
-      
-      // Pacific Islands - Already optimized
-      { lat: -18, lng: 178, count: 2, spread: 1 }, // Fiji
-      { lat: -22, lng: 166, count: 1, spread: 1 }, // New Caledonia
-      { lat: -17, lng: 168, count: 1, spread: 1 }, // Vanuatu
-      { lat: -9, lng: 160, count: 1, spread: 1 }, // Solomon Islands
-      { lat: -6, lng: 147, count: 1, spread: 1 }, // Papua New Guinea
-        // Additional islands and major island chains
-      { lat: 21, lng: -158, count: 3, spread: 2 }, // Hawaii main islands
-      { lat: 28, lng: -16, count: 2, spread: 2 }, // Canary Islands
-      { lat: 39, lng: 3, count: 2, spread: 2 }, // Balearic Islands
-      { lat: 37, lng: 14, count: 2, spread: 2 }, // Sicily
-      { lat: 40, lng: 9, count: 2, spread: 2 }, // Sardinia
-      { lat: 35, lng: 33, count: 2, spread: 2 }, // Cyprus
-      { lat: 35, lng: 25, count: 2, spread: 2 }, // Crete
-      { lat: -20, lng: 57, count: 2, spread: 2 }, // Mauritius
-      { lat: -21, lng: 55, count: 2, spread: 2 }, // Réunion
-      { lat: 14, lng: -61, count: 2, spread: 2 }, // Caribbean islands
-      { lat: 18, lng: -66, count: 2, spread: 2 }, // Puerto Rico
-      { lat: 25, lng: -77, count: 2, spread: 2 }, // Bahamas
-      { lat: 22, lng: -79, count: 2, spread: 2 }, // Cuba
-      { lat: 18, lng: -77, count: 2, spread: 2 }, // Jamaica
-    ];
+  // Convert GeoJSON coordinates to 3D points on sphere with 2x density
+  const countryPoints = useMemo(() => {
+    const points: THREE.Vector3[] = [];
+    const colors: THREE.Color[] = [];
     
-    continentRegions.forEach(region => {
-      for (let i = 0; i < region.count; i++) {
-        const latOffset = (Math.random() - 0.5) * region.spread;
-        const lngOffset = (Math.random() - 0.5) * region.spread;
-        
-        const lat = Math.max(-85, Math.min(85, region.lat + latOffset));
-        const lng = region.lng + lngOffset;
-        
-        const phi = (90 - lat) * (Math.PI / 180);
-        const theta = (lng + 180) * (Math.PI / 180);
-        
-        const x = -(radius * Math.sin(phi) * Math.cos(theta));
-        const y = radius * Math.cos(phi);
-        const z = radius * Math.sin(phi) * Math.sin(theta);
-        
-        positions.push(x, y, z);
-        
-        // Varied colors based on region
-        const baseIntensity = 0.4 + Math.random() * 0.4;
-        const greenVariation = 0.6 + Math.random() * 0.3;
-        
-        // Different shades of green/blue for different regions
-        if (lat > 50) {
-          // Northern regions - more blue
-          colors.push(0.1 * baseIntensity, 0.7 * greenVariation, 0.9 * baseIntensity);
-        } else if (lat < -20) {
-          // Southern regions - more green
-          colors.push(0.0 * baseIntensity, 0.9 * greenVariation, 0.4 * baseIntensity);
-        } else {
-          // Tropical/temperate - balanced
-          colors.push(0.0 * baseIntensity, 0.8 * greenVariation, 0.6 * baseIntensity);
+    countries.forEach((country) => {
+      const color = new THREE.Color(country.color);
+      
+      // Sample coordinates for better performance - doubled density
+      country.coordinates.forEach((coord, index) => {
+        if (coord.length >= 2) {
+          const [lng, lat] = coord;
+          if (!isNaN(lat) && !isNaN(lng)) {
+            // Convert lat/lng to 3D sphere coordinates
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lng + 180) * (Math.PI / 180);
+            
+            const point = new THREE.Vector3(
+              -(5.05 * Math.sin(phi) * Math.cos(theta)),
+              5.05 * Math.cos(phi),
+              5.05 * Math.sin(phi) * Math.sin(theta)
+            );
+            
+            points.push(point);
+            colors.push(color);
+              // Add multiple interpolated points between coordinates for 4x density
+            if (index > 0) {
+              const prevCoord = country.coordinates[index - 1];
+              if (prevCoord && prevCoord.length >= 2) {
+                const [prevLng, prevLat] = prevCoord;
+                if (!isNaN(prevLat) && !isNaN(prevLng)) {
+                  // Add 3 interpolated points between each coordinate pair
+                  for (let i = 1; i <= 3; i++) {
+                    const ratio = i / 4; // 0.25, 0.5, 0.75
+                    const interpLat = prevLat + (lat - prevLat) * ratio;
+                    const interpLng = prevLng + (lng - prevLng) * ratio;
+                    
+                    const interpPhi = (90 - interpLat) * (Math.PI / 180);
+                    const interpTheta = (interpLng + 180) * (Math.PI / 180);
+                    
+                    const interpPoint = new THREE.Vector3(
+                      -(5.05 * Math.sin(interpPhi) * Math.cos(interpTheta)),
+                      5.05 * Math.cos(interpPhi),
+                      5.05 * Math.sin(interpPhi) * Math.sin(interpTheta)
+                    );
+                    
+                    points.push(interpPoint);
+                    colors.push(color);
+                  }
+                }
+              }
+            }
+          }
         }
-      }
+      });
     });
     
-    return {
-      positions: new Float32Array(positions),
-      colors: new Float32Array(colors)
-    };
-  }, []);
+    return { points, colors };
+  }, [countries]);
 
+  const geometry = useMemo(() => {
+    const geom = new THREE.BufferGeometry();
+    const positions = new Float32Array(countryPoints.points.length * 3);
+    const colorArray = new Float32Array(countryPoints.points.length * 3);
+    
+    countryPoints.points.forEach((point, i) => {
+      positions[i * 3] = point.x;
+      positions[i * 3 + 1] = point.y;
+      positions[i * 3 + 2] = point.z;
+      
+      const color = countryPoints.colors[i];
+      colorArray[i * 3] = color.r;
+      colorArray[i * 3 + 1] = color.g;
+      colorArray[i * 3 + 2] = color.b;
+    });
+    
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    
+    return geom;
+  }, [countryPoints]);
+  return (
+    <group ref={groupRef}>
+      <points geometry={geometry}>
+        <pointsMaterial
+          size={0.025}
+          vertexColors={true}
+          transparent={true}
+          opacity={0.9}
+          sizeAttenuation={false}
+        />
+      </points>
+    </group>
+  );
+});
+
+RealCountries.displayName = 'RealCountries';
+
+// City Hubs - Shows major cities as simple dots
+const CityHubs = React.memo(({ globeRotation, onCityClick }: { 
+  globeRotation: number;
+  onCityClick?: (city: CityData) => void;
+}) => {
+  const groupRef = useRef<THREE.Group>(null);
+
+  // Apply rotation to match the globe
   useFrame(() => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y += 0.001;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = globeRotation;
     }
   });
 
   return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[pointsData.positions, 3]}
+    <group ref={groupRef}>
+      {MAJOR_CITIES.map((city, index) => (
+        <CityHub 
+          key={`${city.name}-${index}`} 
+          city={city} 
+          onClick={onCityClick}
         />
-        <bufferAttribute
-          attach="attributes-color"
-          args={[pointsData.colors, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.04}
-        vertexColors={true}
-        transparent={true}
-        opacity={0.85}
-        sizeAttenuation={true}
-      />
-    </points>
+      ))}
+    </group>
   );
 });
 
-// Animated Gaming Hub Marker - Optimized with Globe Rotation Sync
-const GamingHub = React.memo(({ hub, onHover, globeRotation }: { 
-  hub: any, 
-  onHover: (hub: any | null) => void,
-  globeRotation: number 
+CityHubs.displayName = 'CityHubs';
+
+// Individual City Hub Component - Simple dots with labels
+const CityHub = React.memo(({ 
+  city, 
+  onClick 
+}: { 
+  city: CityData;
+  onClick?: (city: CityData) => void;
+}) => {
+  // Convert lat/lng to 3D coordinates
+  const position = useMemo(() => {
+    const phi = (90 - city.lat) * (Math.PI / 180);
+    const theta = (city.lng + 180) * (Math.PI / 180);
+    
+    return new THREE.Vector3(
+      -(5.1 * Math.sin(phi) * Math.cos(theta)),
+      5.1 * Math.cos(phi),
+      5.1 * Math.sin(phi) * Math.sin(theta)
+    );
+  }, [city.lat, city.lng]);
+
+  // Get hub color and size based on city type
+  const { color, size } = useMemo(() => {
+    switch (city.type) {
+      case 'megacity':
+        return { color: '#ff6b6b', size: 0.12 }; // Red for megacities
+      case 'capital':
+        return { color: '#4ecdc4', size: 0.10 }; // Cyan for capitals
+      default:
+        return { color: '#45b7d1', size: 0.08 }; // Blue for major cities
+    }
+  }, [city.type]);
+  const handleClick = useCallback((event: any) => {
+    event.stopPropagation();
+    onClick?.(city);
+  }, [city, onClick]);
+
+  const handlePointerEnter = useCallback(() => {
+    document.body.style.cursor = 'pointer';
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    document.body.style.cursor = 'default';
+  }, []);
+
+  return (
+    <group position={position}>
+      {/* Simple bright dot for city */}
+      <mesh 
+        onClick={handleClick}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+      >
+        <sphereGeometry args={[size, 8, 8]} />
+        <meshBasicMaterial 
+          color={color} 
+          transparent={true}
+          opacity={0.9}
+        />
+      </mesh>
+      
+      {/* City name label */}
+      <Billboard
+        position={[0, size + 0.15, 0]}
+        follow={true}
+        lockX={false}
+        lockY={false}
+        lockZ={false}
+      >
+        <Text
+          color="#ffffff"
+          anchorX="center"
+          anchorY="bottom"
+          fontSize={0.12}
+          outlineWidth={0.008}
+          outlineColor="#000000"
+          maxWidth={3}
+          textAlign="center"
+          fontWeight="bold"
+        >
+          {city.name}
+        </Text>
+      </Billboard>
+    </group>
+  );
+});
+
+CityHub.displayName = 'CityHub';
+
+// Country Information Marker - Shows country details on hover
+const CountryMarker = React.memo(({ country, onHover, globeRotation, onClick }: { 
+  country: CountryData, 
+  onHover: (country: CountryData | null) => void,
+  globeRotation: number,
+  onClick?: () => void
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const ringRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   
-  const basePosition = useMemo(() => latLngToVector3(hub.lat, hub.lng, 5.15), [hub]);
+  // Use first coordinate as center point for the marker
+  const basePosition = useMemo(() => {
+    if (country.coordinates.length > 0) {
+      const [lng, lat] = country.coordinates[0];
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lng + 180) * (Math.PI / 180);
+      
+      return new THREE.Vector3(
+        -(5.15 * Math.sin(phi) * Math.cos(theta)),
+        5.15 * Math.cos(phi),
+        5.15 * Math.sin(phi) * Math.sin(theta)
+      );
+    }
+    return new THREE.Vector3(0, 0, 0);
+  }, [country.coordinates]);
   
   useFrame((state) => {
-    // Apply globe rotation to the hub group
+    // Apply globe rotation to the marker group
     if (groupRef.current) {
       groupRef.current.rotation.y = globeRotation;
     }
     
     if (meshRef.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 2 + hub.players * 0.001) * 0.2;
+      const scale = 1 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
       meshRef.current.scale.setScalar(scale);
       meshRef.current.lookAt(state.camera.position);
     }
-    
-    if (ringRef.current) {
-      const ringScale = 1 + Math.sin(state.clock.elapsedTime * 3 + hub.players * 0.001) * 0.3;
-      ringRef.current.scale.setScalar(ringScale);
-      ringRef.current.rotation.z += 0.02;
-      ringRef.current.lookAt(state.camera.position);
-    }
   });
+  
   return (
     <group ref={groupRef}>
       <group position={basePosition}>
         <mesh
-          ref={ringRef}
-          onPointerEnter={() => onHover(hub)}
-          onPointerLeave={() => onHover(null)}
-        >
-          <ringGeometry args={[0.1, 0.2, 12]} />
-          <meshBasicMaterial 
-            color={hub.color} 
-            transparent 
-            opacity={0.6}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        
-        <mesh
           ref={meshRef}
-          onPointerEnter={() => onHover(hub)}
+          onPointerEnter={() => onHover(country)}
           onPointerLeave={() => onHover(null)}
+          onClick={onClick}
         >
-          <sphereGeometry args={[0.06, 12, 8]} />
-          <meshBasicMaterial color={hub.color} />
+          <sphereGeometry args={[0.03, 8, 6]} />
+          <meshBasicMaterial color={country.color} />
         </mesh>
-        
-        <Billboard position={[0, 0.25, 0]}>
-          <Text
-            fontSize={0.08}
-            color="white"
-            anchorX="center"
-            anchorY="middle"
-            outlineWidth={0.01}
-            outlineColor="#000000"
-          >
-            {hub.flag} {hub.name}
-          </Text>
-        </Billboard>
-        
-        <Billboard position={[0, -0.25, 0]}>
+          <Billboard position={[0, 0.15, 0]}>
           <Text
             fontSize={0.05}
-            color={hub.color}
+            color="white"
             anchorX="center"
             anchorY="middle"
             outlineWidth={0.005}
             outlineColor="#000000"
           >
-            {(hub.players / 1000).toFixed(0)}K
+            {country.name === 'United States of America' || 
+             country.name === 'United States' || 
+             country.name === 'USA' ? '' : country.name}
           </Text>
         </Billboard>
       </group>
@@ -640,73 +510,7 @@ const GamingHub = React.memo(({ hub, onHover, globeRotation }: {
   );
 });
 
-// Optimized Connection Lines
-const ConnectionLines = React.memo(() => {
-  const linesRef = useRef<THREE.Group>(null);
-  
-  const connections = useMemo(() => {
-    const connectionPairs = [
-      [0, 1], // Istanbul - New York
-      [1, 2], // New York - London
-      [2, 6], // London - Berlin
-      [3, 4], // Tokyo - Seoul
-      [0, 3], // Istanbul - Tokyo
-      [4, 1], // Seoul - New York
-    ];
-    
-    return connectionPairs.map(([i, j]) => {
-      const hub1 = GAMING_HUBS[i];
-      const hub2 = GAMING_HUBS[j];
-      
-      const pos1 = latLngToVector3(hub1.lat, hub1.lng, 5.1);
-      const pos2 = latLngToVector3(hub2.lat, hub2.lng, 5.1);
-      
-      // Create curved path
-      const midPoint = new THREE.Vector3()
-        .addVectors(pos1, pos2)
-        .multiplyScalar(0.5)
-        .normalize()
-        .multiplyScalar(6); // Higher arc
-      
-      const curve = new THREE.QuadraticBezierCurve3(pos1, midPoint, pos2);
-      const points = curve.getPoints(20);
-      
-      return { points, color: `hsl(${(i + j) * 30}, 70%, 60%)` };
-    });
-  }, []);
-
-  useFrame((state) => {
-    if (linesRef.current) {
-      linesRef.current.children.forEach((line, index) => {
-        const material = (line as THREE.Line).material as THREE.LineBasicMaterial;
-        material.opacity = 0.3 + Math.sin(state.clock.elapsedTime + index) * 0.2;
-      });
-    }
-  });
-
-  return (
-    <group ref={linesRef}>
-      {connections.map((connection, index) => (
-        <line key={index}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              args={[
-                new Float32Array(connection.points.flatMap(p => [p.x, p.y, p.z])),
-                3
-              ]}
-            />
-          </bufferGeometry>
-          <lineBasicMaterial 
-            color={connection.color} 
-            transparent 
-            opacity={0.5}
-            linewidth={2}
-          />
-        </line>      ))}
-    </group>
-  );
-});
+CountryMarker.displayName = 'CountryMarker';
 
 // Atmosphere with shader-like effect - Optimized
 const Atmosphere = React.memo(() => {
@@ -826,17 +630,41 @@ const Starfield = React.memo(() => {
 
 Starfield.displayName = 'Starfield';
 
-// Main Scene Component - Memoized to prevent unnecessary re-renders with Globe Rotation Sync
-const Scene = React.memo(({ onHubHover, isMobile }: { onHubHover: (hub: any | null) => void, isMobile: boolean }) => {
+// Main Scene Component - Refactored for Real Countries
+const Scene = React.memo(({ 
+  onCountryHover, 
+  isMobile, 
+  selectedCountry, 
+  setSelectedCountry, 
+  showCountries = true,
+  countries = [],
+  isLoadingCountries = false,
+  onCityClick
+}: { 
+  onCountryHover: (country: CountryData | null) => void, 
+  isMobile: boolean,
+  selectedCountry: CountryData | null,
+  setSelectedCountry: (country: CountryData | null) => void,
+  showCountries?: boolean,
+  countries?: CountryData[],
+  isLoadingCountries?: boolean,
+  onCityClick?: (city: CityData) => void
+}) => {
   const [globeRotation, setGlobeRotation] = useState(0);
+  const [isMouseOver, setIsMouseOver] = useState(false);
+  const orbitControlsRef = useRef<any>(null);
 
   const handleRotationUpdate = useCallback((rotation: number) => {
     if (typeof rotation === 'number' && !isNaN(rotation)) {
       setGlobeRotation(rotation);
     }
   }, []);
+
   return (
-    <>
+    <group
+      onPointerEnter={() => setIsMouseOver(true)}
+      onPointerLeave={() => setIsMouseOver(false)}
+    >
       {/* Stars first - rendered in background */}
       <Starfield />
       
@@ -845,20 +673,31 @@ const Scene = React.memo(({ onHubHover, isMobile }: { onHubHover: (hub: any | nu
       <pointLight position={[-10, -10, -5]} intensity={0.3} color="#4fc3f7" />
       
       <EarthGlobe onRotationUpdate={handleRotationUpdate} />
-      <DottedContinents globeRotation={globeRotation} />
-      <Atmosphere />
+        {/* Render real countries if enabled and data is available */}
+      {showCountries && countries.length > 0 && (
+        <RealCountries globeRotation={globeRotation} countries={countries} />
+      )}
       
-      {GAMING_HUBS.map((hub, index) => (
-        <GamingHub 
-          key={`hub-${index}`} 
-          hub={hub} 
-          onHover={onHubHover} 
+      {/* Render city hubs */}
+      <CityHubs globeRotation={globeRotation} onCityClick={onCityClick} />
+        {/* Render country markers for interaction - reduced number */}
+      {countries.length > 0 && countries.slice(0, 5).map((country, index) => (
+        <CountryMarker 
+          key={`country-${index}`} 
+          country={country}
+          onHover={selectedCountry ? () => {} : onCountryHover}
           globeRotation={globeRotation}
+          onClick={() => {
+            setSelectedCountry(country);
+            if (typeof onCountryHover === 'function') onCountryHover(null);
+          }}
         />
       ))}
       
-      <ConnectionLines />
+      <Atmosphere />
+      
       <OrbitControls
+        ref={orbitControlsRef}
         enableZoom={true}
         enablePan={false}
         enableRotate={true}
@@ -866,9 +705,11 @@ const Scene = React.memo(({ onHubHover, isMobile }: { onHubHover: (hub: any | nu
         rotateSpeed={0.5}
         minDistance={isMobile ? 15 : 8}
         maxDistance={isMobile ? 40 : 30}
-        autoRotate={false}
-        makeDefault      />
-    </>
+        autoRotate={!isMouseOver}
+        autoRotateSpeed={0.5}
+        makeDefault
+      />
+    </group>
   );
 });
 
@@ -934,23 +775,97 @@ class WebGLErrorBoundary extends React.Component<
 }
 
 // Main Component with optimizations for WebGL stability
-export default function OptimizedGamingGlobe() {
-  const [hoveredHub, setHoveredHub] = useState<any>(null);
+export default function OptimizedGamingGlobe({ showCountries = true }: { showCountries?: boolean } = {}) {
+  const [hoveredCountry, setHoveredCountry] = useState<CountryData | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
+  const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
   const [webglError, setWebglError] = useState(false);
   const [isContextLost, setIsContextLost] = useState(false);
   const [canvasKey, setCanvasKey] = useState(0); // Force remount canvas
+  const [countries, setCountries] = useState<CountryData[]>([]);
+  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
+  const [totalPlayers, setTotalPlayers] = useState(65000); // Starting value between 40k-90k
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isMobile = useIsMobile();
 
-  // Memoize hover handler to prevent unnecessary re-renders
-  const handleHubHover = useCallback((hub: any | null) => {
-    setHoveredHub(hub);
+  // Dynamic player count animation (40k - 90k with realistic fluctuation)
+  useEffect(() => {
+    const updatePlayerCount = () => {
+      const time = Date.now() / 1000;
+      
+      // Multiple wave patterns for realistic fluctuation
+      const baseWave = Math.sin(time * 0.05) * 0.3; // Slow base wave
+      const fastWave = Math.sin(time * 0.3) * 0.1; // Faster fluctuation
+      const randomWave = Math.sin(time * 0.15 + Math.sin(time * 0.08) * 2) * 0.15; // Complex wave
+      
+      // Combine waves for natural variation
+      const totalVariation = baseWave + fastWave + randomWave;
+      
+      // Map to 40k-90k range
+      const baseCount = 65000; // Middle point
+      const range = 25000; // ±25k from base
+      const newCount = Math.round(baseCount + (totalVariation * range));
+      
+      // Ensure bounds
+      const clampedCount = Math.max(40000, Math.min(90000, newCount));
+      setTotalPlayers(clampedCount);
+    };
+
+    const interval = setInterval(updatePlayerCount, 2000); // Update every 2 seconds
+    return () => clearInterval(interval);
   }, []);
+
+  // Load real countries from GeoJSON on component mount
+  useEffect(() => {
+    let isMounted = true;
+    
+    const loadCountries = async () => {
+      try {
+        const countryData = await loadRealCountriesFromGeoJSON();
+        if (isMounted) {
+          setCountries(countryData);
+          setIsLoadingCountries(false);
+        }
+      } catch (error) {
+        console.error('Failed to load countries:', error);
+        if (isMounted) {
+          setIsLoadingCountries(false);
+        }
+      }
+    };
+    
+    loadCountries();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Calculate total population from countries
+  const totalPopulation = useMemo(() => {
+    return countries.reduce((sum: number, country: CountryData) => sum + country.population, 0);
+  }, [countries]);
+  // Memoize hover handler to prevent unnecessary re-renders
+  const handleCountryHover = useCallback((country: CountryData | null) => {
+    setHoveredCountry(country);
+  }, []);
+
+  // Memoize city click handler
+  const handleCityClick = useCallback((city: CityData) => {
+    setSelectedCity(city);
+  }, []);
+
   // Memoize scene props to prevent Canvas re-creation
   const sceneProps = useMemo(() => ({
-    onHubHover: handleHubHover,
-    isMobile: isMobile
-  }), [handleHubHover, isMobile]);  // Memoize camera settings to prevent re-creation - Mobile Responsive
+    onCountryHover: handleCountryHover,
+    isMobile: isMobile,
+    selectedCountry: selectedCountry,
+    setSelectedCountry: setSelectedCountry,
+    showCountries: showCountries,
+    countries: countries,
+    isLoadingCountries: isLoadingCountries,
+    onCityClick: handleCityClick
+  }), [handleCountryHover, handleCityClick, isMobile, selectedCountry, showCountries, countries, isLoadingCountries]);// Memoize camera settings to prevent re-creation - Mobile Responsive
   const cameraSettings = useMemo(() => ({
     position: [0, 0, isMobile ? 24 : 15] as [number, number, number], // 80% zoom out on mobile (24 vs 15)
     fov: 50
@@ -1037,10 +952,20 @@ export default function OptimizedGamingGlobe() {
   }, []);
 
   return(    <WebGLErrorBoundary>
-      <div className="relative w-full h-[800px] bg-transparent">
+      <div className="relative w-full h-[800px] bg-transparent">        {/* Loading Countries Overlay */}
+        {isLoadingCountries && (
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-blue-400 text-lg mb-4">🌍 Loading Countries...</div>
+              <p className="text-white text-sm mb-2 sm:mb-3">Loading world countries from GeoJSON</p>
+              <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+            </div>
+          </div>
+        )}
+        
         {/* WebGL Context Lost Overlay */}
         {isContextLost && (
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
             <div className="text-center">
               <div className="text-yellow-400 text-lg mb-4">⚠️ Context Restoring...</div>
               <p className="text-white text-sm mb-2 sm:mb-3">WebGL context is being restored</p>
@@ -1078,178 +1003,314 @@ export default function OptimizedGamingGlobe() {
               </button>
             </div>
           </div>
-        )}        {/* Stats Panel - Mobile Optimized */}
-      <div className={`absolute transition-all duration-200 bg-black/85 backdrop-blur-md rounded-lg border border-purple-500/30 shadow-2xl ${
+        )}      {/* Stats Panel - Gaming Network Style */}
+      <div className={`absolute transition-all duration-200 bg-black/80 backdrop-blur-lg rounded-xl border border-purple-500/40 shadow-xl ${
         isMobile 
           ? 'top-2 left-2 right-2 p-3' 
-          : 'top-4 left-4 p-4 rounded-xl max-w-[280px]'
+          : 'top-3 left-3 p-4 rounded-xl max-w-[280px]'
       }`}
-           style={{ touchAction: 'pan-y' }}>
-        <h3 className={`text-purple-400 font-bold mb-2 flex items-center gap-2 ${
-          isMobile ? 'text-sm justify-center' : 'text-base md:text-lg justify-start'
-        }`}>
-          <Globe className={`${isMobile ? 'w-4 h-4' : 'w-4 h-4 md:w-5 md:h-5'}`} />
-          <span className={isMobile ? '' : 'hidden md:inline'}>
-            {isMobile ? 'noob.gg' : 'noob.gg Gaming Network'}
-          </span>
-          {!isMobile && <span className="hidden sm:inline md:hidden">noob.gg Network</span>}
-        </h3>
+           style={{ touchAction: 'pan-y', boxShadow: '0 4px 30px rgba(123, 31, 162, 0.15)' }}>
         
-        {/* Mobile: Grid Layout, Desktop: List Layout */}
-        <div className={isMobile 
-          ? 'grid grid-cols-3 gap-2 text-xs' 
-          : 'space-y-2 text-sm'
-        }>
-          <div className={`${isMobile 
-            ? 'flex flex-col items-center text-center p-2 bg-purple-500/10 rounded-lg' 
-            : 'flex justify-between items-center gap-2'
-          }`}>
-            <span className={`text-gray-300 flex items-center gap-1.5 ${
-              isMobile ? 'flex-col mb-1' : 'flex-shrink-0'
-            }`}>
-              <Users className="w-3.5 h-3.5" />
-              <span className={isMobile ? 'text-xs' : 'hidden md:inline'}>
-                {isMobile ? 'Players' : 'Total Players:'}
-              </span>
-              {!isMobile && <span className="hidden sm:inline md:hidden">Players:</span>}
-            </span>
-            <span className={`text-purple-400 font-semibold ${
-              isMobile ? 'text-sm' : 'text-sm whitespace-nowrap'
-            }`}>
-              {(GAMING_HUBS.reduce((sum, hub) => sum + hub.players, 0) / 1000).toFixed(0)}k
+        {/* Header */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center">
+            <Globe className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-white font-semibold text-sm">noob.gg Gaming Network</span>
+        </div>
+        
+        {/* Stats Grid */}
+        <div className="space-y-3">          {/* Total Players */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-blue-400" />
+              <span className="text-gray-300 text-sm">Total Players:</span>
+            </div>
+            <span className="text-blue-400 font-bold text-lg">
+              {totalPlayers.toLocaleString()}
             </span>
           </div>
           
-          <div className={`${isMobile 
-            ? 'flex flex-col items-center text-center p-2 bg-blue-500/10 rounded-lg' 
-            : 'flex justify-between items-center gap-2'
-          }`}>
-            <span className={`text-gray-300 flex items-center gap-1.5 ${
-              isMobile ? 'flex-col mb-1' : 'flex-shrink-0'
-            }`}>
-              <MapPin className="w-3.5 h-3.5" />
-              <span className={isMobile ? 'text-xs' : 'hidden md:inline'}>
-                {isMobile ? 'Hubs' : 'Active Hubs:'}
-              </span>
-              {!isMobile && <span className="hidden sm:inline md:hidden">Hubs:</span>}
-            </span>
-            <span className={`text-blue-400 font-semibold ${
-              isMobile ? 'text-sm' : 'text-sm'
-            }`}>
-              {GAMING_HUBS.length}
-            </span>
+          {/* Active Hubs */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-purple-400" />
+              <span className="text-gray-300 text-sm">Active Hubs:</span>
+            </div>
+            <span className="text-purple-400 font-bold text-lg">{MAJOR_CITIES.length}</span>
           </div>
           
-          <div className={`${isMobile 
-            ? 'flex flex-col items-center text-center p-2 bg-green-500/10 rounded-lg' 
-            : 'flex justify-between items-center gap-2'
-          }`}>
-            <span className={`text-gray-300 flex items-center gap-1.5 ${
-              isMobile ? 'flex-col mb-1' : 'flex-shrink-0'
-            }`}>
-              <Link className="w-3.5 h-3.5" />
-              <span className={isMobile ? 'text-xs' : 'hidden sm:inline'}>
-                {isMobile ? 'Status' : 'Connections:'}
-              </span>
-              {!isMobile && <span className="sm:hidden">Connect:</span>}
-            </span>
-            <span className={`text-green-400 font-semibold flex items-center gap-1 ${
-              isMobile ? 'text-sm' : 'text-sm'
-            }`}>
-              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-              Live
-            </span>
+          {/* Connections */}          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <span className="text-gray-300 text-sm">Connections:</span>
+            </div>
+            <span className="text-green-400 font-bold text-lg">Live</span>
           </div>
         </div>
-      </div>{/* Hub Info Panel - Full Width Centered */}
-      {hoveredHub && (
-        <div className="absolute bottom-20 left-0 right-0 mx-0 w-full sm:top-1/2 sm:left-1/2 sm:right-auto sm:bottom-auto sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 sm:mx-0 bg-black/95 backdrop-blur-lg text-white rounded-2xl p-4 sm:p-6 border-2 border-purple-500/50 shadow-2xl sm:w-[95vw] sm:max-w-[700px]"
-             style={{ touchAction: 'pan-y' }}><div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <div className="text-2xl sm:text-3xl">{hoveredHub.flag}</div>
+      </div>{/* Country Info Panel - Modern Glassmorphism */}
+      {hoveredCountry && !selectedCountry && (
+        <div className="absolute bottom-20 left-4 right-4 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 bg-black/75 backdrop-blur-xl text-white rounded-xl p-3.5 sm:p-4 border border-purple-500/50 sm:w-80 sm:max-w-sm"
+             style={{ touchAction: 'pan-y', boxShadow: '0 8px 32px rgba(123, 31, 162, 0.25)' }}>
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">
+            <div className="text-xl sm:text-2xl drop-shadow-glow">🌍</div>
             <div>
-              <h3 className="text-lg sm:text-xl font-bold">{hoveredHub.name}</h3>
-              <div className="flex items-center gap-2 mt-1">
+              <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                {hoveredCountry.name === 'United States of America' || 
+                 hoveredCountry.name === 'United States' || 
+                 hoveredCountry.name === 'USA' ? 'USA' : hoveredCountry.name}
+              </h3>
+              <div className="flex items-center gap-1.5 mt-0.5">
                 <div 
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: hoveredHub.color }}
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: hoveredCountry.color, boxShadow: `0 0 5px ${hoveredCountry.color}` }}
                 ></div>
-                <span className="text-xs sm:text-sm text-gray-400">Gaming Hub</span>
+                <span className="text-xs text-gray-300">{hoveredCountry.continent}</span>
               </div>
             </div>
           </div>
-            <div className="space-y-3 sm:space-y-4">
-            <div className="bg-purple-500/20 rounded-lg p-2.5 sm:p-3">
+          
+          <div className="space-y-2.5 sm:space-y-3">
+            <div className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/10 rounded-lg p-2.5 border border-purple-500/20">
               <div className="flex justify-between items-center">
-                <span className="text-gray-300 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
-                  <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Active Players</span>
-                  <span className="sm:hidden">Players</span>
+                <span className="text-gray-200 flex items-center gap-1.5 text-xs sm:text-sm">
+                  <Users className="w-3 h-3 text-purple-300" />
+                  <span className="hidden sm:inline">Population</span>
+                  <span className="sm:hidden">Pop.</span>
                 </span>
-                <span className="text-purple-400 font-bold text-lg sm:text-xl">
-                  {hoveredHub.players.toLocaleString()}
+                <span className="bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent font-bold text-sm sm:text-base">
+                  {(hoveredCountry.population / 1000000).toFixed(1)}M
                 </span>
               </div>
             </div>
             
-            <div>
-              <p className="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
-                <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Popular Games</span>
-                <span className="sm:hidden">Games</span>
-              </p>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {hoveredHub.games.map((game: string) => (
-                  <span 
-                    key={game}
-                    className="px-2 py-0.5 sm:px-3 sm:py-1 bg-gradient-to-r from-purple-500/30 to-blue-500/30 text-white rounded-full text-xs sm:text-sm border border-purple-400/50 backdrop-blur-sm"
-                  >
-                    {game}
-                  </span>
-                ))}
-              </div>
-            </div>
-            
-            <div className="pt-2 sm:pt-3 border-t border-gray-700">
-              <p className="text-gray-400 text-xs leading-relaxed flex items-start gap-2">
-                <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                Join this thriving gaming community and connect with {hoveredHub.players.toLocaleString()} active players from {hoveredHub.name}!
+            <div className="pt-2 border-t border-purple-500/20">
+              <p className="text-gray-300 text-xs leading-relaxed flex items-start gap-1.5">
+                <Globe className="w-3 h-3 mt-0.5 flex-shrink-0 text-blue-300" />
+                Hover over countries for quick info, click for details!
               </p>
             </div>
           </div>
         </div>
-      )}      {/* Controls - Mobile Optimized and Higher Position */}
-      <div className="absolute bottom-16 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-md rounded-full px-4 py-2.5 sm:px-6 sm:py-3 border border-purple-500/40 shadow-lg"
-           style={{ touchAction: 'pan-y' }}>
-        <p className="text-gray-300 text-sm sm:text-sm text-center flex items-center justify-center gap-3 sm:gap-4">
+      )}      {/* Selected Country Modal - Full Details */}
+      {selectedCountry && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-black/90 backdrop-blur-xl text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
+               style={{ boxShadow: '0 20px 40px rgba(123, 31, 162, 0.4)' }}>
+            
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="text-3xl drop-shadow-glow">🌍</div>
+                <div>                  <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    {selectedCountry.name === 'United States of America' || 
+                     selectedCountry.name === 'United States' || 
+                     selectedCountry.name === 'USA' ? 'USA' : selectedCountry.name}
+                  </h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div 
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: selectedCountry.color, boxShadow: `0 0 8px ${selectedCountry.color}` }}
+                    ></div>
+                    <span className="text-sm text-gray-300">{selectedCountry.continent}</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedCountry(null)}
+                className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/10 rounded-xl p-4 border border-purple-500/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-5 h-5 text-purple-300" />
+                  <span className="text-sm text-gray-300">Population</span>
+                </div>
+                <div className="text-2xl font-bold bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
+                  {(selectedCountry.population / 1000000).toFixed(1)}M
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-xl p-4 border border-blue-500/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <Globe className="w-5 h-5 text-blue-300" />
+                  <span className="text-sm text-gray-300">Continent</span>
+                </div>
+                <div className="text-2xl font-bold bg-gradient-to-br from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                  {selectedCountry.continent}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setSelectedCountry(null)}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all transform hover:scale-105"
+                style={{ boxShadow: '0 4px 15px rgba(123, 31, 162, 0.3)' }}
+              >
+                Explore
+              </button>
+              <button 
+                onClick={() => setSelectedCountry(null)}
+                className="px-4 py-3 border border-gray-500 text-gray-300 font-semibold rounded-lg hover:bg-white/10 hover:border-gray-400 transition-all"
+              >
+                Close
+              </button>            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Selected City Modal - Gaming Hub Details */}
+      {selectedCity && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-black/90 backdrop-blur-xl text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
+               style={{ boxShadow: '0 20px 40px rgba(123, 31, 162, 0.4)' }}>
+            
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="text-3xl drop-shadow-glow">🎮</div>
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    {selectedCity.name}
+                  </h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                    <span className="text-sm text-purple-300 font-medium">Gaming Hub</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedCity(null)}
+                className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/10 rounded-xl p-4 border border-purple-500/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-5 h-5 text-purple-300" />
+                  <span className="text-sm text-gray-300">Active Players</span>
+                </div>
+                <div className="text-2xl font-bold bg-gradient-to-br from-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
+                  {Math.floor(selectedCity.population / 100)}
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-xl p-4 border border-blue-500/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <Gamepad2 className="w-5 h-5 text-blue-300" />
+                  <span className="text-sm text-gray-300">Popular Games</span>
+                </div>
+                <div className="text-2xl font-bold bg-gradient-to-br from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                  3
+                </div>
+              </div>
+            </div>
+
+            {/* Popular Games List */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Gamepad2 className="w-4 h-4 text-purple-300" />
+                <span className="text-sm text-gray-300 font-medium">Popular Games</span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-500/10 to-transparent rounded-lg border border-purple-500/20">
+                  <span className="text-white font-medium">CS2</span>
+                  <span className="text-purple-300 text-sm font-bold">#1</span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-500/10 to-transparent rounded-lg border border-blue-500/20">
+                  <span className="text-white font-medium">LOL</span>
+                  <span className="text-blue-300 text-sm font-bold">#2</span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 to-transparent rounded-lg border border-green-500/20">
+                  <span className="text-white font-medium">Valorant</span>
+                  <span className="text-green-300 text-sm font-bold">#3</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setSelectedCity(null)}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all transform hover:scale-105"
+                style={{ boxShadow: '0 4px 15px rgba(123, 31, 162, 0.3)' }}
+              >
+                Join Hub
+              </button>
+              <button 
+                onClick={() => setSelectedCity(null)}
+                className="px-4 py-3 border border-gray-500 text-gray-300 font-semibold rounded-lg hover:bg-white/10 hover:border-gray-400 transition-all"
+              >
+                Close
+              </button>            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Controls - Modern Glassmorphism */}
+      <div className="absolute bottom-16 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-2.5 border border-purple-500/30 shadow-lg"
+           style={{ touchAction: 'pan-y', boxShadow: '0 4px 20px rgba(123, 31, 162, 0.2)' }}>
+        <p className="text-gray-200 text-xs sm:textsm text-center flex items-center justify-center gap-3 sm:gap-4">
           <span className="flex items-center gap-1.5">
-            <Mouse className="w-4 h-4 sm:w-3 sm:h-3" />
+            <Mouse className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-purple-300" />
             <span className="hidden sm:inline">Drag to rotate</span>
             <span className="sm:hidden">Drag</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <ZoomIn className="w-4 h-4 sm:w-3 sm:h-3" />
+            <ZoomIn className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-blue-300" />
             <span className="hidden sm:inline">Scroll to zoom</span>
             <span className="sm:hidden">Zoom</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <Target className="w-4 h-4 sm:w-3 sm:h-3" />
-            <span className="hidden sm:inline">Hover hubs for info</span>
-            <span className="sm:hidden">Touch</span>
+            <Target className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-green-300" />
+            <span className="hidden sm:inline">Click hubs for info</span>
+            <span className="sm:hidden">Click</span>
           </span>
         </p>
       </div>
-      
-      {/* WebGL Status Indicator - Bottom right on desktop, centered on mobile */}
+
+      {/* WebGL Status Indicator - Modern Pill */}
       <div
         className={`absolute bottom-4 ${
           isMobile
             ? 'left-1/2 transform -translate-x-1/2'
             : 'right-4 left-auto transform-none'
-        } flex items-center gap-2 bg-black/70 backdrop-blur-md rounded-lg px-3 py-1.5 sm:px-3 sm:py-2 border border-purple-500/30 shadow-md z-30`}
-        style={{ touchAction: 'pan-y' }}
-      >
-        <div className={`w-2 h-2 rounded-full ${isContextLost ? 'bg-yellow-400 animate-pulse' : webglError ? 'bg-red-400' : 'bg-green-400 animate-pulse'}`}></div>
-        <span className="text-green-400 text-xs font-medium">
+        } flex items-center gap-2 bg-black/60 backdrop-blur-xl rounded-full px-3 py-1.5 sm:px-3.5 sm:py-1.5 border border-purple-500/30 shadow-md z-30`}
+        style={{ touchAction: 'pan-y', boxShadow: '0 4px 12px rgba(123, 31, 162, 0.15)' }}
+      >        <div className={`w-2 h-2 rounded-full ${
+          isContextLost 
+            ? 'bg-yellow-400' 
+            : webglError 
+            ? 'bg-red-400' 
+            : 'bg-emerald-400'
+        }`} style={{ 
+          boxShadow: isContextLost 
+            ? '0 0 5px #facc15' 
+            : webglError 
+            ? '0 0 5px #f87171' 
+            : '0 0 5px #34d399' 
+        }}></div>
+        <span className={`text-xs font-medium ${
+          isContextLost 
+            ? 'text-yellow-400' 
+            : webglError 
+            ? 'text-red-400' 
+            : 'bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent'
+        }`}>
           {isContextLost ? 'Restoring...' : webglError ? 'Error' : 'WebGL Active'}
         </span>
       </div>

@@ -1,18 +1,18 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 /**
  * Get the user's locale from browser settings or fallback to default
  */
 export function getUserLocale(): string {
-  if (typeof window !== 'undefined') {
-    return navigator.language || 'en-US';
+  if (typeof window !== "undefined") {
+    return navigator.language || "en-US";
   }
-  return 'en-US';
+  return "en-US";
 }
 
 /**
@@ -22,18 +22,19 @@ export function formatTimeAgo(dateString: string, locale?: string): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
+
   const userLocale = locale || getUserLocale();
 
-  if (diffInSeconds < 60) return 'just now';
+  if (diffInSeconds < 60) return "just now";
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
-  
-  return date.toLocaleDateString(userLocale, { 
-    month: 'short', 
-    day: 'numeric',
-    year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+  if (diffInSeconds < 604800)
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+
+  return date.toLocaleDateString(userLocale, {
+    month: "short",
+    day: "numeric",
+    year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
   });
 }
 
@@ -43,7 +44,7 @@ export function formatTimeAgo(dateString: string, locale?: string): string {
  * @returns Formatted region string (e.g., "North America")
  */
 export function formatRegion(region: string): string {
-  return region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  return region.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 }
 
 /**
@@ -53,15 +54,15 @@ export function formatRegion(region: string): string {
  */
 export function getStatusIndicatorClass(status: string): string {
   switch (status) {
-    case 'online':
-      return 'bg-green-500';
-    case 'afk':
-      return 'bg-yellow-500';
-    case 'in-game':
-      return 'bg-blue-500';
-    case 'offline':
+    case "online":
+      return "bg-green-500";
+    case "afk":
+      return "bg-yellow-500";
+    case "in-game":
+      return "bg-blue-500";
+    case "offline":
     default:
-      return 'bg-gray-500';
+      return "bg-gray-500";
   }
 }
 
@@ -84,18 +85,21 @@ export function formatNumber(count: number, locale?: string): string {
  * @returns Formatted date string
  */
 export function formatDate(
-  dateString: string, 
-  locale?: string, 
+  dateString: string,
+  locale?: string,
   options?: Intl.DateTimeFormatOptions
 ): string {
   const userLocale = locale || getUserLocale();
   const defaultOptions: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   };
-  
-  return new Date(dateString).toLocaleDateString(userLocale, options || defaultOptions);
+
+  return new Date(dateString).toLocaleDateString(
+    userLocale,
+    options || defaultOptions
+  );
 }
 
 /**
@@ -107,10 +111,27 @@ export function formatDate(
 export function formatDateTime(dateString: string, locale?: string): string {
   const userLocale = locale || getUserLocale();
   return new Date(dateString).toLocaleDateString(userLocale, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
+}
+
+export function getCurrentLanguage(): string {
+  if (typeof window === "undefined") {
+    return "en";
+  }
+
+  const match = document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]*)/);
+  if (match) {
+    return decodeURIComponent(match[1]);
+  }
+
+  if (window.navigator.language) {
+    return window.navigator.language;
+  }
+
+  return "en";
 }

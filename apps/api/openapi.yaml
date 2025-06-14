@@ -1969,7 +1969,6 @@ paths:
           description: Distributor not found
         '500':
           description: Internal server error
-
     put:
       tags:
         - Distributors
@@ -2033,28 +2032,7 @@ paths:
           description: Distributor not found
         '500':
           description: Internal server error
-    /event-attendees:
-    get:
-      tags:
-        - EventAttendees
-      summary: EventAttendee - Get all event attendees
-      parameters:
-        - name: page
-          in: query
-          description: Page number
-          required: false
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: Number of records per page
-          required: false
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful response
-    post:
+
       tags:
         - EventAttendees
       summary: EventAttendee - Create a new event attendee
@@ -2397,7 +2375,45 @@ paths:
           description: Invalid ID
         '404':
           description: Not found
-  /event-attendees/event/{eventId}:
+  /event-attendees:
+    get:
+      tags:
+        - EventAttendees
+      summary: EventAttendee - Get all event attendees
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of records per page
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+    post:
+      tags:
+        - EventAttendees
+      summary: EventAttendee - Create a new event attendee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventAttendee'
+      responses:
+        '201':
+          description: Created successfully
+        '400':
+          description: Invalid input
+        '409':
+          description: Duplicate attendee
+  /event-attendees/events/{eventId}/attendees:
     get:
       tags:
         - EventAttendees

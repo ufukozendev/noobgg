@@ -2,7 +2,8 @@ import { Context } from "hono";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { userProfiles } from "../../db/schemas/user-profile.drizzle";
-import { createUserProfileSchema, updateUserProfileSchema } from "@repo/shared";
+import { createUserProfileDto, updateUserProfileDto } from "@repo/shared/dto/user-profile.dto";
+import { ApiError } from "../../middleware/errorHandler";
 
 function convertBigIntToString(obj: any): any {
   if (typeof obj === "bigint") {
@@ -22,48 +23,44 @@ function convertBigIntToString(obj: any): any {
 }
 
 export const getUserProfile = async (c: Context) => {
-  try {
-    const idParam = c.req.param("id");
-    if (!idParam || !/^\d+$/.test(idParam)) {
-      return c.json({ error: "Invalid id" }, 400);
-    }
-    const id = BigInt(idParam);
-    const [user] = await db
-      .select()
-      .from(userProfiles)
-      .where(eq(userProfiles.id, id));
-    if (!user) return c.json({ error: "User not found" }, 404);
-    const safeUser = convertBigIntToString(user);
-    return c.json(safeUser);
-  } catch (error) {
-    return c.json({ error: "Internal server error" }, 500);
+  const idParam = c.req.param("id");
+  if (!idParam || !/^\d+$/.test(idParam)) {
+    throw new ApiError("Invalid id", 400);
   }
+  const id = BigInt(idParam);
+  const [user] = await db
+    .select()
+    .from(userProfiles)
+    .where(eq(userProfiles.id, id));
+  if (!user) throw new ApiError("User not found", 404);
+  const safeUser = convertBigIntToString(user);
+  return c.json(safeUser);
 };
 
 export const createUserProfile = async (c: Context) => {
+  const data = await c.req.json();
+  const result = createUserProfileDto.safeParse(data);
+  if (!result.success) {
+    throw new ApiError(JSON.stringify(result.error.flatten().fieldErrors), 400);
+  }
   try {
-    const data = await c.req.json();
-    const result = createUserProfileSchema.safeParse(data);
-    if (!result.success) {
-      return c.json({ error: result.error.flatten().fieldErrors }, 400);
-    }
     const user = await db.transaction(async (tx) => {
       const [isKeycloakUserExists] = await tx
         .select()
         .from(userProfiles)
         .where(eq(userProfiles.userKeycloakId, result.data.userKeycloakId));
-      if (isKeycloakUserExists) throw new Error("Keycloak ID already exists");
-
+      if (isKeycloakUserExists) throw new ApiError("Keycloak ID already exists", 409);
       const [isUsernameTaken] = await tx
         .select()
         .from(userProfiles)
         .where(eq(userProfiles.userName, result.data.userName));
-      if (isUsernameTaken) throw new Error("Username already exists");
-
+      if (isUsernameTaken) throw new ApiError("Username already exists", 409);
       const [newUser] = await tx
         .insert(userProfiles)
         .values({
           ...result.data,
+          birthDate: result.data.birthDate ? new Date(result.data.birthDate) : undefined,
+          lastOnline: result.data.lastOnline ? new Date(result.data.lastOnline) : undefined,
           createdAt: new Date(),
         })
         .returning();
@@ -72,84 +69,73 @@ export const createUserProfile = async (c: Context) => {
     const safeUser = convertBigIntToString(user);
     return c.json(safeUser, 201);
   } catch (error) {
-    if (error instanceof Error && error.message.includes("already exists")) {
-      return c.json({ error: error.message }, 409);
-    }
-    return c.json({ error: "Internal server error" }, 500);
+    if (error instanceof ApiError) throw error;
+    throw new ApiError("Internal server error", 500);
   }
 };
 
 export const updateUserProfile = async (c: Context) => {
-  try {
-    const idParam = c.req.param("id");
-    if (!idParam || !/^\d+$/.test(idParam)) {
-      return c.json({ error: "Invalid id" }, 400);
-    }
-    const id = BigInt(idParam);
-    const data = await c.req.json();
-    const result = updateUserProfileSchema.safeParse(data);
-    if (!result.success) {
-      return c.json({ error: result.error.flatten().fieldErrors }, 400);
-    }
-    if (Object.keys(result.data).length === 0) {
-      return c.json({ error: "No data provided" }, 400);
-    }
-
-    if (result.data.userKeycloakId) {
-      const [existing] = await db
-        .select()
-        .from(userProfiles)
-        .where(eq(userProfiles.userKeycloakId, result.data.userKeycloakId));
-      if (existing && existing.id !== id) {
-        return c.json({ error: "Keycloak ID already exists" }, 409);
-      }
-    }
-
-    if (result.data.userName) {
-      const [existing] = await db
-        .select()
-        .from(userProfiles)
-        .where(eq(userProfiles.userName, result.data.userName));
-      if (existing && existing.id !== id) {
-        return c.json({ error: "Username already exists" }, 409);
-      }
-    }
-
-    const [user] = await db
-      .update(userProfiles)
-      .set({
-        ...result.data,
-        updatedAt: new Date(),
-      })
-      .where(eq(userProfiles.id, id))
-      .returning();
-    if (!user) return c.json({ error: "User not found" }, 404);
-    const safeUser = convertBigIntToString(user);
-    return c.json(safeUser);
-  } catch (error) {
-    return c.json({ error: "Internal server error" }, 500);
+  const idParam = c.req.param("id");
+  if (!idParam || !/^\d+$/.test(idParam)) {
+    throw new ApiError("Invalid id", 400);
   }
+  const id = BigInt(idParam);
+  const data = await c.req.json();
+  const result = updateUserProfileDto.safeParse(data);
+  if (!result.success) {
+    throw new ApiError(JSON.stringify(result.error.flatten().fieldErrors), 400);
+  }
+  if (Object.keys(result.data).length === 0) {
+    throw new ApiError("No data provided", 400);
+  }
+  if (result.data.userKeycloakId) {
+    const [existing] = await db
+      .select()
+      .from(userProfiles)
+      .where(eq(userProfiles.userKeycloakId, result.data.userKeycloakId));
+    if (existing && existing.id !== id) {
+      throw new ApiError("Keycloak ID already exists", 409);
+    }
+  }
+  if (result.data.userName) {
+    const [existing] = await db
+      .select()
+      .from(userProfiles)
+      .where(eq(userProfiles.userName, result.data.userName));
+    if (existing && existing.id !== id) {
+      throw new ApiError("Username already exists", 409);
+    }
+  }
+  const [user] = await db
+    .update(userProfiles)
+    .set({
+      ...result.data,
+      birthDate: result.data.birthDate ? new Date(result.data.birthDate) : undefined,
+      lastOnline: result.data.lastOnline ? new Date(result.data.lastOnline) : undefined,
+      updatedAt: new Date(),
+    })
+    .where(eq(userProfiles.id, id))
+    .returning();
+  if (!user) throw new ApiError("User not found", 404);
+  const safeUser = convertBigIntToString(user);
+  return c.json(safeUser);
 };
 
 export const deleteUserProfile = async (c: Context) => {
-  try {
-    const idParam = c.req.param("id");
-    if (!idParam || !/^\d+$/.test(idParam)) {
-      return c.json({ error: "Invalid id" }, 400);
-    }
-    const id = BigInt(idParam);
-    const [user] = await db
-      .update(userProfiles)
-      .set({
-        deletedAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .where(eq(userProfiles.id, id))
-      .returning();
-    if (!user) return c.json({ error: "User not found" }, 404);
-    const safeUser = convertBigIntToString(user);
-    return c.json(safeUser);
-  } catch (error) {
-    return c.json({ error: "Internal server error" }, 500);
+  const idParam = c.req.param("id");
+  if (!idParam || !/^\d+$/.test(idParam)) {
+    throw new ApiError("Invalid id", 400);
   }
+  const id = BigInt(idParam);
+  const [user] = await db
+    .update(userProfiles)
+    .set({
+      deletedAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .where(eq(userProfiles.id, id))
+    .returning();
+  if (!user) throw new ApiError("User not found", 404);
+  const safeUser = convertBigIntToString(user);
+  return c.json(safeUser);
 };
