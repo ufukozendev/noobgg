@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BottomNavigation } from '../components/mobile/BottomNavigation';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -125,6 +126,14 @@ const styles = StyleSheet.create({
 });
 
 export function HomeScreen() {
+  const [activeTab, setActiveTab] = useState('home');
+
+  const handleTabPress = (tabId: string) => {
+    setActiveTab(tabId);
+    // TODO: Handle navigation based on tab
+    console.log(`Navigating to ${tabId} tab`);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0a0613" />
@@ -140,27 +149,59 @@ export function HomeScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>
-            <Text style={styles.logoAccent}>noob</Text>.gg
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image
+              source={require('../assets/noobgg-logo.png')}
+              style={{
+                width: 32,
+                height: 32,
+                marginRight: 8,
+                resizeMode: 'contain',
+              }}
+            />
+            <Text style={styles.logo}>
+              <Text style={styles.logoAccent}>noob</Text>.gg
+            </Text>
+          </View>
           <TouchableOpacity
             style={{
-              width: 40,
-              height: 40,
-              backgroundColor: 'rgba(155, 135, 245, 0.2)',
-              borderRadius: 12,
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              overflow: 'hidden',
+              borderWidth: 2,
+              borderColor: 'rgba(155, 135, 245, 0.6)',
+              shadowColor: '#9b87f5',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 5,
             }}
+            onPress={() => {
+              // TODO: Navigate to profile
+              console.log('Profile pressed');
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Profile"
           >
-            <Text style={{ fontSize: 18 }}>👤</Text>
+            <Image
+              source={require('../assets/lobby/gamer-avatar-4.png')}
+              style={{
+                width: '100%',
+                height: '100%',
+                resizeMode: 'cover',
+              }}
+            />
           </TouchableOpacity>
         </View>
 
         <ScrollView
           style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ paddingBottom: 140 }} // Extra padding for modern bottom navigation
         >
           {/* Hero Section */}
           <View style={styles.heroSection}>
@@ -185,24 +226,51 @@ export function HomeScreen() {
             </Text>
 
             {/* Primary CTA */}
-            <TouchableOpacity activeOpacity={0.9}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => {
+                // TODO: Navigate to find squad
+                console.log('Find Your Squad Now pressed');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Find Your Squad Now"
+            >
               <LinearGradient
                 colors={['#6f52f4', '#9b87f5']}
                 style={styles.ctaButton}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               >
-                <Text style={styles.ctaText}>
-                  🚀 Find Your Squad Now
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 18, color: '#ffffff', marginRight: 8, fontWeight: '600' }}>
+                    ⚡
+                  </Text>
+                  <Text style={styles.ctaText}>
+                    Find Your Squad Now
+                  </Text>
+                </View>
               </LinearGradient>
             </TouchableOpacity>
 
             {/* Secondary CTA */}
-            <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.8}>
-              <Text style={styles.secondaryText}>
-                👥 Browse Active Lobbies
-              </Text>
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              activeOpacity={0.8}
+              onPress={() => {
+                // TODO: Navigate to browse lobbies
+                console.log('Browse Active Lobbies pressed');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Browse Active Lobbies"
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 16, color: '#9b87f5', marginRight: 8, fontWeight: '600' }}>
+                  ◈
+                </Text>
+                <Text style={styles.secondaryText}>
+                  Browse Active Lobbies
+                </Text>
+              </View>
             </TouchableOpacity>
 
             {/* Quick Stats */}
@@ -282,6 +350,12 @@ export function HomeScreen() {
                     position: 'relative',
                   }}
                   activeOpacity={0.9}
+                  onPress={() => {
+                    // TODO: Navigate to game details
+                    console.log(`${game.name} pressed`);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${game.name} game card`}
                 >
                   {/* Background Image */}
                   <ImageBackground
@@ -308,28 +382,13 @@ export function HomeScreen() {
                     }}
                   />
 
-                  {/* Top Section - Game Icon */}
+                  {/* Top Section - Live Badge */}
                   <View style={{
                     position: 'absolute',
                     top: 16,
-                    left: 16,
                     right: 16,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    alignItems: 'flex-end',
                   }}>
-                    <View style={{
-                      width: 40,
-                      height: 40,
-                      backgroundColor: 'rgba(255,255,255,0.2)',
-                      borderRadius: 8,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                      <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: 'bold' }}>
-                        {game.name.charAt(0)}
-                      </Text>
-                    </View>
                     <View style={{
                       backgroundColor: 'rgba(0,0,0,0.6)',
                       borderRadius: 12,
@@ -383,27 +442,42 @@ export function HomeScreen() {
                       zIndex: 10,
                     }}>
                       <View style={{ alignItems: 'center' }}>
-                        <Text style={{ color: '#facc15', fontSize: 14, fontWeight: 'bold' }}>
-                          💰 {game.coins}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                          <Text style={{ fontSize: 12, color: '#facc15', marginRight: 4, fontWeight: '600' }}>
+                            ◉
+                          </Text>
+                          <Text style={{ color: '#facc15', fontSize: 14, fontWeight: 'bold' }}>
+                            {game.coins}
+                          </Text>
+                        </View>
                         <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10 }}>
                           Coins
                         </Text>
                       </View>
 
                       <View style={{ alignItems: 'center' }}>
-                        <Text style={{ color: '#4ade80', fontSize: 14, fontWeight: 'bold' }}>
-                          🏆 {game.lobbies}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                          <Text style={{ fontSize: 12, color: '#4ade80', marginRight: 4, fontWeight: '600' }}>
+                            ◆
+                          </Text>
+                          <Text style={{ color: '#4ade80', fontSize: 14, fontWeight: 'bold' }}>
+                            {game.lobbies}
+                          </Text>
+                        </View>
                         <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10 }}>
                           Lobbies
                         </Text>
                       </View>
 
                       <View style={{ alignItems: 'center' }}>
-                        <Text style={{ color: '#9b87f5', fontSize: 14, fontWeight: 'bold' }}>
-                          👥 {game.players}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                          <Text style={{ fontSize: 12, color: '#9b87f5', marginRight: 4, fontWeight: '600' }}>
+                            ◈
+                          </Text>
+                          <Text style={{ color: '#9b87f5', fontSize: 14, fontWeight: 'bold' }}>
+                            {game.players}
+                          </Text>
+                        </View>
                         <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10 }}>
                           Players
                         </Text>
@@ -421,15 +495,26 @@ export function HomeScreen() {
                         zIndex: 10,
                       }}
                       activeOpacity={0.8}
+                      onPress={() => {
+                        // TODO: Navigate to join lobby for specific game
+                        console.log(`Join Lobby for ${game.name} pressed`);
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Join Lobby for ${game.name}`}
                     >
-                      <Text style={{
-                        color: '#ffffff',
-                        textAlign: 'center',
-                        fontWeight: '600',
-                        fontSize: 14,
-                      }}>
-                        🎮 Join Lobby
-                      </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 14, color: '#ffffff', marginRight: 6, fontWeight: '600' }}>
+                          ◉
+                        </Text>
+                        <Text style={{
+                          color: '#ffffff',
+                          textAlign: 'center',
+                          fontWeight: '600',
+                          fontSize: 14,
+                        }}>
+                          Join Lobby
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   </View>
                 </TouchableOpacity>
@@ -437,6 +522,12 @@ export function HomeScreen() {
             </ScrollView>
           </View>
         </ScrollView>
+
+        {/* Modern Bottom Navigation */}
+        <BottomNavigation
+          activeTab={activeTab}
+          onTabPress={handleTabPress}
+        />
       </SafeAreaView>
     </View>
   );

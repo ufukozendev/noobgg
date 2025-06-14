@@ -148,6 +148,12 @@ export function MobileHeroSection() {
           <TouchableOpacity
             className="mx-6 mb-4"
             activeOpacity={0.9}
+            onPress={() => {
+              // TODO: Navigate to find squad
+              console.log('Find Your Squad Now pressed');
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Find Your Squad Now"
           >
             <LinearGradient
               colors={['#6f52f4', '#9b87f5', '#a78bfa']}

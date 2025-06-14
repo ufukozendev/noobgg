@@ -170,6 +170,12 @@ export function PopularGames() {
             <TouchableOpacity
               className="flex-1"
               activeOpacity={0.8}
+              onPress={() => {
+                // TODO: Navigate to join lobby
+                console.log('Join Lobby pressed');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Join Lobby"
             >
               <View className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl py-3 px-4">
                 <Text className="text-white font-semibold text-center">
@@ -181,6 +187,12 @@ export function PopularGames() {
             <TouchableOpacity
               className="flex-1"
               activeOpacity={0.7}
+              onPress={() => {
+                // TODO: Navigate to view stats
+                console.log('View Stats pressed');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="View Stats"
             >
               <View className="border border-purple-400/40 rounded-xl py-3 px-4 bg-purple-500/10">
                 <Text className="text-purple-400 font-medium text-center">

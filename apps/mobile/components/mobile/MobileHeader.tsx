@@ -31,16 +31,42 @@ export function MobileHeader() {
         <TouchableOpacity
           className="w-10 h-10 bg-card/50 rounded-lg items-center justify-center"
           activeOpacity={0.7}
+          onPress={() => {
+            // TODO: Navigate to notifications
+            console.log('Notifications pressed');
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Notifications"
         >
           <Text className="text-foreground text-lg">🔔</Text>
         </TouchableOpacity>
 
         {/* Profile */}
         <TouchableOpacity
-          className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg items-center justify-center"
+          className="w-11 h-11 rounded-full overflow-hidden border-2 border-purple-400/60"
+          style={{
+            shadowColor: '#9b87f5',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            elevation: 5,
+          }}
           activeOpacity={0.8}
+          onPress={() => {
+            // TODO: Navigate to profile
+            console.log('Profile pressed');
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Profile"
         >
-          <Text className="text-white text-lg">👤</Text>
+          <Image
+            source={require('../../assets/lobby/gamer-avatar-4.png')}
+            className="w-full h-full"
+            style={{ resizeMode: 'cover' }}
+          />
         </TouchableOpacity>
       </View>
     </Animated.View>

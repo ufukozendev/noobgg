@@ -11,12 +11,12 @@
     "build:android": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["build/**"]
+      "outputs": ["apps/mobile/build/**"]
     },
     "build:ios": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["build/**"]
+      "outputs": ["apps/mobile/build/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
