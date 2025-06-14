@@ -38,7 +38,11 @@ const quickActions = [
   },
 ];
 
-export function QuickActions() {
+interface QuickActionsProps {
+  onActionPress?: (actionId: string) => void;
+}
+
+export function QuickActions({ onActionPress }: QuickActionsProps) {
   return (
     <View className="px-4 mt-8">
       <Animated.View entering={FadeInUp.delay(400).duration(800)}>
@@ -46,7 +50,7 @@ export function QuickActions() {
           Quick Actions
         </Text>
       </Animated.View>
-      
+
       <View className="flex-row flex-wrap justify-between">
         {quickActions.map((action, index) => (
           <Animated.View
@@ -57,6 +61,9 @@ export function QuickActions() {
             <TouchableOpacity
               activeOpacity={0.8}
               className="h-24"
+              onPress={() => onActionPress?.(action.id)}
+              accessibilityRole="button"
+              accessibilityLabel={`${action.title}: ${action.subtitle}`}
             >
               <LinearGradient
                 colors={action.colors}
