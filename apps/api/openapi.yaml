@@ -22,7 +22,9 @@ tags:
     description: Operations related to platforms
   - name: UserProfiles
     description: Operations related to user profiles
-     ##TO BE IMPLEMENTED
+  - name: Lobbies
+    description: Operations related to lobbies
+     # TO BE IMPLEMENTED
   # - name: GameDistributors
   #   description: Operations related to game distributors
   # - name: GameModes
@@ -2935,6 +2937,129 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Platform not found
+        '500':
+          description: Internal server error
+
+  /lobbies:
+    get:
+      tags:
+        - Lobbies
+      summary: Get all lobbies
+      operationId: getAllLobbies
+      responses:
+        '200':
+          description: A list of lobbies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lobbies'
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - Lobbies
+      summary: Create a new lobby
+      operationId: createLobby
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLobby'
+      responses:
+        '201':
+          description: Lobby created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lobbies'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /lobbies/{id}:
+    get:
+      tags:
+        - Lobbies
+      summary: Get lobby by ID
+      operationId: getLobbyById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        '200':
+          description: Lobby found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lobbies'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lobby not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - Lobbies
+      summary: Update a lobby
+      operationId: updateLobby
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLobby'
+      responses:
+        '200':
+          description: Lobby updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lobbies'
+        '400':
+          description: Invalid input or ID
+        '404':
+          description: Lobby not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Lobbies
+      summary: Delete a lobby
+      operationId: deleteLobby
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        '200':
+          description: Lobby deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lobbies'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lobby not found
         '500':
           description: Internal server error
 

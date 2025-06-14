@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "apps/mobile" },
+    { "path": "apps/web" },
+    { "path": "apps/api" },
+    { "path": "packages/shared" },
+    { "path": "packages/ui" }
+  ],
+  "compilerOptions": {
+    "composite": true
+  }
+}
