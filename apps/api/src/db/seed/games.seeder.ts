@@ -22,7 +22,7 @@ async function seedGames() {
       id: generateSnowflakeId(),
       name: "League of Legends",
       description: "5v5 MOBA by Riot Games",
-      logo: "https://example.com/logos/lol.png",
+      logo: "/logos/league-of-legends-logo.svg",
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -30,9 +30,33 @@ async function seedGames() {
       id: generateSnowflakeId(),
       name: "Valorant",
       description: "Tactical FPS by Riot Games",
-      logo: "https://example.com/logos/valorant.png",
+      logo: "/logos/valorant-logo.svg",
       createdAt: new Date(Date.now() - 60_000), // 1 min earlier
       updatedAt: new Date(Date.now() - 60_000),
+    },
+    {
+      id: generateSnowflakeId(),
+      name: "Counter Strike 2",
+      description: "Tactical FPS by Valve",
+      logo: "/logos/counter-strike-2.svg",
+      createdAt: new Date(Date.now() - 120_000), // 2 min earlier
+      updatedAt: new Date(Date.now() - 120_000),
+    },
+    {
+      id: generateSnowflakeId(),
+      name: "Fortnite",
+      description: "Battle Royale by Epic Games",
+      logo: "/logos/fortnite-logo.svg",
+      createdAt: new Date(Date.now() - 180_000), // 3 min earlier
+      updatedAt: new Date(Date.now() - 180_000),
+    },
+    {
+      id: generateSnowflakeId(),
+      name: "PUBG",
+      description: "Battle Royale by Tencent",
+      logo: "/logos/pubg-logo.webp",
+      createdAt: new Date(Date.now() - 180_000), // 3 min earlier
+      updatedAt: new Date(Date.now() - 180_000),
     },
   ];
 
