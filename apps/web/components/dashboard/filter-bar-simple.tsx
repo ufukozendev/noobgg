@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/radix-select';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Badge } from '@/components/ui/badge';
 import { Search, Grid3X3, List, X, Shield, Award, Star, Gem, Zap, Trophy, Target, Sparkles } from 'lucide-react';

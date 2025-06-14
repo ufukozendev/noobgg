@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { cn } from '@/lib/utils';
 
 interface RankIconProps {
@@ -15,7 +15,7 @@ export function RankIcon({ rank, className, size = 'md' }: RankIconProps) {
   };
 
   // Create unique gradient IDs to avoid conflicts
-  const gradientId = `${rank}-gradient-${Math.random().toString(36).substr(2, 9)}`;
+  const gradientId = `${rank}-gradient-${useId()}`;
 
   const getRankIcon = () => {
     switch (rank) {

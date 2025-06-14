@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,6 +36,7 @@ interface LobbyCardSimpleProps {
 }
 
 export function LobbyCardSimple({ lobby, onJoin, onEdit, onDelete }: LobbyCardSimpleProps) {
+  const [imageError, setImageError] = useState(false);
   const isJoinable = lobby.status === 'waiting' && lobby.currentSize < lobby.maxSize;
   
   const formatTimeAgo = (dateString: string) => {
@@ -66,18 +67,20 @@ export function LobbyCardSimple({ lobby, onJoin, onEdit, onDelete }: LobbyCardSi
         <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] via-transparent to-black/[0.01] rounded-[24px] pointer-events-none"></div>
         
         <div className="relative z-10 flex-1 flex flex-col">          {/* Header */}
-          <div className="flex items-center justify-between mb-4 flex-shrink-0">
-            <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-between mb-4 flex-shrink-0">            <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-white/10 backdrop-blur rounded-[16px] p-1.5 flex items-center justify-center border border-white/20">
-                <img 
-                  src={lobby.game.icon} 
-                  alt={lobby.game.name}
-                  className="w-full h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerHTML = `<span class="text-sm font-bold text-white">${lobby.game.name[0]}</span>`;
-                  }}
-                />
+                {!imageError ? (
+                  <img 
+                    src={lobby.game.icon} 
+                    alt={lobby.game.name}
+                    className="w-full h-full object-contain"
+                    onError={() => setImageError(true)}
+                  />
+                ) : (
+                  <span className="text-sm font-bold text-white">
+                    {lobby.game.name[0]}
+                  </span>
+                )}
               </div>
               <div>
                 <h3 className="text-white font-medium">{lobby.game.name}</h3>

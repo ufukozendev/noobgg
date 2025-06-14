@@ -172,17 +172,11 @@ export const MultiSelect = React.forwardRef<
         setSelectedValues([]);
       }
       onValueChange([]);
-    };
-
-    const handleTogglePopover = () => {
+    };    const handleTogglePopover = () => {
       setIsPopoverOpen((prev) => !prev);
     };
 
-    const clearExtraOptions = () => {
-      const newSelectedValues = selectedValues.slice(0, maxCount);
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
-    };    const toggleAll = () => {
+    const toggleAll = () => {
       const newSelectedValues = currentSelectedValues.length === options.length 
         ? [] 
         : options.map((option) => option.value);
@@ -212,15 +206,17 @@ export const MultiSelect = React.forwardRef<
                   <span className="text-sm text-white px-3">
                     {currentSelectedValues.length} selected
                   </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <XIcon
-                    className="h-4 mx-2 cursor-pointer text-muted-foreground"
+                </div>                <div className="flex items-center justify-between">
+                  <button
+                    aria-label="Clear selected values"
+                    className="h-4 mx-2 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
                     onClick={(event) => {
                       event.stopPropagation();
                       handleClear();
                     }}
-                  />
+                  >
+                    <XIcon className="h-4 w-4" />
+                  </button>
                   <Separator
                     orientation="vertical"
                     className="flex min-h-6 h-full"

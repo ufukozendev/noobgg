@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -46,6 +46,7 @@ interface LobbyListItemProps {
 }
 
 export function LobbyListItem({ lobby, onJoin, onEdit, onDelete }: LobbyListItemProps) {
+  const [imageError, setImageError] = useState(false);
   const isJoinable = lobby.status === 'waiting' && lobby.currentSize < lobby.maxSize;
   
   // Map rank names to Lucide icons
@@ -108,18 +109,20 @@ export function LobbyListItem({ lobby, onJoin, onEdit, onDelete }: LobbyListItem
     <div className="relative group">
       {/* Subtle hover glow */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-white/5 via-white/2 to-white/5 rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>        <div className="relative bg-white/[0.01] backdrop-blur-2xl rounded-[16px] p-4 border border-white/8 hover:border-white/15 transition-all duration-300 group-hover:bg-white/[0.02]">
-        <div className="grid grid-cols-12 gap-4 items-center">{/* Game - Col 1-3 */}
-          <div className="col-span-3 flex items-center space-x-2">
+        <div className="grid grid-cols-12 gap-4 items-center">{/* Game - Col 1-3 */}          <div className="col-span-3 flex items-center space-x-2">
             <div className="w-8 h-8 bg-white/10 backdrop-blur rounded-[12px] p-1.5 flex items-center justify-center border border-white/20">
-              <img 
-                src={lobby.game.icon} 
-                alt={lobby.game.name}
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerHTML = `<span class="text-sm font-bold text-white">${lobby.game.name[0]}</span>`;
-                }}
-              />
+              {!imageError ? (
+                <img 
+                  src={lobby.game.icon} 
+                  alt={lobby.game.name}
+                  className="w-full h-full object-contain"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <span className="text-sm font-bold text-white">
+                  {lobby.game.name[0]}
+                </span>
+              )}
             </div>
             <div className="min-w-0">
               <h3 className="text-white font-medium text-sm truncate">{lobby.game.name}</h3>
