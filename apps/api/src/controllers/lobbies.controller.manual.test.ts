@@ -157,6 +157,9 @@ export async function cleanupTestData() {
   console.log('🧹 Cleaning up test data...');
   
   try {
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error('Refusing to cleanup data outside test environment');
+    }
     const deleted = await db.delete(lobbies).returning();
     console.log(`✅ Cleaned up ${deleted.length} lobbies`);
     return deleted;
@@ -206,4 +209,4 @@ export async function runAllTests() {
 }
 
 // Uncomment the line below to run tests when this file is executed
-// runAllTests().catch(console.error); 
+runAllTests().catch(console.error); 

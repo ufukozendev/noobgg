@@ -15,4 +15,7 @@ lobbiesRoutes.post("/", createLobbyController);
 lobbiesRoutes.put("/:id", updateLobbyController);
 lobbiesRoutes.delete("/:id", deleteLobbyController);
 
+// Handle unsupported methods
+lobbiesRoutes.all("*", (c) => c.json({ message: "Method not allowed" }, 405));
+
 export default lobbiesRoutes; 

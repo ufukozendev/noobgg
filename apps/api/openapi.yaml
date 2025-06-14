@@ -24,7 +24,7 @@ tags:
     description: Operations related to user profiles
   - name: Lobbies
     description: Operations related to lobbies
-     ##TO BE IMPLEMENTED
+     # TO BE IMPLEMENTED
   # - name: GameDistributors
   #   description: Operations related to game distributors
   # - name: GameModes
