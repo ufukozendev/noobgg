@@ -13,7 +13,14 @@ export const getAllGamesController = async (
     Variables: { locale: string; messages: Record<string, string> };
   }>
 ) => {
-  const games = await db.select().from(gamesTable);
+  const games = await db
+    .select({
+      id: gamesTable.id,
+      name: gamesTable.name,
+      description: gamesTable.description,
+      logo: gamesTable.logo,
+    })
+    .from(gamesTable);
   return c.json(convertBigIntToString(games) as object);
 };
 
