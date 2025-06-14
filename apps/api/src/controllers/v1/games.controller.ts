@@ -55,7 +55,7 @@ export const createGameController = async (c: Context) => {
 
 export const updateGameController = async (c: Context) => {
   const idParam = c.req.param("id");
-  if (!idParam || !/^\\d+$/.test(idParam)) {
+  if (!idParam || !/^\d+$/.test(idParam)) {
     const errorMessage = getTranslation(c, "validation_invalidId");
     throw new ApiError(errorMessage, 400);
   }
@@ -90,7 +90,7 @@ export const updateGameController = async (c: Context) => {
 
 export const deleteGameController = async (c: Context) => {
   const idParam = c.req.param("id");
-  if (!idParam || !/^\\d+$/.test(idParam)) {
+  if (!idParam || !/^\d+$/.test(idParam)) {
     const errorMessage = getTranslation(c, "validation_invalidId");
     throw new ApiError(errorMessage, 400);
   }
