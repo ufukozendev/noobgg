@@ -186,13 +186,22 @@
   }
   .line-clamp-3 {
     display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-line-clamp: 3;    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
   
   .drop-shadow-glow {
     filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+  }
+
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
   }
 }
