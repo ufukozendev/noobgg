@@ -5,6 +5,8 @@ import { gamesTable } from "../../db/schemas/games.drizzle";
 import { createGameDto, updateGameDto } from "@repo/shared/dto/game.dto";
 import { getTranslation } from "../../utils/translation";
 import { ApiError } from "../../middleware/errorHandler";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
+import { generateSnowflakeId } from "../../utils/id-generator";
 
 export const getAllGamesController = async (
   c: Context<{
@@ -12,15 +14,16 @@ export const getAllGamesController = async (
   }>
 ) => {
   const games = await db.select().from(gamesTable);
-  return c.json(games);
+  return c.json(convertBigIntToString(games) as object);
 };
 
 export const getGameByIdController = async (c: Context) => {
-  const id = Number(c.req.param("id"));
-  if (!Number.isInteger(id) || id <= 0) {
+  const idParam = c.req.param("id");
+  if (!idParam || !/^\d+$/.test(idParam)) {
     const errorMessage = getTranslation(c, "validation_invalidId");
     throw new ApiError(errorMessage, 400);
   }
+  const id = BigInt(idParam);
   const game = await db
     .select()
     .from(gamesTable)
@@ -29,7 +32,7 @@ export const getGameByIdController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(game[0]);
+  return c.json(convertBigIntToString(game[0]) as object);
 };
 
 export const createGameController = async (c: Context) => {
@@ -43,21 +46,20 @@ export const createGameController = async (c: Context) => {
     );
   }
   const values = {
-    ...result.data,
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
+    id: generateSnowflakeId(),
+    ...result.data
   };
   const [game] = await db.insert(gamesTable).values(values).returning();
-  return c.json(game, 201);
+  return c.json(convertBigIntToString(game) as object, 201);
 };
 
 export const updateGameController = async (c: Context) => {
-  const id = Number(c.req.param("id"));
-  if (!Number.isInteger(id) || id <= 0) {
+  const idParam = c.req.param("id");
+  if (!idParam || !/^\d+$/.test(idParam)) {
     const errorMessage = getTranslation(c, "validation_invalidId");
     throw new ApiError(errorMessage, 400);
   }
+  const id = BigInt(idParam);
   const data = await c.req.json();
   const result = updateGameDto.safeParse(data);
   if (!result.success) {
@@ -73,9 +75,6 @@ export const updateGameController = async (c: Context) => {
   }
   const values = {
     ...result.data,
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
   };
   const [game] = await db
     .update(gamesTable)
@@ -86,15 +85,16 @@ export const updateGameController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(game);
+  return c.json(convertBigIntToString(game) as object);
 };
 
 export const deleteGameController = async (c: Context) => {
-  const id = Number(c.req.param("id"));
-  if (!Number.isInteger(id) || id <= 0) {
+  const idParam = c.req.param("id");
+  if (!idParam || !/^\d+$/.test(idParam)) {
     const errorMessage = getTranslation(c, "validation_invalidId");
     throw new ApiError(errorMessage, 400);
   }
+  const id = BigInt(idParam);
   const [game] = await db
     .delete(gamesTable)
     .where(eq(gamesTable.id, id))
@@ -103,5 +103,5 @@ export const deleteGameController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(game);
+  return c.json(convertBigIntToString(game) as object);
 };
