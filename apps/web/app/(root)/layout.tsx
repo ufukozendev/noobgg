@@ -1,4 +1,5 @@
 import LandingHeader from "@/components/mvpblocks/landing-header";
+import LoadingWrapper from "@/components/loading-wrapper";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 
@@ -12,34 +13,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div
-      className="relative min-h-screen bg-[#0a0613]"
-      style={{
-        background: "linear-gradient(135deg, #0a0613 0%, #150d27 100%)",
-      }}
-    >
-      {/* Radial gradient glows from Globe3D, now global */}
+    <LoadingWrapper loadingTime={2500}>
       <div
-        className="absolute right-0 top-0 h-1/2 w-1/2"
+        className="relative min-h-screen bg-[#0a0613]"
         style={{
-          background:
-            "radial-gradient(circle at 70% 30%, rgba(155, 135, 245, 0.15) 0%, rgba(13, 10, 25, 0) 60%)",
+          background: "linear-gradient(135deg, #0a0613 0%, #150d27 100%)",
         }}
-      />
-      <div
-        className="absolute left-0 top-0 h-1/2 w-1/2 -scale-x-100"
-        style={{
-          background:
-            "radial-gradient(circle at 70% 30%, rgba(155, 135, 245, 0.15) 0%, rgba(13, 10, 25, 0) 60%)",
-        }}
-      />
-      {/* Content wrapper to ensure it's above the glows */}
-      <div className="relative z-10">
-        <LandingHeader />
+      >
+        {/* Radial gradient glows from Globe3D, now global */}
+        <div
+          className="absolute right-0 top-0 h-1/2 w-1/2"
+          style={{
+            background:
+              "radial-gradient(circle at 70% 30%, rgba(155, 135, 245, 0.15) 0%, rgba(13, 10, 25, 0) 60%)",
+          }}
+        />
+        <div
+          className="absolute left-0 top-0 h-1/2 w-1/2 -scale-x-100"
+          style={{
+            background:
+              "radial-gradient(circle at 70% 30%, rgba(155, 135, 245, 0.15) 0%, rgba(13, 10, 25, 0) 60%)",
+          }}
+        />
+        {/* Content wrapper to ensure it's above the glows */}
+        <div className="relative z-10">
+          <LandingHeader />
 
-        <section className="pt-32">{children}</section>
-        <footer></footer>
+          <section className="pt-32">{children}</section>
+          <footer></footer>
+        </div>
       </div>
-    </div>
+    </LoadingWrapper>
   );
 }
