@@ -1,10 +1,52 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useMemo, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
+
+// GLTF Logo Component for Loading
+function LoadingLogo() {
+  const { scene } = useGLTF("/models/duck/logo.gltf");
+  const logoRef = useRef<THREE.Group>(null);
+
+  // Clone scene to avoid issues with multiple instances
+  const clonedScene = useMemo(() => scene.clone(), [scene]);
+
+  useEffect(() => {
+    if (clonedScene) {
+      // Scale the model for loading screen
+      clonedScene.scale.set(1.5, 1.5, 1.5);
+      
+      // Enhance materials
+      clonedScene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+          
+          // Apply enhanced material if no texture exists
+          if (!child.material.map) {
+            child.material = new THREE.MeshStandardMaterial({
+              color: new THREE.Color("#9b87f5"),
+              metalness: 0.3,
+              roughness: 0.4,
+              emissive: new THREE.Color("#4c1d95"),
+              emissiveIntensity: 0.05,
+            });
+          }
+        }
+      });
+    }
+  }, [clonedScene]);
+
+  return (
+    <group ref={logoRef}>
+      <primitive object={clonedScene} />
+    </group>
+  );
+}
 
 // Simple rotating cube
 function SimpleCube() {
@@ -77,19 +119,30 @@ export default function LoadingScreen3D() {
             <h1 className="text-3xl font-bold text-white">noob.gg</h1>
             <p className="text-sm text-purple-300">Gaming Platform</p>
           </div>
-        </motion.div>
-
-        {/* Simple 3D Cube */}
+        </motion.div>        {/* 3D GLTF Model */}
         <motion.div
-          className="w-24 h-24"
+          className="w-32 h-32"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <Canvas camera={{ position: [0, 0, 3] }}>
+          <Canvas 
+            camera={{ position: [0, 0, 3] }}
+            style={{ pointerEvents: 'auto', cursor: 'grab' }}
+          >
             <ambientLight intensity={0.5} />
             <pointLight position={[5, 5, 5]} />
-            <SimpleCube />
+            <pointLight position={[-5, -5, -5]} intensity={0.3} />
+            <OrbitControls 
+              enablePan={false} 
+              enableZoom={false} 
+              enableRotate={true}
+              autoRotate={false}
+              makeDefault
+            />
+            <Suspense fallback={<SimpleCube />}>
+              <LoadingLogo />
+            </Suspense>
           </Canvas>
         </motion.div>
 
@@ -137,7 +190,9 @@ export default function LoadingScreen3D() {
             />
           ))}
         </motion.div>
-      </div>
-    </motion.div>
+      </div>    </motion.div>
   );
 }
+
+// Preload the GLTF model
+useGLTF.preload("/models/duck/logo.gltf");
