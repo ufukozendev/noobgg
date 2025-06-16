@@ -89,6 +89,7 @@ This command will:
 
 - Start the backend API on `http://localhost:3000`.
 - Start the frontend Next.js application on `http://localhost:3001`.
+- Start the mobile expo application (Scan the QR).
 
 **💡 Note:** If you get a "command not found: turbo" error, it means Turborepo CLI is not installed globally on your system. You can either:
 

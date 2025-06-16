@@ -87,6 +87,7 @@ Bu komut:
 
 - Backend API'sini `http://localhost:3000` adresinde başlatır.
 - Frontend Next.js uygulamasını `http://localhost:3001` adresinde başlatır.
+- Mobil Expo uygulamasını başlatır (QR kodunu tarayın).
 
 **💡 Not:** Eğer "command not found: turbo" hatası alıyorsanız, bu Turborepo CLI'ın sisteminize global olarak kurulmamış olduğu anlamına gelir. İki seçeneğiniz bulunuyor:
 
