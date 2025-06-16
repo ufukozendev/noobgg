@@ -54,10 +54,11 @@ export const getEventInvitations = async (c: Context) => {
 };
 
 export const getEventInvitationById = async (c: Context) => {
-  const id = c.req.param("id");
-  if (!id || isNaN(Number(id))) {
+  const idParam = c.req.param("idParam");
+  if (!idParam || isNaN(Number(idParam))) {
     throw new ApiError("Invalid ID format", 400);
   }
+  const id = BigInt(idParam);
   const invitation = await db
     .select()
     .from(eventInvitations)
@@ -136,7 +137,8 @@ export const getUserInvitations = async (c: Context) => {
 };
 
 export const getEventInvitationsByEvent = async (c: Context) => {
-  const eventId = c.req.param("eventId");
+  const eventIdParam = c.req.param("eventId");
+  const eventId = BigInt(eventIdParam);
   const status = c.req.query("status");
   const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
   const limit = Math.min(
@@ -226,7 +228,8 @@ export const createEventInvitation = async (c: Context) => {
 };
 
 export const respondToInvitation = async (c: Context) => {
-  const id = c.req.param("id");
+  const idParam = c.req.param("id");
+  const id = BigInt(idParam);
   const body = await c.req.json();
   const result = updateEventInvitationDto.safeParse(body);
   if (!result.success) {
@@ -241,12 +244,7 @@ export const respondToInvitation = async (c: Context) => {
   const existing = await db
     .select()
     .from(eventInvitations)
-    .where(
-      and(
-        eq(eventInvitations.id, BigInt(id)),
-        isNull(eventInvitations.deletedAt)
-      )
-    )
+    .where(and(eq(eventInvitations.id, id), isNull(eventInvitations.deletedAt)))
     .limit(1);
   if (existing.length === 0) {
     throw new ApiError("Invitation not found", 404);
@@ -267,10 +265,11 @@ export const respondToInvitation = async (c: Context) => {
 };
 
 export const deleteEventInvitation = async (c: Context) => {
-  const id = c.req.param("id");
-  if (!id || isNaN(Number(id))) {
+  const idParam = c.req.param("id");
+  if (!idParam || isNaN(Number(idParam))) {
     throw new ApiError("Invalid ID format", 400);
   }
+  const id = BigInt(idParam);
   const deletedInvitation = await db
     .update(eventInvitations)
     .set({

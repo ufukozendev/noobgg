@@ -1,5 +1,3 @@
-// v1: lobbies controller (boş şablon)
-
 import { createLobbyDto, updateLobbyDto } from "@repo/shared/dto/lobby.dto";
 import { eq } from "drizzle-orm";
 import { Context } from "hono";
@@ -43,9 +41,6 @@ export const createLobbyController = async (c: Context) => {
     maxRankId: result.data.maxRankId ? BigInt(result.data.maxRankId) : undefined,
     creatorId: BigInt(result.data.creatorId),
     ownerId: BigInt(result.data.ownerId),
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
   };
   const [lobby] = await db
     .insert(lobbies)
@@ -77,9 +72,6 @@ export const updateLobbyController = async (c: Context) => {
     maxRankId: result.data.maxRankId ? BigInt(result.data.maxRankId) : undefined,
     creatorId: result.data.creatorId ? BigInt(result.data.creatorId) : undefined,
     ownerId: result.data.ownerId ? BigInt(result.data.ownerId) : undefined,
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
   };
   const [lobby] = await db
     .update(lobbies)

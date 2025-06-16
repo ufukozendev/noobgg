@@ -2,12 +2,13 @@ import { Context } from "hono";
 import { db } from "../../db";
 import { languages } from "../../db/schemas/languages.drizzle";
 import { and, asc, desc, eq, like, sql, isNull } from "drizzle-orm";
-import {
-  createLanguageDto,
-  updateLanguageDto,
-} from "@repo/shared/dto/language.dto";
-import {getLanguagesSchema} from "@repo/shared/schemas/languages";
+import { createLanguageDto, updateLanguageDto } from "@repo/shared";
+import { getLanguagesSchema } from "@repo/shared/schemas/languages";
 import { ApiError } from "../../middleware/errorHandler";
+import {
+  convertBigIntToNumber,
+  convertBigIntToString,
+} from "src/utils/bigint-serializer";
 
 // GET /api/languages - List with pagination, search & sorting
 export const getLanguages = async (c: Context) => {
@@ -23,8 +24,8 @@ export const getLanguages = async (c: Context) => {
     sortBy === "code"
       ? languages.code
       : sortBy === "createdAt"
-      ? languages.createdAt
-      : languages.name;
+        ? languages.createdAt
+        : languages.name;
   const orderDir = sortOrder === "desc" ? desc(orderColumn) : asc(orderColumn);
   const data = await db
     .select()
@@ -37,8 +38,9 @@ export const getLanguages = async (c: Context) => {
     .select({ count: sql`count(*)` })
     .from(languages)
     .where(whereCondition);
+
   return c.json({
-    data,
+    data: data.map(convertBigIntToString),
     pagination: {
       page: Number(page),
       limit: Number(limit),
@@ -66,7 +68,8 @@ export const getAllLanguages = async (c: Context) => {
 
 // GET /api/languages/:id
 export const getLanguageById = async (c: Context) => {
-  const id = BigInt(c.req.param("id"));
+  const idParam = c.req.param("id");
+  const id = BigInt(idParam);
   const [languageRow] = await db
     .select()
     .from(languages)
@@ -82,11 +85,13 @@ export const createLanguage = async (c: Context) => {
   const parsed = createLanguageDto.safeParse(body);
   if (!parsed.success)
     throw new ApiError(JSON.stringify(parsed.error.flatten().fieldErrors), 400);
-  const { name, code, flagUrl, createdAt, updatedAt, deletedAt } = parsed.data;
+  const { name, code, flagUrl } = parsed.data;
   const [exists] = await db
     .select()
     .from(languages)
-    .where(and(eq(languages.code, code.toLowerCase()), isNull(languages.deletedAt)))
+    .where(
+      and(eq(languages.code, code.toLowerCase()), isNull(languages.deletedAt))
+    )
     .limit(1);
   if (exists) throw new ApiError("Language code already exists", 409);
   const [created] = await db
@@ -95,12 +100,9 @@ export const createLanguage = async (c: Context) => {
       name: name.trim(),
       code: code.trim().toLowerCase(),
       flagUrl: flagUrl?.trim() || null,
-      createdAt: createdAt ? new Date(createdAt) : undefined,
-      updatedAt: updatedAt ? new Date(updatedAt) : undefined,
-      deletedAt: deletedAt ? new Date(deletedAt) : undefined,
     })
     .returning();
-  return c.json({ data: created }, 201);
+  return c.json({ data: convertBigIntToNumber(created) }, 201);
 };
 
 // PUT /api/languages/:id
@@ -120,26 +122,27 @@ export const updateLanguage = async (c: Context) => {
     const [conflict] = await db
       .select()
       .from(languages)
-      .where(and(eq(languages.code, parsed.data.code.toLowerCase()), isNull(languages.deletedAt)))
+      .where(
+        and(
+          eq(languages.code, parsed.data.code.toLowerCase()),
+          isNull(languages.deletedAt)
+        )
+      )
       .limit(1);
     if (conflict) throw new ApiError("Language code already exists", 409);
   }
   const updateData: Record<string, unknown> = { updatedAt: new Date() };
-  if (parsed.data.name !== undefined)
-    updateData.name = parsed.data.name.trim();
+  if (parsed.data.name !== undefined) updateData.name = parsed.data.name.trim();
   if (parsed.data.code !== undefined)
     updateData.code = parsed.data.code.trim().toLowerCase();
   if (parsed.data.flagUrl !== undefined)
     updateData.flagUrl = parsed.data.flagUrl?.trim() || null;
-  if (parsed.data.createdAt) updateData.createdAt = new Date(parsed.data.createdAt);
-  if (parsed.data.updatedAt) updateData.updatedAt = new Date(parsed.data.updatedAt);
-  if (parsed.data.deletedAt) updateData.deletedAt = new Date(parsed.data.deletedAt);
   const [updated] = await db
     .update(languages)
     .set(updateData)
     .where(eq(languages.id, id))
     .returning();
-  return c.json({ data: updated });
+  return c.json({ data: convertBigIntToString(updated) });
 };
 
 // DELETE /api/languages/:id (soft delete)

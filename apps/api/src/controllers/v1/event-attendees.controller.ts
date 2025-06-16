@@ -37,10 +37,11 @@ export const getEventAttendees = async (c: Context) => {
 };
 
 export const getEventAttendeeById = async (c: Context) => {
-  const id = c.req.param("id");
-  if (!id || isNaN(Number(id))) {
+  const idParam = c.req.param("id");
+  if (!idParam || isNaN(Number(idParam))) {
     throw new ApiError("Invalid ID parameter", 400);
   }
+  const id = BigInt(idParam);
   const attendee = await db
     .select()
     .from(eventAttendees)
@@ -55,10 +56,11 @@ export const getEventAttendeeById = async (c: Context) => {
 };
 
 export const getEventAttendeesByEvent = async (c: Context) => {
-  const eventId = c.req.param("eventId");
-  if (!eventId || isNaN(Number(eventId))) {
+  const eventParam = c.req.param("eventId");
+  if (!eventParam || isNaN(Number(eventParam))) {
     throw new ApiError("Invalid event ID parameter", 400);
   }
+  const eventId = BigInt(eventParam);
   const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
   const limit = Math.min(
     100,
@@ -135,10 +137,11 @@ export const createEventAttendee = async (c: Context) => {
 };
 
 export const deleteEventAttendee = async (c: Context) => {
-  const id = c.req.param("id");
-  if (!id || isNaN(Number(id))) {
+  const idParam = c.req.param("id");
+  if (!idParam || isNaN(Number(idParam))) {
     throw new ApiError("Invalid ID parameter", 400);
   }
+  const id = BigInt(idParam);
   const existing = await db
     .select()
     .from(eventAttendees)

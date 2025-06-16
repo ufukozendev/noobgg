@@ -26,12 +26,16 @@ export const createGameRankController = async (c: Context) => {
   if (!result.success) {
     throw new ApiError(JSON.stringify(result.error.flatten().fieldErrors), 400);
   }
-  const values = {
-    ...result.data,
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
-  };
+  
+  // Filter out undefined values and prepare the insert values
+  const values: any = {};
+  
+  // Required fields
+  if (result.data.name !== undefined) values.name = result.data.name;
+  if (result.data.gameId !== undefined) values.gameId = result.data.gameId;
+  if (result.data.image !== undefined) values.image = result.data.image;
+  if (result.data.order !== undefined) values.order = result.data.order;
+  
   const [rank] = await db.insert(gameRanks).values(values).returning();
   return c.json(rank, 201);
 };
@@ -51,9 +55,6 @@ export const updateGameRankController = async (c: Context) => {
   }
   const values = {
     ...result.data,
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
   };
   const [rank] = await db
     .update(gameRanks)

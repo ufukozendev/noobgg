@@ -5,9 +5,6 @@ export const createDistributorDto = z.object({
   description: z.string().optional(),
   website: z.string().max(255).optional(),
   logo: z.string().max(255).optional(),
-  createdAt: z.string().datetime().optional(),
-  updatedAt: z.string().datetime().optional(),
-  deletedAt: z.string().datetime().optional(),
 });
 
 export const updateDistributorDto = z.object({
@@ -15,9 +12,6 @@ export const updateDistributorDto = z.object({
   description: z.string().optional(),
   website: z.string().max(255).optional(),
   logo: z.string().max(255).optional(),
-  createdAt: z.string().datetime().optional(),
-  updatedAt: z.string().datetime().optional(),
-  deletedAt: z.string().datetime().optional(),
 });
 
 export type CreateDistributorDto = z.infer<typeof createDistributorDto>;
