@@ -2,10 +2,12 @@
 export { EarthGlobe } from './components/EarthGlobe';
 export { RealCountries } from './components/RealCountries';
 export { CityHubs } from './components/CityHubs';
+export { LaserConnections } from './components/LaserConnections';
 export { CountryMarker } from './components/CountryMarker';
 export { Atmosphere } from './components/Atmosphere';
 export { Starfield } from './components/Starfield';
 export { Scene } from './components/Scene';
+export { NetworkStatsPanel } from './components/NetworkStatsPanel';
 export { WebGLErrorBoundary } from './components/WebGLErrorBoundary';
 
 // Export UI components

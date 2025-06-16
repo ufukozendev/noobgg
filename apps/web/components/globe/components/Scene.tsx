@@ -8,9 +8,11 @@ import { SceneProps } from '../types';
 import { EarthGlobe } from './EarthGlobe';
 import { RealCountries } from './RealCountries';
 import { CityHubs } from './CityHubs';
+import { LaserConnections } from './LaserConnections';
 import { CountryMarker } from './CountryMarker';
 import { Atmosphere } from './Atmosphere';
 import { Starfield } from './Starfield';
+import { MAJOR_CITIES } from '../data/cities';
 
 export const Scene = React.memo(({
   onCountryHover,
@@ -50,10 +52,16 @@ export const Scene = React.memo(({
       {/* Render real countries if enabled and data is available */}
       {showCountries && countries.length > 0 && (
         <RealCountries orbitControlsRef={orbitControlsRef} countries={countries} />
-      )}
-
-      {/* Render city hubs */}
-      <CityHubs orbitControlsRef={orbitControlsRef} onCityClick={onCityClick} />
+      )}      {/* Render city hubs */}
+      <CityHubs orbitControlsRef={orbitControlsRef} onCityClick={onCityClick} />      {/* Laser connections between cities */}
+      <LaserConnections 
+        cities={MAJOR_CITIES} 
+        maxConnections={100} 
+        orbitControlsRef={orbitControlsRef}
+        animationSpeed={1.0}
+        brightness={1.0}
+        showAllConnections={true}
+      />
       
       {/* Render country markers for interaction - reduced number */}
       {countries.length > 0 && countries.slice(0, 5).map((country, index) => (
