@@ -90,6 +90,13 @@ This command will:
 - Start the backend API on `http://localhost:3000`.
 - Start the frontend Next.js application on `http://localhost:3001`.
 
+**💡 Note:** If you get a "command not found: turbo" error, it means Turborepo CLI is not installed globally on your system. You can either:
+
+- Install it globally: `bun install -g turbo`
+- Or use the command above with `bun` prefix: `bun turbo dev` (recommended)
+
+The `bun turbo dev` command uses the locally installed Turborepo from your project's dependencies, ensuring version consistency.
+
 ## 📁 Project Structure
 
 ```
