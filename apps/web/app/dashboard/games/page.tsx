@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from 'next/navigation';
-import { Loader2, GameController2 } from 'lucide-react';
+import { Loader2, Gamepad2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GameTable } from '@/components/games/game-table';
 import { useGames } from '@/features/games/api/use-games';
@@ -27,7 +27,7 @@ export default function GamesPage() {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <div className="flex items-center space-x-2">
-        <GameController2 className="h-8 w-8 text-primary" />
+        <Gamepad2 className="h-8 w-8 text-primary" />
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Games Management</h1>
           <p className="text-muted-foreground">
