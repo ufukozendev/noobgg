@@ -96,11 +96,12 @@ export const updateGameModeController = async (c: Context) => {
     gameId?: bigint;
   };
   
-  const values: UpdateGameModeValues = { ...result.data };
-  if (result.data.gameId !== undefined) {
-    values.gameId = typeof result.data.gameId === 'string' 
-      ? BigInt(result.data.gameId) 
-      : BigInt(result.data.gameId);
+  const { gameId, ...restData } = result.data;
+  const values: UpdateGameModeValues = { ...restData };
+  if (gameId !== undefined) {
+    values.gameId = typeof gameId === 'string' 
+      ? BigInt(gameId) 
+      : BigInt(gameId);
   }
   
   const [gameMode] = await db
