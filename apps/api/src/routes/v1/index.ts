@@ -3,6 +3,7 @@ import distributorsRoutes from "./distributors";
 import eventAttendeesRouter from "./event-attendees";
 import eventInvitationsRouter from "./event-invitations";
 import eventsRouter from "./events";
+import gameModesRoutes from "./game-modes";
 import gameRanksRoutes from "./game-ranks";
 import gamesRoutes from "./games";
 import languagesRouter from "./languages";
@@ -13,6 +14,7 @@ import userProfilesRoutes from "./user-profiles";
 const v1Router = new Hono();
 
 v1Router.route("/games", gamesRoutes);
+v1Router.route("/game-modes", gameModesRoutes);
 v1Router.route("/platforms", platformsRoutes);
 v1Router.route("/distributors", distributorsRoutes);
 v1Router.route("/game-ranks", gameRanksRoutes);
