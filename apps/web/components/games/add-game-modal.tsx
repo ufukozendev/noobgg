@@ -2,7 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Loader2, Save, X, ImageIcon } from 'lucide-react';
+import { Loader2, Save, ImageIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
@@ -14,36 +14,38 @@ import {
   FormMessage,
   FormDescription 
 } from '@/components/ui/form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { createGameSchema } from '@repo/shared';
-import { useCreateGame, useUpdateGame } from '@/features/games/api/use-games';
-import type { Game } from '@/types/game';
+import { useCreateGame } from '@/features/games/api/use-games';
 
-interface GameFormProps {
-  game?: Game;
-  onSuccess?: () => void;
-  onCancel?: () => void;
+interface AddGameModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
+export function AddGameModal({ open, onOpenChange }: AddGameModalProps) {
   const createMutation = useCreateGame();
-  const updateMutation = useUpdateGame(game?.id ?? 0);
-  const mutation = game ? updateMutation : createMutation;
 
   const form = useForm<z.infer<typeof createGameSchema>>({
     resolver: zodResolver(createGameSchema),
     defaultValues: {
-      name: game?.name ?? '',
-      description: game?.description ?? '',
-      logo: game?.logo ?? '',
+      name: '',
+      description: '',
+      logo: '',
     },
   });
 
   function onSubmit(values: z.infer<typeof createGameSchema>) {
-    mutation.mutate(values, {
+    createMutation.mutate(values, {
       onSuccess: () => {
         form.reset();
-        onSuccess?.();
+        onOpenChange(false);
       },
     });
   }
@@ -51,17 +53,21 @@ export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
   const logoUrl = form.watch('logo');
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <ImageIcon className="h-5 w-5" />
-          <span>{game ? 'Edit Game' : 'Create New Game'}</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center space-x-2">
+            <ImageIcon className="h-5 w-5" />
+            <span>Add New Game</span>
+          </DialogTitle>
+          <DialogDescription>
+            Create a new game entry for your library
+          </DialogDescription>
+        </DialogHeader>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-4">
                 <FormField
                   control={form.control}
@@ -74,7 +80,6 @@ export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
                           {...field} 
                           value={field.value ?? ''} 
                           placeholder="Enter game name..."
-                          className="h-10"
                         />
                       </FormControl>
                       <FormDescription>
@@ -96,7 +101,6 @@ export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
                           {...field} 
                           value={field.value ?? ''} 
                           placeholder="Enter game description..."
-                          className="h-10"
                         />
                       </FormControl>
                       <FormDescription>
@@ -118,7 +122,6 @@ export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
                           {...field} 
                           value={field.value ?? ''} 
                           placeholder="https://example.com/logo.png"
-                          className="h-10"
                         />
                       </FormControl>
                       <FormDescription>
@@ -133,27 +136,27 @@ export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
               <div className="space-y-4">
                 <div>
                   <FormLabel>Logo Preview</FormLabel>
-                  <div className="mt-2 rounded-lg border-2 border-dashed border-muted-foreground/25 p-8">
+                  <div className="mt-2 rounded-lg border-2 border-dashed border-muted-foreground/25 p-6">
                     {logoUrl ? (
                       <div className="flex flex-col items-center space-y-2">
                         <img 
                           src={logoUrl} 
                           alt="Game logo preview" 
-                          className="h-24 w-24 rounded-lg object-cover shadow-sm"
+                          className="h-20 w-20 rounded-lg object-cover shadow-sm"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                             e.currentTarget.nextElementSibling?.classList.remove('hidden');
                           }}
                         />
                         <div className="hidden flex-col items-center space-y-1 text-muted-foreground">
-                          <ImageIcon className="h-8 w-8" />
-                          <span className="text-sm">Invalid image URL</span>
+                          <ImageIcon className="h-6 w-6" />
+                          <span className="text-xs">Invalid image URL</span>
                         </div>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center space-y-2 text-muted-foreground">
-                        <ImageIcon className="h-12 w-12" />
-                        <span className="text-sm">Logo preview will appear here</span>
+                        <ImageIcon className="h-8 w-8" />
+                        <span className="text-xs text-center">Logo preview will appear here</span>
                       </div>
                     )}
                   </div>
@@ -161,39 +164,36 @@ export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
               </div>
             </div>
             
-            <div className="flex justify-end space-x-3 pt-6 border-t">
-              {onCancel && (
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={onCancel}
-                  disabled={mutation.isPending}
-                >
-                  <X className="mr-2 h-4 w-4" />
-                  Cancel
-                </Button>
-              )}
+            <div className="flex justify-end space-x-3 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => onOpenChange(false)}
+                disabled={createMutation.isPending}
+              >
+                Cancel
+              </Button>
               <Button 
                 type="submit" 
-                disabled={mutation.isPending}
+                disabled={createMutation.isPending}
                 className="min-w-[120px]"
               >
-                {mutation.isPending ? (
+                {createMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {game ? 'Updating...' : 'Creating...'}
+                    Creating...
                   </>
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    {game ? 'Update Game' : 'Create Game'}
+                    Create Game
                   </>
                 )}
               </Button>
             </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 }
