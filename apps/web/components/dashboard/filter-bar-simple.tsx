@@ -691,19 +691,19 @@ export function FilterBarSimple({
                   })}
                   <div className="flex flex-col">
                     {" "}
-                    <span className="text-[9px] text-white/60 uppercase tracking-wide">
+                    <span className="text-[8px] sm:text-[10px] text-white/60 uppercase tracking-wide">
                       From
                     </span>
-                    <span className="text-xs font-semibold text-white">
+                    <span className="text-[10px] sm:text-xs font-semibold text-white">
                       {getSelectedRankDisplay(minRank)}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-2 text-white/40">
-                  <div className="w-8 border-t border-dashed border-white/20"></div>
+                  <div className="w-4 xs:w-8 border-t border-dashed border-white/20"></div>
                   <span className="text-xs">to</span>
-                  <div className="w-8 border-t border-dashed border-white/20"></div>
+                  <div className="w-4 xs:w-8 border-t border-dashed border-white/20"></div>
                 </div>
                 <div className="flex items-center space-x-1.5 bg-white/5 backdrop-blur rounded-xl px-3 py-1.5 border border-white/10">
                   {" "}
@@ -711,10 +711,10 @@ export function FilterBarSimple({
                     className: `w-3 h-3 ${getRankColor(maxRank)}`,
                   })}
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-white/60 uppercase tracking-wide">
+                    <span className="text-[8px] sm:text-[10px] text-white/60 uppercase tracking-wide">
                       To
                     </span>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-[10px] sm:text-sm font-semibold text-white">
                       {getSelectedRankDisplay(maxRank)}
                     </span>
                   </div>
