@@ -92,11 +92,15 @@ export const updateGameModeController = async (c: Context) => {
   }
   
   // Convert gameId to BigInt if it's provided and is a string
-  const values = { ...result.data };
-  if (values.gameId) {
-    values.gameId = typeof values.gameId === 'string' 
-      ? BigInt(values.gameId) 
-      : BigInt(values.gameId);
+  type UpdateGameModeValues = Omit<typeof result.data, 'gameId'> & {
+    gameId?: bigint;
+  };
+  
+  const values: UpdateGameModeValues = { ...result.data };
+  if (result.data.gameId !== undefined) {
+    values.gameId = typeof result.data.gameId === 'string' 
+      ? BigInt(result.data.gameId) 
+      : BigInt(result.data.gameId);
   }
   
   const [gameMode] = await db
