@@ -87,6 +87,14 @@ Bu komut:
 
 - Backend API'sini `http://localhost:3000` adresinde başlatır.
 - Frontend Next.js uygulamasını `http://localhost:3001` adresinde başlatır.
+- Mobil Expo uygulamasını başlatır (QR kodunu tarayın).
+
+**💡 Not:** Eğer "command not found: turbo" hatası alıyorsanız, bu Turborepo CLI'ın sisteminize global olarak kurulmamış olduğu anlamına gelir. İki seçeneğiniz bulunuyor:
+
+- Global olarak kurun: `bun install -g turbo`
+- Veya yukarıdaki komutu `bun` öneki ile kullanın: `bun turbo dev` (önerilen)
+
+`bun turbo dev` komutu, projenizin bağımlılıklarından yerel olarak kurulmuş Turborepo'yu kullanır ve sürüm tutarlılığını sağlar.
 
 ## 📁 Proje Yapısı
 
@@ -94,7 +102,8 @@ Bu komut:
 noob.gg/
 ├── apps/
 │   ├── api/     # Hono.js tabanlı backend API
-│   └── web/     # Next.js tabanlı frontend uygulaması
+│   ├── web/     # Next.js tabanlı frontend uygulaması
+│   └── mobile/  # Expo tabanlı mobil uygulaması
 ├── packages/    # Paylaşılan paketler ve kütüphaneler
 ├── package.json # Ana proje bağımlılıkları
 └── turbo.json   # Turborepo yapılandırması
