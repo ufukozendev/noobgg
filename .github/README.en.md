@@ -105,7 +105,7 @@ noob.gg/
 ├── apps/
 │   ├── api/     # Hono.js based backend API
 │   ├── web/     # Next.js based frontend application
-│   └── mobile/  # Expo bases mobile application
+│   └── mobile/  # Expo-based mobile application
 ├── packages/    # Shared packages and libraries
 ├── package.json # Main project dependencies
 └── turbo.json   # Turborepo configuration
