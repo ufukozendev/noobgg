@@ -101,7 +101,8 @@ Bu komut:
 noob.gg/
 ├── apps/
 │   ├── api/     # Hono.js tabanlı backend API
-│   └── web/     # Next.js tabanlı frontend uygulaması
+│   ├── web/     # Next.js tabanlı frontend uygulaması
+│   └── mobile/  # Expo tabanlı mobil uygulaması
 ├── packages/    # Paylaşılan paketler ve kütüphaneler
 ├── package.json # Ana proje bağımlılıkları
 └── turbo.json   # Turborepo yapılandırması

@@ -103,7 +103,8 @@ The `bun turbo dev` command uses the locally installed Turborepo from your proje
 noob.gg/
 ├── apps/
 │   ├── api/     # Hono.js based backend API
-│   └── web/     # Next.js based frontend application
+│   ├── web/     # Next.js based frontend application
+│   └── mobile/  # Expo bases mobile application
 ├── packages/    # Shared packages and libraries
 ├── package.json # Main project dependencies
 └── turbo.json   # Turborepo configuration
