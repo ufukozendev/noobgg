@@ -69,7 +69,7 @@ export function NavigationTabs({
     return (
       <>
         <div className={cn(
-          'bg-white/[0.02] backdrop-blur-3xl  p-0 md:p-1 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)]',
+          'bg-white/[0.02] backdrop-blur-3xl  p-0 md:p-1 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] md:rounded-b-[20px] md:mb-6',
           {
             'rounded-b-[0px] !rounded-t-[20px] mb-0': isMenuOpen,
             'rounded-[20px] mb-6': !isMenuOpen,
@@ -96,7 +96,7 @@ export function NavigationTabs({
             })}
           </div>
           <div className={cn(
-            "flex md:hidden items-center justify-between p-4 gap-2"
+            "flex md:hidden items-center justify-between p-3 gap-2"
           )}>
             <div className="">{tabConfig[activeTab as keyof typeof tabConfig].label}</div>
             <button onClick={toggleMenu} className="text-white">
@@ -105,7 +105,7 @@ export function NavigationTabs({
           </div>
         </div >
         <div className={cn(
-          "flex flex-col gap-2 space-x-2 p-4  rounded-[16px] transition-all duration-300 text-sm font-medium",
+          "flex md:hidden flex-col gap-2 space-x-2 p-4  rounded-[16px] transition-all duration-300 text-sm font-medium",
           "bg-white/[0.02] backdrop-blur-3xl  border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)]",
           isMenuOpen ? "flex" : "hidden",
           {
