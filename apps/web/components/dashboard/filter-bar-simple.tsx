@@ -144,7 +144,7 @@ export function FilterBarSimple({
   selectedLanguages,
   onLanguagesChange,
   selectedPlatform = "all",
-  onPlatformChange = () => {},
+  onPlatformChange = () => { },
   selectedPlatforms,
   onPlatformsChange,
   selectedMicRequired,
@@ -272,22 +272,37 @@ export function FilterBarSimple({
     [isDragging, handleSliderDrag]
   );
 
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (isDragging && e.touches[0]) {
+        handleSliderDrag(e.touches[0].clientX);
+      }
+    },
+    [isDragging, handleSliderDrag]
+  );
+
   const handleMouseUp = useCallback(() => {
     setIsDragging(null);
   }, []);
 
-  // Add global mouse event listeners
+  // Add global mouse and touch event listeners
   React.useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("touchmove", handleTouchMove);
+      document.addEventListener("touchend", handleMouseUp);
+      document.addEventListener("touchcancel", handleMouseUp);
 
       return () => {
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleMouseUp);
+        document.removeEventListener("touchcancel", handleMouseUp);
       };
     }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove]);
 
   const isRankInRange = (rank: string) => {
     const rankOrder = rankOptions.find((r) => r.value === rank)?.order ?? 0;
@@ -315,8 +330,8 @@ export function FilterBarSimple({
       />
       {/* Headers for each tab */}
       {activeTab === "find" && (
-        <div className="mb-6 flex items-center justify-between">
-          <div>
+        <div className="mb-6 flex  flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+          <div >
             <h1 className="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
               Find a Gaming Lobby
             </h1>
@@ -531,15 +546,15 @@ export function FilterBarSimple({
           </div>{" "}
           {/* Active Filters Display - REMOVED */}
           {/* Modern Rank Range Card */}
-          <div className="relative bg-white/[0.02] backdrop-blur-3xl rounded-2xl p-4 border border-white/8 shadow-[0_15px_30px_rgba(0,0,0,0.10)]">
+          <div className="relative bg-white/[0.02] backdrop-blur-3xl rounded-2xl p-4 sm:p-4 border border-white/8 shadow-[0_15px_30px_rgba(0,0,0,0.10)]">
             <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] via-transparent to-black/[0.01] rounded-2xl pointer-events-none"></div>
 
-            <div className="relative z-10 space-y-4">
+            <div className="relative z-10 space-y-3 sm:space-y-4">
               <label className="block text-xs font-semibold text-white/90 tracking-wide uppercase">
                 Rank Range
               </label>{" "}
               {/* Range Slider with Draggable Handles */}
-              <div className="relative px-2 py-4">
+              <div className="relative px-1 sm:px-2 py-2 sm:py-4">
                 {/* Slider Track */}
                 <div
                   ref={sliderRef}
@@ -547,6 +562,11 @@ export function FilterBarSimple({
                   onClick={(e) => {
                     if (!isDragging) {
                       handleSliderDrag(e.clientX);
+                    }
+                  }}
+                  onTouchStart={(e) => {
+                    if (!isDragging && e.touches[0]) {
+                      handleSliderDrag(e.touches[0].clientX);
                     }
                   }}
                 >
@@ -573,6 +593,10 @@ export function FilterBarSimple({
                       e.stopPropagation();
                       handleMouseDown("min");
                     }}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                      handleMouseDown("min");
+                    }}
                   >
                     {React.createElement(getRankIcon(minRank), {
                       className: `w-3 h-3 ${getRankColor(minRank)}`,
@@ -593,6 +617,10 @@ export function FilterBarSimple({
                       e.stopPropagation();
                       handleMouseDown("max");
                     }}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                      handleMouseDown("max");
+                    }}
                   >
                     {React.createElement(getRankIcon(maxRank), {
                       className: `w-3 h-3 ${getRankColor(maxRank)}`,
@@ -609,20 +637,19 @@ export function FilterBarSimple({
                     ></div>
                   ))}
                 </div>{" "}
-                {/* Rank Labels Below Slider */}
+                {/* Rank Labels Below Slider - Responsive */}
                 <div className="relative flex justify-between items-center mt-3">
                   {rankOptions.map((rank, index) => (
                     <div
                       key={rank.value}
                       className={cn(
-                        "flex flex-col items-center cursor-pointer transition-all duration-300 group",
+                        "flex flex-col items-center cursor-pointer transition-all duration-300 group min-w-[28px] sm:min-w-[32px]",
                         isRankInRange(rank.value)
                           ? "scale-105"
                           : "group-hover:scale-100"
                       )}
                       onClick={() => handleRankClick(rank.value)}
                     >
-                      {" "}
                       {/* Rank Icon */}
                       <div
                         className={cn(
@@ -634,19 +661,19 @@ export function FilterBarSimple({
                       >
                         {React.createElement(getRankIcon(rank.value), {
                           className: cn(
-                            "w-4 h-4 transition-all duration-300",
+                            "w-3 h-3 sm:w-4 sm:h-4 transition-all duration-300",
                             getRankColor(rank.value),
                             isRankInRange(rank.value) ? "drop-shadow-lg" : ""
                           ),
                         })}
                       </div>
-                      {/* Rank Name */}
+                      {/* Rank Name - Only show for selected ranks on mobile */}
                       <span
                         className={cn(
-                          "text-[9px] font-medium transition-colors duration-300 uppercase tracking-wider",
+                          "text-[7px] sm:text-[9px] font-medium transition-colors duration-300 uppercase tracking-wider",
                           isRankInRange(rank.value)
                             ? "text-white font-semibold"
-                            : "text-white/50 group-hover:text-white/80"
+                            : "text-white/50 group-hover:text-white/80 hidden sm:block"
                         )}
                       >
                         {rank.name}
