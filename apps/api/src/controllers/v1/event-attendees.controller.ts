@@ -37,11 +37,10 @@ export const getEventAttendees = async (c: Context) => {
 };
 
 export const getEventAttendeeById = async (c: Context) => {
-  const idParam = c.req.param("id");
-  if (!idParam || isNaN(Number(idParam))) {
+  const id = c.req.param("id");
+  if (!id || isNaN(Number(id))) {
     throw new ApiError("Invalid ID parameter", 400);
   }
-  const id = BigInt(idParam);
   const attendee = await db
     .select()
     .from(eventAttendees)
@@ -56,17 +55,16 @@ export const getEventAttendeeById = async (c: Context) => {
 };
 
 export const getEventAttendeesByEvent = async (c: Context) => {
-  const eventParam = c.req.param("eventId");
-  if (!eventParam || isNaN(Number(eventParam))) {
+  const eventId = c.req.param("eventId");
+  if (!eventId || isNaN(Number(eventId))) {
     throw new ApiError("Invalid event ID parameter", 400);
   }
-  const eventId = BigInt(eventParam);
   const page = Math.max(1, parseInt(c.req.query("page") || "1") || 1);
   const limit = Math.min(
     100,
     Math.max(1, parseInt(c.req.query("limit") || "10") || 10)
   );
-  const offset = (page - 1) * limit;  
+  const offset = (page - 1) * limit;
   const attendees = await db
     .select()
     .from(eventAttendees)
@@ -88,7 +86,7 @@ export const getEventAttendeesByEvent = async (c: Context) => {
         isNull(eventAttendees.deletedAt)
       )
     );
-    
+
   return c.json({
     data: convertBigIntToString(attendees),
     pagination: {
@@ -137,11 +135,10 @@ export const createEventAttendee = async (c: Context) => {
 };
 
 export const deleteEventAttendee = async (c: Context) => {
-  const idParam = c.req.param("id");
-  if (!idParam || isNaN(Number(idParam))) {
+  const id = c.req.param("id");
+  if (!id || isNaN(Number(id))) {
     throw new ApiError("Invalid ID parameter", 400);
   }
-  const id = BigInt(idParam);
   const existing = await db
     .select()
     .from(eventAttendees)

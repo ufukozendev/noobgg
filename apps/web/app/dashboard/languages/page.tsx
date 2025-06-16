@@ -94,7 +94,6 @@ export default function LanguagesPage() {
       await createLanguageMutation.mutateAsync(form);
       setIsCreateDialogOpen(false);
       toast.success("Language created successfully!");
-      refetch();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to create language");
     } finally {
@@ -318,7 +317,7 @@ export default function LanguagesPage() {
                               </Button>
                             </AlertDialogTrigger>
                             {deletingLanguage?.id === lang.id && (
-                              <AlertDialogContent>
+                              <AlertDialogContent className="bg-black/100">
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>
                                     Delete Language
@@ -337,7 +336,7 @@ export default function LanguagesPage() {
                                   </AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() => handleDelete(lang.id)}
-                                    className="bg-red-600 hover:bg-red-700"
+                                    className="bg-red-600 hover:bg-red-700 p-2 rounded"
                                   >
                                     Delete
                                   </AlertDialogAction>

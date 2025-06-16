@@ -12,7 +12,7 @@ import {
 
 export function useLanguages(options: UseLanguagesOptions = {}) {
   return useQuery({
-    queryKey: ["languages", options],
+    queryKey: ["languages", JSON.stringify(options)],
     queryFn: () => fetchLanguages(options),
   });
 }

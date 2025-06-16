@@ -2760,7 +2760,6 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Game not found
-       
         '500':
           description: Internal server error
     put:

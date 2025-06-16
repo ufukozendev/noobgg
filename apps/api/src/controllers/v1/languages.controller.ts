@@ -5,10 +5,7 @@ import { and, asc, desc, eq, like, sql, isNull } from "drizzle-orm";
 import { createLanguageDto, updateLanguageDto } from "@repo/shared";
 import { getLanguagesSchema } from "@repo/shared/schemas/languages";
 import { ApiError } from "../../middleware/errorHandler";
-import {
-  convertBigIntToNumber,
-  convertBigIntToString,
-} from "src/utils/bigint-serializer";
+import { convertBigIntToString } from "src/utils/bigint-serializer";
 
 // GET /api/languages - List with pagination, search & sorting
 export const getLanguages = async (c: Context) => {
@@ -102,7 +99,7 @@ export const createLanguage = async (c: Context) => {
       flagUrl: flagUrl?.trim() || null,
     })
     .returning();
-  return c.json({ data: convertBigIntToNumber(created) }, 201);
+  return c.json({ data: convertBigIntToString(created) }, 201);
 };
 
 // PUT /api/languages/:id
