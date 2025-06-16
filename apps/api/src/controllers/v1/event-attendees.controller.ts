@@ -64,7 +64,7 @@ export const getEventAttendeesByEvent = async (c: Context) => {
     100,
     Math.max(1, parseInt(c.req.query("limit") || "10") || 10)
   );
-  const offset = (page - 1) * limit;  
+  const offset = (page - 1) * limit;
   const attendees = await db
     .select()
     .from(eventAttendees)
@@ -86,7 +86,7 @@ export const getEventAttendeesByEvent = async (c: Context) => {
         isNull(eventAttendees.deletedAt)
       )
     );
-    
+
   return c.json({
     data: convertBigIntToString(attendees),
     pagination: {

@@ -17,9 +17,6 @@ export const createLobbyDto = z.object({
   note: z.string().optional(),
   discordLink: z.string().max(255).optional(),
   rowVersion: z.string().optional(),
-  createdAt: z.string().datetime().optional(),
-  updatedAt: z.string().datetime().optional(),
-  deletedAt: z.string().datetime().optional(),
 });
 
 export const updateLobbyDto = createLobbyDto.partial();

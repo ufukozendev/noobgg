@@ -35,9 +35,6 @@ export const createDistributorController = async (c: Context) => {
   }
   const values = {
     ...result.data,
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
   };
   const [distributor] = await db
     .insert(distributorsTable)
@@ -61,9 +58,6 @@ export const updateDistributorController = async (c: Context) => {
   }
   const values = {
     ...result.data,
-    createdAt: result.data.createdAt ? new Date(result.data.createdAt) : undefined,
-    updatedAt: result.data.updatedAt ? new Date(result.data.updatedAt) : undefined,
-    deletedAt: result.data.deletedAt ? new Date(result.data.deletedAt) : undefined,
   };
   const [distributor] = await db
     .update(distributorsTable)

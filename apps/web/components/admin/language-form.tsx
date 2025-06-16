@@ -10,12 +10,21 @@ import { toast } from "react-toastify";
 
 interface Props {
   language?: Language;
-  onSubmit: (data: { name: string; code: string; flagUrl?: string }) => Promise<void>;
+  onSubmit: (data: {
+    name: string;
+    code: string;
+    flagUrl?: string;
+  }) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
 }
 
-export function LanguageForm({ language, onSubmit, onCancel, isLoading }: Props) {
+export function LanguageForm({
+  language,
+  onSubmit,
+  onCancel,
+  isLoading,
+}: Props) {
   const [formData, setFormData] = useState({
     name: language?.name || "",
     code: language?.code || "",
@@ -60,22 +69,23 @@ export function LanguageForm({ language, onSubmit, onCancel, isLoading }: Props)
 
   return (
     <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>{language ? "Edit Language" : "Add New Language"}</CardTitle>
-      </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 m-3">
           {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="name">Name *</Label>
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="English"
               className={errors.name ? "border-red-500" : ""}
             />
-            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-500">{errors.name}</p>
+            )}
           </div>
 
           {/* Code */}
@@ -84,11 +94,15 @@ export function LanguageForm({ language, onSubmit, onCancel, isLoading }: Props)
             <Input
               id="code"
               value={formData.code}
-              onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, code: e.target.value })
+              }
               placeholder="en"
               className={errors.code ? "border-red-500" : ""}
             />
-            {errors.code && <p className="text-sm text-red-500">{errors.code}</p>}
+            {errors.code && (
+              <p className="text-sm text-red-500">{errors.code}</p>
+            )}
           </div>
 
           {/* Flag URL */}
@@ -97,18 +111,27 @@ export function LanguageForm({ language, onSubmit, onCancel, isLoading }: Props)
             <Input
               id="flagUrl"
               value={formData.flagUrl}
-              onChange={(e) => setFormData({ ...formData, flagUrl: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, flagUrl: e.target.value })
+              }
               placeholder="https://example.com/flag.png"
               className={errors.flagUrl ? "border-red-500" : ""}
             />
-            {errors.flagUrl && <p className="text-sm text-red-500">{errors.flagUrl}</p>}
+            {errors.flagUrl && (
+              <p className="text-sm text-red-500">{errors.flagUrl}</p>
+            )}
           </div>
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" disabled={isLoading} className="flex-1">
               {isLoading ? "Saving..." : language ? "Update" : "Create"}
             </Button>
-            <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              className="flex-1"
+            >
               Cancel
             </Button>
           </div>
@@ -116,4 +139,4 @@ export function LanguageForm({ language, onSubmit, onCancel, isLoading }: Props)
       </CardContent>
     </Card>
   );
-} 
+}

@@ -7,9 +7,6 @@ export const createGameModeDto = z.object({
   gameId: z.union([z.string(), z.number()]),
   minTeamSize: z.number().int(),
   maxTeamSize: z.number().int(),
-  createdAt: z.string().datetime().optional(),
-  updatedAt: z.string().datetime().optional(),
-  deletedAt: z.string().datetime().optional(),
 });
 
 export const updateGameModeDto = z.object({
@@ -19,9 +16,6 @@ export const updateGameModeDto = z.object({
   gameId: z.union([z.string(), z.number()]).optional(),
   minTeamSize: z.number().int().optional(),
   maxTeamSize: z.number().int().optional(),
-  createdAt: z.string().datetime().optional(),
-  updatedAt: z.string().datetime().optional(),
-  deletedAt: z.string().datetime().optional(),
 });
 
 export type CreateGameModeDto = z.infer<typeof createGameModeDto>;
