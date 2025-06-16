@@ -16,15 +16,15 @@ import {
   loadRealCountriesFromGeoJSON,
   MAJOR_CITIES,
   CountryData,
-  CityData
+  CityData,
+  LaserConnections
 } from './globe';
 
 interface OptimizedGamingGlobeProps {
   showCountries?: boolean;
 }
 
-export default function OptimizedGamingGlobe({ showCountries = true }: OptimizedGamingGlobeProps) {
-  // State management
+export default function OptimizedGamingGlobe({ showCountries = true }: OptimizedGamingGlobeProps) {  // State management
   const [hoveredCountry, setHoveredCountry] = useState<CountryData | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
@@ -33,17 +33,20 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
   const [canvasKey, setCanvasKey] = useState(0);
   const [countries, setCountries] = useState<CountryData[]>([]);
   const [isLoadingCountries, setIsLoadingCountries] = useState(true);
-  const [totalPlayers, setTotalPlayers] = useState(65000);
+  const [totalPlayers, setTotalPlayers] = useState(65000);  // Network stats
+  const [activeHubs, setActiveHubs] = useState(34);
+  const [connectionStatus, setConnectionStatus] = useState<'Live' | 'Connecting' | 'Offline'>('Live');
 
   // Refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isMouseOverRef = useRef(false);
   const isMobile = useIsMobile();
-
-  // Dynamic player count animation
+  // Dynamic player count and hub count animation
   useEffect(() => {
-    const updatePlayerCount = () => {
+    const updateCounts = () => {
       const time = Date.now() / 1000;
+      
+      // Player count
       const baseWave = Math.sin(time * 0.05) * 0.3;
       const fastWave = Math.sin(time * 0.3) * 0.1;
       const randomWave = Math.sin(time * 0.15 + Math.sin(time * 0.08) * 2) * 0.15;
@@ -53,9 +56,17 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
       const newCount = Math.round(baseCount + (totalVariation * range));
       const clampedCount = Math.max(40000, Math.min(90000, newCount));
       setTotalPlayers(clampedCount);
+      
+      // Active hubs count (slower variation)
+      const hubWave = Math.sin(time * 0.03) * 0.2;
+      const hubBaseCount = 34;
+      const hubRange = 8;
+      const newHubCount = Math.round(hubBaseCount + (hubWave * hubRange));
+      const clampedHubCount = Math.max(25, Math.min(45, newHubCount));
+      setActiveHubs(clampedHubCount);
     };
 
-    const interval = setInterval(updatePlayerCount, 2000);
+    const interval = setInterval(updateCounts, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -127,9 +138,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
         canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       };
     }
-  }, [canvasKey]);
-
-  // Memoized props and settings
+  }, [canvasKey]);  // Memoized props and settings
   const sceneProps = useMemo(() => ({
     onCountryHover: handleCountryHover,
     isMobile: isMobile,
@@ -141,7 +150,16 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
     onCityClick: handleCityClick,
     selectedCity: selectedCity,
     isMouseOverRef: isMouseOverRef,
-  }), [handleCountryHover, handleCityClick, isMobile, selectedCountry, selectedCity, showCountries, countries, isLoadingCountries]);
+  }), [
+    handleCountryHover, 
+    handleCityClick, 
+    isMobile, 
+    selectedCountry, 
+    selectedCity, 
+    showCountries, 
+    countries, 
+    isLoadingCountries
+  ]);
 
   const cameraSettings = useMemo(() => ({
     position: [0, 0, isMobile ? 24 : 15] as [number, number, number],
@@ -231,10 +249,13 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
               </button>
             </div>
           </div>
-        )}
-
-        {/* UI Overlays */}
-        <StatsOverlay isMobile={isMobile} totalPlayers={totalPlayers} />
+        )}        {/* UI Overlays */}
+        <StatsOverlay 
+          isMobile={isMobile} 
+          totalPlayers={totalPlayers}
+          activeHubs={activeHubs}
+          connectionStatus={connectionStatus}
+        />
 
         {/* Country Info Panel */}
         {hoveredCountry && !selectedCountry && (
@@ -254,9 +275,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
             city={selectedCity}
             onClose={() => setSelectedCity(null)}
           />
-        )}
-
-        {/* Controls and Status */}
+        )}        {/* Controls and Status */}
         <ControlsOverlay isMobile={isMobile} />
         <StatusIndicator
           isMobile={isMobile}
