@@ -701,9 +701,9 @@ export function FilterBarSimple({
                 </div>
 
                 <div className="flex items-center space-x-2 text-white/40">
-                  <div className="w-4 xs:w-8 border-t border-dashed border-white/20"></div>
+                  <div className="w-4 sm:w-8 border-t border-dashed border-white/20"></div>
                   <span className="text-xs">to</span>
-                  <div className="w-4 xs:w-8 border-t border-dashed border-white/20"></div>
+                  <div className="w-4 sm:w-8 border-t border-dashed border-white/20"></div>
                 </div>
                 <div className="flex items-center space-x-1.5 bg-white/5 backdrop-blur rounded-xl px-3 py-1.5 border border-white/10">
                   {" "}
