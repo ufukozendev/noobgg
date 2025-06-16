@@ -5,11 +5,15 @@ import { Loader2, Gamepad2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GameTable } from '@/components/games/game-table';
 import { AddGameModal } from '@/components/games/add-game-modal';
+import { EditGameModal } from '@/components/games/edit-game-modal';
 import { useGames } from '@/features/games/api/use-games';
+import type { Game } from '@/types/game';
 
 export default function GamesPage() {
   const router = useRouter();
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const { data, isLoading } = useGames();
 
   if (isLoading) {
@@ -46,7 +50,10 @@ export default function GamesPage() {
         <CardContent>
           <GameTable 
             data={data || []} 
-            onEdit={(game) => router.push(`/dashboard/games/${game.id}/edit`)}
+            onEdit={(game) => {
+              setSelectedGame(game);
+              setShowEditModal(true);
+            }}
             onNew={() => setShowAddModal(true)}
           />
         </CardContent>
@@ -55,6 +62,15 @@ export default function GamesPage() {
       <AddGameModal 
         open={showAddModal} 
         onOpenChange={setShowAddModal} 
+      />
+      
+      <EditGameModal 
+        open={showEditModal} 
+        onOpenChange={(open) => {
+          setShowEditModal(open);
+          if (!open) setSelectedGame(null);
+        }}
+        game={selectedGame}
       />
     </div>
   );

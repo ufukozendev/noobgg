@@ -1,11 +1,16 @@
 "use client";
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PlatformTable } from '@/components/platforms/platform-table';
+import { EditPlatformModal } from '@/components/platforms/edit-platform-modal';
 import { usePlatforms } from '@/features/platforms/api/use-platforms';
+import type { Platform } from '@/types/platform';
 
 export default function PlatformsPage() {
   const router = useRouter();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
   const { data } = usePlatforms();
 
   if (!data) return <div>Loading...</div>;
@@ -20,7 +25,19 @@ export default function PlatformsPage() {
       </div>
       <PlatformTable
         data={data}
-        onEdit={(p) => router.push(`/dashboard/platforms/${p.id}/edit`)}
+        onEdit={(platform) => {
+          setSelectedPlatform(platform);
+          setShowEditModal(true);
+        }}
+      />
+      
+      <EditPlatformModal 
+        open={showEditModal} 
+        onOpenChange={(open) => {
+          setShowEditModal(open);
+          if (!open) setSelectedPlatform(null);
+        }}
+        platform={selectedPlatform}
       />
     </div>
   );
