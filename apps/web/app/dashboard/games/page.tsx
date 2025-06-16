@@ -1,12 +1,15 @@
 "use client";
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Gamepad2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GameTable } from '@/components/games/game-table';
+import { AddGameModal } from '@/components/games/add-game-modal';
 import { useGames } from '@/features/games/api/use-games';
 
 export default function GamesPage() {
   const router = useRouter();
+  const [showAddModal, setShowAddModal] = useState(false);
   const { data, isLoading } = useGames();
 
   if (isLoading) {
@@ -44,10 +47,15 @@ export default function GamesPage() {
           <GameTable 
             data={data || []} 
             onEdit={(game) => router.push(`/dashboard/games/${game.id}/edit`)}
-            onNew={() => router.push('/dashboard/games/new')}
+            onNew={() => setShowAddModal(true)}
           />
         </CardContent>
       </Card>
+      
+      <AddGameModal 
+        open={showAddModal} 
+        onOpenChange={setShowAddModal} 
+      />
     </div>
   );
 }
