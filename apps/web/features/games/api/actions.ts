@@ -1,6 +1,7 @@
 import { createGameSchema, updateGameSchema } from "@repo/shared";
 import type { Game, GamesResponse } from "@/types/game";
 import { getCurrentLanguage } from "@/lib/utils";
+import { handleApiResponse } from "@/utils/api-response-handler";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
@@ -23,8 +24,8 @@ export async function getAllGames(): Promise<GamesResponse> {
       throw new Error(`Failed to fetch games: ${response.status}`);
     }
 
-    const games = await response.json();
-    return games;
+    const data = handleApiResponse(await response.json());
+    return data;
   } catch (error) {
     console.error("Error fetching games:", error);
     throw error;
@@ -46,7 +47,7 @@ export async function getGame(id: number): Promise<Game> {
     if (!res.ok) {
       throw new Error(`Failed to fetch game: ${res.status}`);
     }
-    return res.json();
+    return handleApiResponse(await res.json());
   } catch (error) {
     console.error("Error fetching game:", error);
     throw error;
@@ -69,7 +70,8 @@ export async function createGame(data: unknown): Promise<Game> {
     if (!res.ok) {
       throw new Error(`Failed to create game: ${res.status}`);
     }
-    return res.json();
+    const response = handleApiResponse(await res.json());
+    return response.data;
   } catch (error) {
     console.error("Error creating game:", error);
     throw error;
@@ -92,7 +94,8 @@ export async function updateGame(id: number, data: unknown): Promise<Game> {
     if (!res.ok) {
       throw new Error(`Failed to update game: ${res.status}`);
     }
-    return res.json();
+    const response = handleApiResponse(await res.json());
+    return response;
   } catch (error) {
     console.error("Error updating game:", error);
     throw error;
@@ -113,6 +116,8 @@ export async function deleteGame(id: number): Promise<void> {
     if (!res.ok) {
       throw new Error(`Failed to delete game: ${res.status}`);
     }
+    const data = handleApiResponse(await res.json());
+    return data;
   } catch (error) {
     console.error("Error deleting game:", error);
     throw error;

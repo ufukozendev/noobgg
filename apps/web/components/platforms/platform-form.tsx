@@ -1,13 +1,23 @@
 "use client";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { createPlatformSchema } from '@repo/shared';
-import { useCreatePlatform, useUpdatePlatform } from '@/features/platforms/api/use-platforms';
-import type { Platform } from '@/types/platform';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { createPlatformSchema } from "@repo/shared";
+import {
+  useCreatePlatform,
+  useUpdatePlatform,
+} from "@/features/platforms/api/use-platforms";
+import type { Platform } from "@/types/platform";
 
 export function PlatformForm({
   platform,
@@ -22,7 +32,7 @@ export function PlatformForm({
 
   const form = useForm<z.infer<typeof createPlatformSchema>>({
     resolver: zodResolver(createPlatformSchema),
-    defaultValues: { name: platform?.name ?? '' },
+    defaultValues: { name: platform?.name ?? "" },
   });
 
   function onSubmit(values: z.infer<typeof createPlatformSchema>) {
@@ -51,7 +61,7 @@ export function PlatformForm({
           )}
         />
         <Button type="submit" disabled={mutation.isPending}>
-          {platform ? 'Update' : 'Create'}
+          {platform ? "Update" : "Create"}
         </Button>
       </form>
     </Form>

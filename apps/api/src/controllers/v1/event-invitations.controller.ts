@@ -222,7 +222,14 @@ export const createEventInvitation = async (c: Context) => {
     .insert(eventInvitations)
     .values(values)
     .returning();
-  return c.json({ data: convertBigIntToString(newInvitation[0]) }, 201);
+  return c.json(
+    {
+      success: true,
+      message: "Event invitations created successfully",
+      data: convertBigIntToString(newInvitation[0]),
+    },
+    201
+  );
 };
 
 export const respondToInvitation = async (c: Context) => {
@@ -263,7 +270,14 @@ export const respondToInvitation = async (c: Context) => {
     })
     .where(eq(eventInvitations.id, BigInt(id)))
     .returning();
-  return c.json({ data: convertBigIntToString(updatedInvitation[0]) });
+  return c.json(
+    {
+      success: true,
+      message: "Event invitation response recorded successfully",
+      data: convertBigIntToString(updatedInvitation[0]),
+    },
+    201
+  );
 };
 
 export const deleteEventInvitation = async (c: Context) => {
@@ -282,5 +296,11 @@ export const deleteEventInvitation = async (c: Context) => {
   if (deletedInvitation.length === 0) {
     throw new ApiError("Event invitation not found", 404);
   }
-  return c.json({ message: "Event invitation cancelled successfully" });
+  return c.json(
+    {
+      success: true,
+      message: "Event invitation cancelled successfully",
+    },
+    201
+  );
 };

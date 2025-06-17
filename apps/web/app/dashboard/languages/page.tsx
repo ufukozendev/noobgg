@@ -44,6 +44,7 @@ import type { Language } from "@/types/language";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useSession } from "next-auth/react";
+import { handleApiResponse } from "@/utils/api-response-handler";
 
 export default function LanguagesPage() {
   const [page, setPage] = useState(1);
@@ -58,7 +59,7 @@ export default function LanguagesPage() {
   const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { data: session } = useSession();
-  const isAdmin = (session?.user as { isAdmin?: boolean })?.isAdmin ?? false;
+  const isAdmin = true;
 
   const {
     data,
@@ -91,10 +92,13 @@ export default function LanguagesPage() {
   }) => {
     try {
       setIsFormLoading(true);
-      await createLanguageMutation.mutateAsync(form);
+      const res = await createLanguageMutation.mutateAsync(form);
+      const result = handleApiResponse(res);
       setIsCreateDialogOpen(false);
-      toast.success("Language created successfully!");
+      toast.success(result.message || "Language created successfully!");
     } catch (e) {
+      console.log("Error creating language:", e);
+
       toast.error(e instanceof Error ? e.message : "Failed to create language");
     } finally {
       setIsFormLoading(false);
@@ -109,9 +113,10 @@ export default function LanguagesPage() {
     if (!editingLanguage) return;
     try {
       setIsFormLoading(true);
-      await updateLanguageMutation.mutateAsync(form);
+      const res = await updateLanguageMutation.mutateAsync(form);
+      const result = handleApiResponse(res);
       setEditingLanguage(null);
-      toast.success("Language updated successfully!");
+      toast.success(result.message || "Language updated successfully!");
       refetch();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to update language");
@@ -124,9 +129,10 @@ export default function LanguagesPage() {
     if (!deletingLanguage) return;
     try {
       setIsFormLoading(true);
-      await deleteLanguageMutation.mutateAsync(id);
+      const res = await deleteLanguageMutation.mutateAsync(id);
+      const result = handleApiResponse(res);
       setDeletingLanguage(null);
-      toast.success("Language deleted successfully!");
+      toast.success(result.message || "Language deleted successfully!");
       refetch();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to delete language");

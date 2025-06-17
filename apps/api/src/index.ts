@@ -9,6 +9,7 @@ import { localeMiddleware } from "./middleware/locale";
 import { Variables } from "./middleware/locale";
 import YAML from "yamljs";
 import path from "path";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -44,15 +45,6 @@ app.get("/docs/openapi.json", (c) => {
 
 app.route("/", router);
 
-app.onError((err, c) => {
-  console.error("API Error:", err);
-  return c.json(
-    {
-      error: "Internal Server Error",
-      version: c.get("version") || "unknown",
-    },
-    500
-  );
-});
+app.onError(errorHandler);
 
 export default app;
