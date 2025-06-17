@@ -102,5 +102,5 @@ export async function deleteLanguage(id: string): Promise<Language> {
     cache: "no-store",
   });
   const data = handleApiResponse(await res.json());
-  return data;
+  return data.data;
 }

@@ -95,7 +95,7 @@ export async function updateGame(id: number, data: unknown): Promise<Game> {
       throw new Error(`Failed to update game: ${res.status}`);
     }
     const response = handleApiResponse(await res.json());
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error updating game:", error);
     throw error;

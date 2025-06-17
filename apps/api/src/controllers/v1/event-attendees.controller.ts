@@ -137,7 +137,7 @@ export const createEventAttendee = async (c: Context) => {
       message: "Event attendee created successfully",
       data: convertBigIntToString(newAttendee[0]),
     },
-    201
+    200
   );
 };
 
@@ -172,6 +172,6 @@ export const deleteEventAttendee = async (c: Context) => {
       success: true,
       message: "Event attendee removed successfully",
     },
-    201
+    200
   );
 };

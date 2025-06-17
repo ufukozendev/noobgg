@@ -80,7 +80,7 @@ export const updateGameRankController = async (c: Context) => {
       message: getTranslation(c, "game_rank_updated_successfully"),
       data: rank,
     },
-    201
+    200
   );
 };
 
@@ -99,6 +99,6 @@ export const deleteGameRankController = async (c: Context) => {
       success: true,
       message: getTranslation(c, "game_rank_deleted_successfully"),
     },
-    201
+    200
   );
 };

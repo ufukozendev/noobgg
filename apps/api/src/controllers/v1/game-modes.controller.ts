@@ -128,7 +128,7 @@ export const updateGameModeController = async (c: Context) => {
       message: "Game mode updated successfully",
       data: convertBigIntToString(gameMode) as object,
     },
-    201
+    200
   );
 };
 
@@ -147,12 +147,11 @@ export const deleteGameModeController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_mode_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(convertBigIntToString(gameMode) as object);
   return c.json(
     {
       success: true,
       message: "Game mode deleted successfully",
     },
-    201
+    200
   );
 };
