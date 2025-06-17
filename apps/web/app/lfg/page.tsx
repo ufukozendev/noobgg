@@ -191,7 +191,8 @@ export default function LobbiesPage() {
 
       return 0;
     });
-    return filtered;  }, [
+    return filtered;
+  }, [
     debouncedSearchTerm,
     selectedGames,
     selectedRegion,
@@ -223,7 +224,8 @@ export default function LobbiesPage() {
   const handleDeleteLobby = (id: number) => {
     console.log("Deleting lobby:", id);
     // Delete lobby logic here
-  };  const handleClearFilters = () => {
+  };
+  const handleClearFilters = () => {
     setSearchTerm("");
     setSelectedRegion("all");
     setSelectedMode("all");
@@ -265,11 +267,12 @@ export default function LobbiesPage() {
   return (
     <div className="min-h-screen p-8">
       <div className="relative max-w-7xl mx-auto space-y-8">
-        {/* Filter Bar */}        <FilterBarSimple
+        {/* Filter Bar */}
+        <FilterBarSimple
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           selectedGame="all" // Not used but kept for compatibility
-          onGameChange={() => {}} // Not used but kept for compatibility
+          onGameChange={() => { }} // Not used but kept for compatibility
           selectedGames={selectedGames}
           onGamesChange={handleGamesChange}
           selectedRegion={selectedRegion}
@@ -283,7 +286,7 @@ export default function LobbiesPage() {
           selectedLanguages={selectedLanguages}
           onLanguagesChange={setSelectedLanguages}
           selectedPlatform="all" // Not used but kept for compatibility
-          onPlatformChange={() => {}} // Not used but kept for compatibility
+          onPlatformChange={() => { }} // Not used but kept for compatibility
           selectedPlatforms={selectedPlatforms}
           onPlatformsChange={handlePlatformsChange}
           selectedMicRequired={selectedMicRequired}
@@ -343,7 +346,7 @@ export default function LobbiesPage() {
         ) : (
           <div className="space-y-3">
             {/* List Header */}
-            <div className="bg-white/[0.02] backdrop-blur-3xl rounded-2xl p-3 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+            <div className="hidden md:block bg-white/[0.02] backdrop-blur-3xl rounded-2xl p-3 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
               <div className="grid grid-cols-12 gap-4 items-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                 <div className="col-span-3">Game</div>
                 <div className="col-span-2">Owner</div>
