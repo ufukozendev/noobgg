@@ -59,7 +59,7 @@ export default function LanguagesPage() {
   const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { data: session } = useSession();
-  const isAdmin = true;
+  const isAdmin = (session?.user as { isAdmin?: boolean })?.isAdmin ?? false;
 
   const {
     data,
