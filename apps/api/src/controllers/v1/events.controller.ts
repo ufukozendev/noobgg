@@ -205,7 +205,7 @@ export const getPopularEvents = async (c: Context) => {
 export const createEvent = async (c: Context) => {
   const body = await c.req.json();
   const result = createEventDto.safeParse(body);
-    
+
   if (!result.success) {
     throw new ApiError(JSON.stringify(result.error.flatten().fieldErrors), 400);
   }
@@ -219,10 +219,7 @@ export const createEvent = async (c: Context) => {
     cityId: result.data.cityId ? BigInt(result.data.cityId) : null,
     attendeesCount: 0,
   };
-  const newEvent = await db
-    .insert(events)
-    .values(values)
-    .returning();
+  const newEvent = await db.insert(events).values(values).returning();
   return c.json({ data: convertBigIntToString(newEvent[0]) }, 201);
 };
 
@@ -239,7 +236,7 @@ export const updateEvent = async (c: Context) => {
     throw new ApiError("Event not found", 404);
   }
   const result = updateEventDto.safeParse(body);
-  
+
   if (!result.success) {
     throw new ApiError(JSON.stringify(result.error.flatten().fieldErrors), 400);
   }
@@ -250,7 +247,8 @@ export const updateEvent = async (c: Context) => {
   if (result.data.startTime) values.startTime = new Date(result.data.startTime);
   if (result.data.endTime) values.endTime = new Date(result.data.endTime);
   if (result.data.creatorId) values.creatorId = BigInt(result.data.creatorId);
-  if (result.data.languageId) values.languageId = BigInt(result.data.languageId);
+  if (result.data.languageId)
+    values.languageId = BigInt(result.data.languageId);
   if (result.data.countryId) values.countryId = BigInt(result.data.countryId);
   if (result.data.cityId) values.cityId = BigInt(result.data.cityId);
   Object.entries(result.data).forEach(([key, value]) => {
@@ -295,9 +293,7 @@ export const updateAttendeesCount = async (c: Context) => {
     throw new ApiError("Event not found", 404);
   }
   const currentCount = event[0].attendeesCount || 0;
-  const newCount = increment
-    ? currentCount + 1
-    : Math.max(0, currentCount - 1);
+  const newCount = increment ? currentCount + 1 : Math.max(0, currentCount - 1);
   const updatedEvent = await db
     .update(events)
     .set({

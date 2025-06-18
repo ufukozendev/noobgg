@@ -5,6 +5,7 @@ import type {
   UseLanguagesOptions,
 } from "@/types/language";
 import { getCurrentLanguage } from "@/lib/utils";
+import { handleApiResponse } from "@/utils/api-response-handler";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
 
@@ -19,7 +20,7 @@ export async function fetchLanguages(
   if (options.sortOrder) params.append("sortOrder", options.sortOrder);
   const res = await fetch(`${API_BASE_URL}/languages?${params.toString()}`);
   if (!res.ok) throw new Error("Failed to fetch languages");
-  return res.json();
+  return handleApiResponse(await res.json());
 }
 
 export async function fetchAllLanguages(): Promise<Language[]> {
@@ -33,7 +34,7 @@ export async function fetchAllLanguages(): Promise<Language[]> {
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch languages");
-  const data = await res.json();
+  const data = handleApiResponse(await res.json());
   return data.data;
 }
 
@@ -48,7 +49,7 @@ export async function fetchLanguageById(id: string): Promise<Language> {
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch language");
-  const data = await res.json();
+  const data = handleApiResponse(await res.json());
   return data.data;
 }
 
@@ -67,12 +68,8 @@ export async function createLanguage(payload: {
     },
     body: JSON.stringify(parsedPayload),
   });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || "Failed to create language");
-  }
-  const data = await res.json();
-  return data.data;
+  const data = handleApiResponse(await res.json());
+  return data;
 }
 
 export async function updateLanguage(
@@ -90,15 +87,11 @@ export async function updateLanguage(
     cache: "no-store",
     body: JSON.stringify(parsedPayload),
   });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || "Failed to update language");
-  }
-  const data = await res.json();
-  return data.data;
+  const data = handleApiResponse(await res.json());
+  return data;
 }
 
-export async function deleteLanguage(id: string): Promise<{ message: string }> {
+export async function deleteLanguage(id: string): Promise<Language> {
   const res = await fetch(`${API_BASE_URL}/languages/${id}`, {
     method: "DELETE",
     headers: {
@@ -108,9 +101,6 @@ export async function deleteLanguage(id: string): Promise<{ message: string }> {
     },
     cache: "no-store",
   });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || "Failed to delete language");
-  }
-  return res.json();
+  const data = handleApiResponse(await res.json());
+  return data.data;
 }

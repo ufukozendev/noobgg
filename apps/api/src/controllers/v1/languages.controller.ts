@@ -6,6 +6,7 @@ import { createLanguageDto, updateLanguageDto } from "@repo/shared";
 import { getLanguagesSchema } from "@repo/shared/schemas/languages";
 import { ApiError } from "../../middleware/errorHandler";
 import { convertBigIntToString } from "src/utils/bigint-serializer";
+import { getTranslation } from "../../utils/translation";
 
 // GET /api/languages - List with pagination, search & sorting
 export const getLanguages = async (c: Context) => {
@@ -72,7 +73,8 @@ export const getLanguageById = async (c: Context) => {
     .from(languages)
     .where(and(eq(languages.id, id), isNull(languages.deletedAt)))
     .limit(1);
-  if (!languageRow) throw new ApiError("Language not found", 404);
+  if (!languageRow)
+    throw new ApiError(getTranslation(c, "language_not_found"), 404);
   return c.json({ data: languageRow });
 };
 
@@ -80,6 +82,7 @@ export const getLanguageById = async (c: Context) => {
 export const createLanguage = async (c: Context) => {
   const body = await c.req.json();
   const parsed = createLanguageDto.safeParse(body);
+
   if (!parsed.success)
     throw new ApiError(JSON.stringify(parsed.error.flatten().fieldErrors), 400);
   const { name, code, flagUrl } = parsed.data;
@@ -90,7 +93,8 @@ export const createLanguage = async (c: Context) => {
       and(eq(languages.code, code.toLowerCase()), isNull(languages.deletedAt))
     )
     .limit(1);
-  if (exists) throw new ApiError("Language code already exists", 409);
+  if (exists)
+    throw new ApiError(getTranslation(c, "language_code_exists"), 409);
   const [created] = await db
     .insert(languages)
     .values({
@@ -99,7 +103,14 @@ export const createLanguage = async (c: Context) => {
       flagUrl: flagUrl?.trim() || null,
     })
     .returning();
-  return c.json({ data: convertBigIntToString(created) }, 201);
+  return c.json(
+    {
+      success: true,
+      message: getTranslation(c, "language_created_successfully"),
+      data: convertBigIntToString(created),
+    },
+    201
+  );
 };
 
 // PUT /api/languages/:id
@@ -139,7 +150,11 @@ export const updateLanguage = async (c: Context) => {
     .set(updateData)
     .where(eq(languages.id, id))
     .returning();
-  return c.json({ data: convertBigIntToString(updated) });
+  return c.json({
+    success: true,
+    message: getTranslation(c, "language_updated_successfully"),
+    data: convertBigIntToString(updated),
+  });
 };
 
 // DELETE /api/languages/:id (soft delete)
@@ -151,5 +166,8 @@ export const deleteLanguage = async (c: Context) => {
     .where(eq(languages.id, id))
     .returning();
   if (!deleted) throw new ApiError("Language not found", 404);
-  return c.json({ message: "Language deleted successfully" });
+  return c.json({
+    success: true,
+    message: getTranslation(c, "language_deleted_successfully"),
+  });
 };

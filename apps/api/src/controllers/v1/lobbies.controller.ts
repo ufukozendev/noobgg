@@ -17,12 +17,8 @@ export const getLobbyByIdController = async (c: Context) => {
     throw new ApiError("Invalid id", 400);
   }
   const id = BigInt(idParam);
-  const result = await db
-    .select()
-    .from(lobbies)
-    .where(eq(lobbies.id, id));
-  if (result.length === 0)
-    throw new ApiError("Lobby not found", 404);
+  const result = await db.select().from(lobbies).where(eq(lobbies.id, id));
+  if (result.length === 0) throw new ApiError("Lobby not found", 404);
   return c.json(convertBigIntToNumber(result[0]) as Record<string, unknown>);
 };
 
@@ -37,16 +33,24 @@ export const createLobbyController = async (c: Context) => {
     gameId: BigInt(result.data.gameId),
     regionId: BigInt(result.data.regionId),
     modeId: BigInt(result.data.modeId),
-    minRankId: result.data.minRankId ? BigInt(result.data.minRankId) : undefined,
-    maxRankId: result.data.maxRankId ? BigInt(result.data.maxRankId) : undefined,
+    minRankId: result.data.minRankId
+      ? BigInt(result.data.minRankId)
+      : undefined,
+    maxRankId: result.data.maxRankId
+      ? BigInt(result.data.maxRankId)
+      : undefined,
     creatorId: BigInt(result.data.creatorId),
     ownerId: BigInt(result.data.ownerId),
   };
-  const [lobby] = await db
-    .insert(lobbies)
-    .values(values)
-    .returning();
-  return c.json(convertBigIntToNumber(lobby) as Record<string, unknown>, 201);
+  const [lobby] = await db.insert(lobbies).values(values).returning();
+  return c.json(
+    {
+      success: true,
+      message: "Lobby created successfully",
+      data: convertBigIntToNumber(lobby) as Record<string, unknown>,
+    },
+    201
+  );
 };
 
 export const updateLobbyController = async (c: Context) => {
@@ -68,9 +72,15 @@ export const updateLobbyController = async (c: Context) => {
     gameId: result.data.gameId ? BigInt(result.data.gameId) : undefined,
     regionId: result.data.regionId ? BigInt(result.data.regionId) : undefined,
     modeId: result.data.modeId ? BigInt(result.data.modeId) : undefined,
-    minRankId: result.data.minRankId ? BigInt(result.data.minRankId) : undefined,
-    maxRankId: result.data.maxRankId ? BigInt(result.data.maxRankId) : undefined,
-    creatorId: result.data.creatorId ? BigInt(result.data.creatorId) : undefined,
+    minRankId: result.data.minRankId
+      ? BigInt(result.data.minRankId)
+      : undefined,
+    maxRankId: result.data.maxRankId
+      ? BigInt(result.data.maxRankId)
+      : undefined,
+    creatorId: result.data.creatorId
+      ? BigInt(result.data.creatorId)
+      : undefined,
     ownerId: result.data.ownerId ? BigInt(result.data.ownerId) : undefined,
   };
   const [lobby] = await db
@@ -79,7 +89,14 @@ export const updateLobbyController = async (c: Context) => {
     .where(eq(lobbies.id, id))
     .returning();
   if (!lobby) throw new ApiError("Lobby not found", 404);
-  return c.json(convertBigIntToNumber(lobby) as Record<string, unknown>);
+  return c.json(
+    {
+      success: true,
+      message: "Lobby updated successfully",
+      data: convertBigIntToNumber(lobby) as Record<string, unknown>,
+    },
+    201
+  );
 };
 
 export const deleteLobbyController = async (c: Context) => {
@@ -93,5 +110,12 @@ export const deleteLobbyController = async (c: Context) => {
     .where(eq(lobbies.id, id))
     .returning();
   if (!lobby) throw new ApiError("Lobby not found", 404);
-  return c.json(convertBigIntToNumber(lobby) as Record<string, unknown>);
+  return c.json(
+    {
+      success: true,
+      message: "Lobby deleted successfully",
+      data: convertBigIntToNumber(lobby) as Record<string, unknown>,
+    },
+    201
+  );
 };

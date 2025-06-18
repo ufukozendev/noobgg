@@ -131,7 +131,14 @@ export const createEventAttendee = async (c: Context) => {
         : new Date(),
     })
     .returning();
-  return c.json({ data: convertBigIntToString(newAttendee[0]) }, 201);
+  return c.json(
+    {
+      success: true,
+      message: "Event attendee created successfully",
+      data: convertBigIntToString(newAttendee[0]),
+    },
+    200
+  );
 };
 
 export const deleteEventAttendee = async (c: Context) => {
@@ -160,5 +167,11 @@ export const deleteEventAttendee = async (c: Context) => {
   if (deletedAttendee.length === 0) {
     throw new ApiError("Event attendee not found", 404);
   }
-  return c.json({ message: "Event attendee removed successfully" });
+  return c.json(
+    {
+      success: true,
+      message: "Event attendee removed successfully",
+    },
+    200
+  );
 };
