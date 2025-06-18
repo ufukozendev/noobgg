@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import StarWarsButton from "../syntax-ui/starwars-button";
 import dynamic from "next/dynamic";
 
@@ -23,32 +24,55 @@ const ThreeFiberGlobe = dynamic(() => import("../ThreeFiberGlobe").then(mod => (
 export default function LandingHeroSection() {
   // Globe component selection state - only Three Fiber now
   const [globeType, setGlobeType] = useState<'threeFiber'>('threeFiber');
-  
+
   const GlobeComponent = ThreeFiberGlobe;
   return (
     <section
-      className="relative w-full font-light text-white antialiased" // Removed bg-* and pt-* classes
-      // Removed inline style attribute for background
+      className="relative w-full font-light text-white antialiased overflow-hidden -mt-32"
+      style={{
+        minHeight: '150vh',
+        paddingTop: '8rem'
+      }}
     >
-      {/* Removed the two div elements for radial gradient glows */}
-      <div className="container relative z-10 mx-auto max-w-2xl px-4 text-center md:max-w-4xl md:px-6 lg:max-w-7xl">        <motion.div
+      {/* Full Background covering header to globe */}
+      <div
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: 'url(/landingpage-full.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+
+        }}
+      />
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0613]/70 via-[#0a0613]/50 to-[#0a0613]/70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0a0613]/30 via-transparent to-[#0a0613]/30" />
+
+      <div className="container relative z-10 mx-auto max-w-2xl px-4 text-center md:max-w-4xl md:px-6 lg:max-w-7xl">
+        {/* Hero Content */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative py-8 flex flex-col justify-center items-center min-h-[50vh]"
         >
-          <span className="mb-6 inline-block rounded-full border border-[#9b87f5]/30 px-3 py-1 text-s text-[#9b87f5]">
+          <span className="mb-6 inline-block rounded-full border border-[#9b87f5]/30 px-3 py-1 text-s text-[#9b87f5] bg-[#0a0613]/60 backdrop-blur-sm">
             Join 2,000+ gamers who found their perfect squad in under 5 minutes
           </span>
-          <h1 className="mx-auto mb-6 max-w-4xl text-4xl font-exo2 font-semibold md:text-5xl lg:text-7xl">
+
+          <h1 className="mx-auto mb-6 max-w-4xl text-4xl font-exo2 font-semibold md:text-5xl lg:text-7xl drop-shadow-2xl">
             Still Getting Matched With{" "}
             <span className="text-[#9b87f5]">Randoms</span> Who Rage Quit?
-          </h1>          
+          </h1>
+
           <div className="mb-10 mt-10 flex flex-col items-center justify-center gap-4 sm:mb-0 sm:flex-row">
             <Link href="/docs/get-started">
               <StarWarsButton className="w-full sm:w-auto mb-4 mt-4">
                 Find Your Squad Now
               </StarWarsButton>
-            </Link>          </div>
+            </Link>
+          </div>
         </motion.div>
 
         {/* Pick Your Game Section */}
@@ -102,21 +126,24 @@ export default function LandingHeroSection() {
               className="w-full hover:scale-105 transition-transform cursor-pointer" 
               src="/logos/counter-strike-2.svg"
             />          </div>
-        </motion.div>        {/* Interactive 3D Realistic Globe Section */}
+        </motion.div>
+
+        {/* Interactive 3D Realistic Globe Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           className="mt-20 mb-10 flex items-center justify-center"
         >
-          <div className="w-full max-w-6xl">            <div className="text-center mb-8">
+          <div className="w-full max-w-6xl">
+            <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-white mb-4">
                 <span className="text-[#9b87f5]">Global Gaming Hubs</span>
               </h2>
               <p className="text-gray-300 text-lg">
                 Discover active gaming communities worldwide with our interactive globe
               </p>
-                {/* Globe Type Selector - Only Three Fiber */}
+              {/* Globe Type Selector - Only Three Fiber */}
               <div className="flex justify-center gap-2 mt-6 mb-4">
                 <button
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-all bg-purple-500/20 text-purple-400 border border-purple-500/50"
