@@ -9,6 +9,7 @@ import {
 import { ApiError } from "../../middleware/errorHandler";
 import { getTranslation } from "../../utils/translation";
 
+
 export const getAllGameRanksController = async (c: Context) => {
   const ranks = await db.select().from(gameRanks);
   return c.json(ranks);

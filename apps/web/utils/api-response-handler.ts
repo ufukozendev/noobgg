@@ -8,3 +8,4 @@ export function handleApiResponse<T = any>(res: any) {
     }
     return res;
   }
+

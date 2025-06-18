@@ -6,8 +6,8 @@ import { usePlatform } from '@/features/platforms/api/use-platforms';
 export default function EditPlatformPage() {
   const router = useRouter();
   const params = useParams();
-  const id = Number(params?.id);
-  const { data: platform } = usePlatform(isNaN(id) ? 0 : id);
+  const id = params?.id as string;
+  const { data: platform } = usePlatform(id || "");
 
   if (!platform) return <div>Loading...</div>;
 

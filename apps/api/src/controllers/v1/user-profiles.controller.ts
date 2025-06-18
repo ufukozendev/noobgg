@@ -2,7 +2,10 @@ import { Context } from "hono";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { userProfiles } from "../../db/schemas/user-profile.drizzle";
-import { createUserProfileDto, updateUserProfileDto } from "@repo/shared/dto/user-profile.dto";
+import {
+  createUserProfileDto,
+  updateUserProfileDto,
+} from "@repo/shared/dto/user-profile.dto";
 import { ApiError } from "../../middleware/errorHandler";
 
 function convertBigIntToString(obj: any): any {
@@ -49,7 +52,8 @@ export const createUserProfile = async (c: Context) => {
         .select()
         .from(userProfiles)
         .where(eq(userProfiles.userKeycloakId, result.data.userKeycloakId));
-      if (isKeycloakUserExists) throw new ApiError("Keycloak ID already exists", 409);
+      if (isKeycloakUserExists)
+        throw new ApiError("Keycloak ID already exists", 409);
       const [isUsernameTaken] = await tx
         .select()
         .from(userProfiles)
@@ -59,15 +63,26 @@ export const createUserProfile = async (c: Context) => {
         .insert(userProfiles)
         .values({
           ...result.data,
-          birthDate: result.data.birthDate ? new Date(result.data.birthDate) : undefined,
-          lastOnline: result.data.lastOnline ? new Date(result.data.lastOnline) : undefined,
+          birthDate: result.data.birthDate
+            ? new Date(result.data.birthDate)
+            : undefined,
+          lastOnline: result.data.lastOnline
+            ? new Date(result.data.lastOnline)
+            : undefined,
           createdAt: new Date(),
         })
         .returning();
       return newUser;
     });
     const safeUser = convertBigIntToString(user);
-    return c.json(safeUser, 201);
+    return c.json(
+      {
+        success: true,
+        message: "User profile created successfully",
+        data: safeUser,
+      },
+      201
+    );
   } catch (error) {
     if (error instanceof ApiError) throw error;
     throw new ApiError("Internal server error", 500);
@@ -110,15 +125,26 @@ export const updateUserProfile = async (c: Context) => {
     .update(userProfiles)
     .set({
       ...result.data,
-      birthDate: result.data.birthDate ? new Date(result.data.birthDate) : undefined,
-      lastOnline: result.data.lastOnline ? new Date(result.data.lastOnline) : undefined,
+      birthDate: result.data.birthDate
+        ? new Date(result.data.birthDate)
+        : undefined,
+      lastOnline: result.data.lastOnline
+        ? new Date(result.data.lastOnline)
+        : undefined,
       updatedAt: new Date(),
     })
     .where(eq(userProfiles.id, id))
     .returning();
   if (!user) throw new ApiError("User not found", 404);
   const safeUser = convertBigIntToString(user);
-  return c.json(safeUser);
+  return c.json(
+    {
+      success: true,
+      message: "User profile updated successfully",
+      data: safeUser,
+    },
+    201
+  );
 };
 
 export const deleteUserProfile = async (c: Context) => {
@@ -137,5 +163,12 @@ export const deleteUserProfile = async (c: Context) => {
     .returning();
   if (!user) throw new ApiError("User not found", 404);
   const safeUser = convertBigIntToString(user);
-  return c.json(safeUser);
+  return c.json(
+    {
+      success: true,
+      message: "User profile deleted successfully",
+      data: safeUser,
+    },
+    201
+  );
 };
