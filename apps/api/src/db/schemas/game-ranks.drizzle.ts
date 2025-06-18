@@ -1,4 +1,4 @@
-import { pgTable, integer, timestamp, varchar, index, foreignKey } from "drizzle-orm/pg-core";
+import { pgTable, integer, bigint, timestamp, varchar, index, foreignKey } from "drizzle-orm/pg-core";
 import { gamesTable } from "./games.drizzle";
 
 
@@ -13,7 +13,7 @@ export const gameRanks = pgTable('game_ranks', {
     image: varchar('image', { length: 255 }).notNull(),
     order: integer('order').notNull(),
 
-    gameId: integer('game_id').notNull(),
+    gameId: bigint('game_id', { mode: 'bigint' }).notNull(),
   }, (table) => ({
     gameIdIndex: index('game_ranks_game_id_idx').on(table.gameId),
     nameIndex: index('game_ranks_name_idx').on(table.name),

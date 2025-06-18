@@ -4,11 +4,11 @@ import { Context } from "hono";
 import { db } from "../../db";
 import { lobbies } from "../../db/schemas/lobbies.drizzle";
 import { ApiError } from "../../middleware/errorHandler";
-import { convertBigIntToNumber } from "../../utils/bigint-serializer";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
 
 export const getAllLobbiesController = async (c: Context) => {
   const result = await db.select().from(lobbies);
-  return c.json(convertBigIntToNumber(result) as unknown[]);
+  return c.json(convertBigIntToString(result) as unknown[]);
 };
 
 export const getLobbyByIdController = async (c: Context) => {
@@ -23,7 +23,7 @@ export const getLobbyByIdController = async (c: Context) => {
     .where(eq(lobbies.id, id));
   if (result.length === 0)
     throw new ApiError("Lobby not found", 404);
-  return c.json(convertBigIntToNumber(result[0]) as Record<string, unknown>);
+  return c.json(convertBigIntToString(result[0]) as Record<string, unknown>);
 };
 
 export const createLobbyController = async (c: Context) => {
@@ -46,7 +46,7 @@ export const createLobbyController = async (c: Context) => {
     .insert(lobbies)
     .values(values)
     .returning();
-  return c.json(convertBigIntToNumber(lobby) as Record<string, unknown>, 201);
+  return c.json(convertBigIntToString(lobby) as Record<string, unknown>, 201);
 };
 
 export const updateLobbyController = async (c: Context) => {
@@ -79,7 +79,7 @@ export const updateLobbyController = async (c: Context) => {
     .where(eq(lobbies.id, id))
     .returning();
   if (!lobby) throw new ApiError("Lobby not found", 404);
-  return c.json(convertBigIntToNumber(lobby) as Record<string, unknown>);
+  return c.json(convertBigIntToString(lobby) as Record<string, unknown>);
 };
 
 export const deleteLobbyController = async (c: Context) => {
@@ -93,5 +93,5 @@ export const deleteLobbyController = async (c: Context) => {
     .where(eq(lobbies.id, id))
     .returning();
   if (!lobby) throw new ApiError("Lobby not found", 404);
-  return c.json(convertBigIntToNumber(lobby) as Record<string, unknown>);
+  return c.json(convertBigIntToString(lobby) as Record<string, unknown>);
 };

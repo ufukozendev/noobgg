@@ -12,7 +12,7 @@ export function usePlatforms() {
   return useQuery({ queryKey: ['platforms'], queryFn: getAllPlatforms });
 }
 
-export function usePlatform(id: number) {
+export function usePlatform(id: string) {
   return useQuery({
     queryKey: ['platform', id],
     queryFn: () => getPlatform(id),
@@ -28,7 +28,7 @@ export function useCreatePlatform() {
   });
 }
 
-export function useUpdatePlatform(id: number) {
+export function useUpdatePlatform(id: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: Partial<Platform>) => updatePlatform(id, data),

@@ -17,7 +17,7 @@ export function PlatformForm({
   onSuccess?: () => void;
 }) {
   const createMutation = useCreatePlatform();
-  const updateMutation = useUpdatePlatform(platform?.id ?? 0);
+  const updateMutation = useUpdatePlatform(platform?.id ?? "");
   const mutation = platform ? updateMutation : createMutation;
 
   const form = useForm<z.infer<typeof createPlatformSchema>>({

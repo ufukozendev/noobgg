@@ -1,5 +1,5 @@
 export type Platform = {
-  id: number;
+  id: string;
   name: string;
 };
 
