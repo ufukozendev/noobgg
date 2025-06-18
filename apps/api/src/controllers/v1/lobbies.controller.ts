@@ -116,6 +116,6 @@ export const deleteLobbyController = async (c: Context) => {
       message: "Lobby deleted successfully",
       data: convertBigIntToNumber(lobby) as Record<string, unknown>,
     },
-    201
+    200
   );
 };

@@ -42,7 +42,7 @@ export const createPlatformController = async (c: Context) => {
       message: getTranslation(c, "platform_created_successfully"),
       data: convertBigIntToNumber(platform) as Record<string, unknown>,
     },
-    201
+    200
   );
 };
 
@@ -75,7 +75,7 @@ export const updatePlatformController = async (c: Context) => {
       message: getTranslation(c, "platform_updated_successfully"),
       data: convertBigIntToNumber(platform) as Record<string, unknown>,
     },
-    201
+    200
   );
 };
 

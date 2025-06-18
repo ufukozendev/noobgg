@@ -5,7 +5,7 @@ import { and, asc, desc, eq, like, sql, isNull } from "drizzle-orm";
 import { createLanguageDto, updateLanguageDto } from "@repo/shared";
 import { getLanguagesSchema } from "@repo/shared/schemas/languages";
 import { ApiError } from "../../middleware/errorHandler";
-import { convertBigIntToString } from "src/utils/bigint-serializer";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
 import { getTranslation } from "../../utils/translation";
 
 // GET /api/languages - List with pagination, search & sorting
@@ -75,7 +75,7 @@ export const getLanguageById = async (c: Context) => {
     .limit(1);
   if (!languageRow)
     throw new ApiError(getTranslation(c, "language_not_found"), 404);
-  return c.json({ data: languageRow });
+  return c.json({ data: convertBigIntToString(languageRow) });
 };
 
 // POST /api/languages
