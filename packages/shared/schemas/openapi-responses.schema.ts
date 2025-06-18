@@ -7,7 +7,7 @@ export const ErrorResponseSchema = z.object({
 
 // Game response schemas
 export const GameResponseSchema = z.object({
-  id: z.number().int().positive().describe("Unique identifier for the game"),
+  id: z.string().describe("Unique identifier for the game (BigInt as string)"),
   name: z.string().min(1).max(150).describe("Name of the game"),
   description: z.string().nullable().describe("Optional description of the game"),
   logo: z.string().max(255).nullable().describe("Optional logo URL for the game"),
@@ -20,7 +20,7 @@ export const GamesListResponseSchema = z.array(GameResponseSchema);
 
 // Distributor response schemas
 export const DistributorResponseSchema = z.object({
-  id: z.number().int().positive().describe("Unique identifier for the distributor"),
+  id: z.string().describe("Unique identifier for the distributor (BigInt as string)"),
   name: z.string().min(1).max(255).describe("Name of the distributor"),
   description: z.string().nullable().describe("Optional description of the distributor"),
   website: z.string().max(255).nullable().describe("Optional website URL"),
@@ -49,7 +49,7 @@ export const GameRankResponseSchema = z.object({
   name: z.string().min(1).max(100).describe("Name of the rank"),
   image: z.string().min(1).max(255).describe("Image URL for the rank"),
   order: z.number().int().min(0).describe("Display order of the rank"),
-  gameId: z.number().int().positive().describe("ID of the associated game"),
+  gameId: z.string().describe("ID of the associated game (BigInt as string)"),
   createdAt: z.string().datetime().describe("When the rank was created"),
   updatedAt: z.string().datetime().nullable().describe("When the rank was last updated"),
   deletedAt: z.string().datetime().nullable().describe("When the rank was deleted (soft delete)"),

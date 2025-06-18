@@ -1,7 +1,7 @@
-import { integer, pgTable, varchar, text, index, timestamp } from "drizzle-orm/pg-core";
+import { integer, bigint, pgTable, varchar, text, index, timestamp } from "drizzle-orm/pg-core";
 
 export const distributorsTable = pgTable("distributors", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: bigint('id', { mode: 'bigint' }).primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
   description: text(),
   website: varchar({ length: 255 }),

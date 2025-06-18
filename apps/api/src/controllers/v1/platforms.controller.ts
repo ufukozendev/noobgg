@@ -3,12 +3,12 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db";
 import { platforms } from "../../db/schemas/platforms.drizzle";
 import { createPlatformDto, updatePlatformDto } from "@repo/shared/dto/platform.dto";
-import { convertBigIntToNumber } from "../../utils/bigint-serializer";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
 import { ApiError } from "../../middleware/errorHandler";
 
 export const getAllPlatformsController = async (c: Context) => {
   const result = await db.select().from(platforms);
-  return c.json(convertBigIntToNumber(result) as unknown[]);
+  return c.json(convertBigIntToString(result) as unknown[]);
 };
 
 export const getPlatformByIdController = async (c: Context) => {
@@ -23,7 +23,7 @@ export const getPlatformByIdController = async (c: Context) => {
     .where(eq(platforms.id, id));
   if (result.length === 0)
     throw new ApiError("Platform not found", 404);
-  return c.json(convertBigIntToNumber(result[0]) as Record<string, unknown>);
+  return c.json(convertBigIntToString(result[0]) as Record<string, unknown>);
 };
 
 export const createPlatformController = async (c: Context) => {
@@ -39,7 +39,7 @@ export const createPlatformController = async (c: Context) => {
     .insert(platforms)
     .values(values)
     .returning();
-  return c.json(convertBigIntToNumber(platform) as Record<string, unknown>, 201);
+  return c.json(convertBigIntToString(platform) as Record<string, unknown>, 201);
 };
 
 export const updatePlatformController = async (c: Context) => {
@@ -65,7 +65,7 @@ export const updatePlatformController = async (c: Context) => {
     .where(eq(platforms.id, id))
     .returning();
   if (!platform) throw new ApiError("Platform not found", 404);
-  return c.json(convertBigIntToNumber(platform) as Record<string, unknown>);
+  return c.json(convertBigIntToString(platform) as Record<string, unknown>);
 };
 
 export const deletePlatformController = async (c: Context) => {
@@ -79,5 +79,5 @@ export const deletePlatformController = async (c: Context) => {
     .where(eq(platforms.id, id))
     .returning();
   if (!platform) throw new ApiError("Platform not found", 404);
-  return c.json(convertBigIntToNumber(platform) as Record<string, unknown>);
+  return c.json(convertBigIntToString(platform) as Record<string, unknown>);
 };
