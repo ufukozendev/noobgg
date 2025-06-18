@@ -2,7 +2,10 @@ import { Context } from "hono";
 import { eq } from "drizzle-orm";
 import { db } from "../../db";
 import { gameModes } from "../../db/schemas/game-modes.drizzle";
-import { createGameModeDto, updateGameModeDto } from "@repo/shared/dto/game-mode.dto";
+import {
+  createGameModeDto,
+  updateGameModeDto,
+} from "@repo/shared/dto/game-mode.dto";
 import { getTranslation } from "../../utils/translation";
 import { ApiError } from "../../middleware/errorHandler";
 import { convertBigIntToString } from "../../utils/bigint-serializer";
@@ -55,19 +58,26 @@ export const createGameModeController = async (c: Context) => {
       400
     );
   }
-  
-  // Convert gameId to BigInt if it's a string
-  const gameId = typeof result.data.gameId === 'string' 
-    ? BigInt(result.data.gameId) 
-    : BigInt(result.data.gameId);
-  
+
+  const gameId =
+    typeof result.data.gameId === "string"
+      ? BigInt(result.data.gameId)
+      : BigInt(result.data.gameId);
+
   const values = {
     id: generateSnowflakeId(),
     ...result.data,
     gameId,
   };
   const [gameMode] = await db.insert(gameModes).values(values).returning();
-  return c.json(convertBigIntToString(gameMode) as object, 201);
+  return c.json(
+    {
+      success: true,
+      message: "Game mode created successfully",
+      data: convertBigIntToString(gameMode) as object,
+    },
+    201
+  );
 };
 
 export const updateGameModeController = async (c: Context) => {
@@ -90,20 +100,19 @@ export const updateGameModeController = async (c: Context) => {
     const errorMessage = getTranslation(c, "validation_required");
     throw new ApiError(errorMessage, 400);
   }
-  
+
   // Convert gameId to BigInt if it's provided and is a string
-  type UpdateGameModeValues = Omit<typeof result.data, 'gameId'> & {
+  type UpdateGameModeValues = Omit<typeof result.data, "gameId"> & {
     gameId?: bigint;
   };
-  
+
   const { gameId, ...restData } = result.data;
   const values: UpdateGameModeValues = { ...restData };
   if (gameId !== undefined) {
-    values.gameId = typeof gameId === 'string' 
-      ? BigInt(gameId) 
-      : BigInt(gameId);
+    values.gameId =
+      typeof gameId === "string" ? BigInt(gameId) : BigInt(gameId);
   }
-  
+
   const [gameMode] = await db
     .update(gameModes)
     .set(values)
@@ -113,7 +122,14 @@ export const updateGameModeController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_mode_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(convertBigIntToString(gameMode) as object);
+  return c.json(
+    {
+      success: true,
+      message: "Game mode updated successfully",
+      data: convertBigIntToString(gameMode) as object,
+    },
+    200
+  );
 };
 
 export const deleteGameModeController = async (c: Context) => {
@@ -131,5 +147,11 @@ export const deleteGameModeController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_mode_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(convertBigIntToString(gameMode) as object);
+  return c.json(
+    {
+      success: true,
+      message: "Game mode deleted successfully",
+    },
+    200
+  );
 };

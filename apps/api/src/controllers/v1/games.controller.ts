@@ -31,15 +31,19 @@ export const getGameByIdController = async (c: Context) => {
     throw new ApiError(errorMessage, 400);
   }
   const id = BigInt(idParam);
-  const game = await db
-    .select()
-    .from(gamesTable)
-    .where(eq(gamesTable.id, id));
+  const game = await db.select().from(gamesTable).where(eq(gamesTable.id, id));
   if (game.length === 0) {
     const errorMessage = getTranslation(c, "game_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(convertBigIntToString(game[0]) as object);
+  return c.json(
+    {
+      success: true,
+      message: "Game retrieved successfully",
+      data: convertBigIntToString(game[0]) as object,
+    },
+    201
+  );
 };
 
 export const createGameController = async (c: Context) => {
@@ -54,10 +58,17 @@ export const createGameController = async (c: Context) => {
   }
   const values = {
     id: generateSnowflakeId(),
-    ...result.data
+    ...result.data,
   };
   const [game] = await db.insert(gamesTable).values(values).returning();
-  return c.json(convertBigIntToString(game) as object, 201);
+  return c.json(
+    {
+      success: true,
+      message: "Game added successfully",
+      data: convertBigIntToString(game) as object,
+    },
+    201
+  );
 };
 
 export const updateGameController = async (c: Context) => {
@@ -92,7 +103,14 @@ export const updateGameController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(convertBigIntToString(game) as object);
+  return c.json(
+    {
+      success: true,
+      message: "Game updated successfully",
+      data: convertBigIntToString(game) as object,
+    },
+    200
+  );
 };
 
 export const deleteGameController = async (c: Context) => {
@@ -110,5 +128,11 @@ export const deleteGameController = async (c: Context) => {
     const errorMessage = getTranslation(c, "game_not_found");
     throw new ApiError(errorMessage, 404);
   }
-  return c.json(convertBigIntToString(game) as object);
+  return c.json(
+    {
+      success: true,
+      message: "Game deleted successfully",
+    },
+    200
+  );
 };

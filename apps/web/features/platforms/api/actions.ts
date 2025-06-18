@@ -1,6 +1,8 @@
 import { createPlatformSchema, updatePlatformSchema } from "@repo/shared";
 import type { Platform, PlatformsResponse } from "@/types/platform";
 import { getCurrentLanguage } from "@/lib/utils";
+import { handleApiResponse } from "@/utils/api-response-handler";
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
 
@@ -19,7 +21,7 @@ export async function getAllPlatforms(): Promise<PlatformsResponse> {
     if (!res.ok) {
       throw new Error(`Failed to fetch platforms: ${res.status}`);
     }
-    return res.json();
+    return handleApiResponse(await res.json());
   } catch (error) {
     console.error("Error fetching platforms:", error);
     throw error;
@@ -42,7 +44,7 @@ export async function getPlatform(id: number): Promise<Platform> {
     if (!res.ok) {
       throw new Error(`Failed to fetch platform: ${res.status}`);
     }
-    return res.json();
+    return handleApiResponse(await res.json());
   } catch (error) {
     console.error("Error fetching platform:", error);
     throw error;
@@ -66,7 +68,8 @@ export async function createPlatform(data: unknown): Promise<Platform> {
     if (!res.ok) {
       throw new Error(`Failed to create platform: ${res.status}`);
     }
-    return res.json();
+    const response = handleApiResponse(await res.json());
+    return response;
   } catch (error) {
     console.error("Error creating platform:", error);
     throw error;
@@ -93,7 +96,8 @@ export async function updatePlatform(
     if (!res.ok) {
       throw new Error(`Failed to update platform: ${res.status}`);
     }
-    return res.json();
+    const response = handleApiResponse(await res.json());
+    return response;
   } catch (error) {
     console.error("Error updating platform:", error);
     throw error;
@@ -116,6 +120,8 @@ export async function deletePlatform(id: number): Promise<void> {
     if (!res.ok) {
       throw new Error(`Failed to delete platform: ${res.status}`);
     }
+    const data = handleApiResponse(await res.json());
+    return data;
   } catch (error) {
     console.error("Error deleting platform:", error);
     throw error;
