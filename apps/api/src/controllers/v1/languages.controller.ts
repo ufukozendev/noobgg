@@ -5,7 +5,7 @@ import { and, asc, desc, eq, like, sql, isNull } from "drizzle-orm";
 import { createLanguageDto, updateLanguageDto } from "@repo/shared";
 import { getLanguagesSchema } from "@repo/shared/schemas/languages";
 import { ApiError } from "../../middleware/errorHandler";
-import { convertBigIntToString } from "src/utils/bigint-serializer";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
 import { getTranslation } from "../../utils/translation";
 
 // GET /api/languages - List with pagination, search & sorting
@@ -73,8 +73,9 @@ export const getLanguageById = async (c: Context) => {
     .from(languages)
     .where(and(eq(languages.id, id), isNull(languages.deletedAt)))
     .limit(1);
-  if (!languageRow) throw new ApiError(getTranslation(c,"language_not_found"), 404);
-  return c.json({ data: languageRow });
+  if (!languageRow)
+    throw new ApiError(getTranslation(c, "language_not_found"), 404);
+  return c.json({ data: convertBigIntToString(languageRow) });
 };
 
 // POST /api/languages
@@ -92,7 +93,8 @@ export const createLanguage = async (c: Context) => {
       and(eq(languages.code, code.toLowerCase()), isNull(languages.deletedAt))
     )
     .limit(1);
-  if (exists) throw new ApiError(getTranslation(c,"language_code_exists"), 409);
+  if (exists)
+    throw new ApiError(getTranslation(c, "language_code_exists"), 409);
   const [created] = await db
     .insert(languages)
     .values({

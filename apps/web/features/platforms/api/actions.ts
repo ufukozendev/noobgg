@@ -69,7 +69,7 @@ export async function createPlatform(data: unknown): Promise<Platform> {
       throw new Error(`Failed to create platform: ${res.status}`);
     }
     const response = handleApiResponse(await res.json());
-    return response;
+    return response.data
   } catch (error) {
     console.error("Error creating platform:", error);
     throw error;

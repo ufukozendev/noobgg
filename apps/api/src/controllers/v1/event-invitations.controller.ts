@@ -276,7 +276,7 @@ export const respondToInvitation = async (c: Context) => {
       message: "Event invitation response recorded successfully",
       data: convertBigIntToString(updatedInvitation[0]),
     },
-    201
+    200
   );
 };
 
@@ -301,6 +301,6 @@ export const deleteEventInvitation = async (c: Context) => {
       success: true,
       message: "Event invitation cancelled successfully",
     },
-    201
+    200
   );
 };

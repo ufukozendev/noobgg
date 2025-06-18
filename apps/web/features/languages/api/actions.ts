@@ -69,7 +69,7 @@ export async function createLanguage(payload: {
     body: JSON.stringify(parsedPayload),
   });
   const data = handleApiResponse(await res.json());
-  return data;
+  return data.data;
 }
 
 export async function updateLanguage(

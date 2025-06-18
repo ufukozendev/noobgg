@@ -7,7 +7,8 @@ import {
   updateGameRankDto,
 } from "@repo/shared/dto/game-rank.dto";
 import { ApiError } from "../../middleware/errorHandler";
-import { getTranslation } from "src/utils/translation";
+import { getTranslation } from "../../utils/translation";
+
 
 export const getAllGameRanksController = async (c: Context) => {
   const ranks = await db.select().from(gameRanks);
