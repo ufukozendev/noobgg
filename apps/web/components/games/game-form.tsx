@@ -27,7 +27,7 @@ interface GameFormProps {
 
 export function GameForm({ game, onSuccess, onCancel }: GameFormProps) {
   const createMutation = useCreateGame();
-  const updateMutation = useUpdateGame(game?.id ?? 0);
+  const updateMutation = useUpdateGame(game?.id ?? "");
   const mutation = game ? updateMutation : createMutation;
 
   const form = useForm<z.infer<typeof createGameSchema>>({

@@ -12,7 +12,7 @@ export function useGames() {
   return useQuery({ queryKey: ['games'], queryFn: getAllGames });
 }
 
-export function useGame(id: number) {
+export function useGame(id: string) {
   return useQuery({
     queryKey: ['game', id],
     queryFn: () => getGame(id),
@@ -28,7 +28,7 @@ export function useCreateGame() {
   });
 }
 
-export function useUpdateGame(id: number) {
+export function useUpdateGame(id: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: Partial<Game>) => updateGame(id, data),

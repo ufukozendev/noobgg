@@ -28,7 +28,7 @@ export async function getAllPlatforms(): Promise<PlatformsResponse> {
   }
 }
 
-export async function getPlatform(id: number): Promise<Platform> {
+export async function getPlatform(id: string): Promise<Platform> {
   const language = getCurrentLanguage();
 
   try {
@@ -77,7 +77,7 @@ export async function createPlatform(data: unknown): Promise<Platform> {
 }
 
 export async function updatePlatform(
-  id: number,
+  id: string,
   data: unknown
 ): Promise<Platform> {
   const language = getCurrentLanguage();
@@ -104,7 +104,7 @@ export async function updatePlatform(
   }
 }
 
-export async function deletePlatform(id: number): Promise<void> {
+export async function deletePlatform(id: string): Promise<void> {
   const language = getCurrentLanguage();
 
   try {

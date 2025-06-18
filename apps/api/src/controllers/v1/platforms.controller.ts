@@ -11,7 +11,7 @@ import { ApiError } from "../../middleware/errorHandler";
 import { getTranslation } from "../../utils/translation";
 export const getAllPlatformsController = async (c: Context) => {
   const result = await db.select().from(platforms);
-  return c.json(convertBigIntToNumber(result) as unknown[]);
+  return c.json(convertBigIntToString(result) as unknown[]);
 };
 
 export const getPlatformByIdController = async (c: Context) => {

@@ -4,11 +4,11 @@ import { Context } from "hono";
 import { db } from "../../db";
 import { lobbies } from "../../db/schemas/lobbies.drizzle";
 import { ApiError } from "../../middleware/errorHandler";
-import { convertBigIntToNumber } from "../../utils/bigint-serializer";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
 
 export const getAllLobbiesController = async (c: Context) => {
   const result = await db.select().from(lobbies);
-  return c.json(convertBigIntToNumber(result) as unknown[]);
+  return c.json(convertBigIntToString(result) as unknown[]);
 };
 
 export const getLobbyByIdController = async (c: Context) => {

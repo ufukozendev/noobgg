@@ -32,7 +32,7 @@ export async function getAllGames(): Promise<GamesResponse> {
   }
 }
 
-export async function getGame(id: number): Promise<Game> {
+export async function getGame(id: string): Promise<Game> {
   const language = getCurrentLanguage();
   try {
     const res = await fetch(`${API_BASE_URL}/games/${id}`, {
@@ -78,7 +78,7 @@ export async function createGame(data: unknown): Promise<Game> {
   }
 }
 
-export async function updateGame(id: number, data: unknown): Promise<Game> {
+export async function updateGame(id: string, data: unknown): Promise<Game> {
   const language = getCurrentLanguage();
   try {
     const parsed = updateGameSchema.parse(data);
@@ -102,7 +102,7 @@ export async function updateGame(id: number, data: unknown): Promise<Game> {
   }
 }
 
-export async function deleteGame(id: number): Promise<void> {
+export async function deleteGame(id: string): Promise<void> {
   const language = getCurrentLanguage();
   try {
     const res = await fetch(`${API_BASE_URL}/games/${id}`, {
