@@ -1955,9 +1955,9 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
-            minimum: 1
+            type: string
+            description: "Distributor ID (BigInt as string)"
+            example: "1234567890123456789"
       responses:
         '200':
           description: Distributor found
@@ -1983,9 +1983,9 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
-            minimum: 1
+            type: string
+            description: "Distributor ID (BigInt as string)"
+            example: "1234567890123456789"
       requestBody:
         required: true
         content:
@@ -2018,9 +2018,9 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
-            minimum: 1
+            type: string
+            description: "Distributor ID (BigInt as string)"
+            example: "1234567890123456789"
       responses:
         '200':
           description: Distributor deleted
