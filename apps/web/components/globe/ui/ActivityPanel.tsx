@@ -181,11 +181,69 @@ export const ActivityPanel: React.FC<ActivityPanelProps> = ({
                         {formatTimeAgo(activity.timestamp)}
                       </span>
                     </div>
-                    
-                    {/* Game Type Badge */}
+                      {/* Game Type Badge */}
                     {activity.gameType && (
-                      <div className="inline-block bg-gray-700/60 border border-gray-600/40 px-2 py-1 rounded text-xs text-gray-300">
+                      <div className="inline-block bg-gray-700/60 border border-gray-600/40 px-2 py-1 rounded text-xs text-gray-300 mb-2">
                         {activity.gameType}
+                      </div>
+                    )}
+                    
+                    {/* Players Section for LFG and other activities */}
+                    {activity.players && activity.players.length > 0 && (
+                      <div className="mt-2 pt-2 border-t border-gray-700/30">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs text-gray-400 font-medium">
+                            {activity.type === 'lfg' ? 'Looking for Players' : 'Current Players'}
+                          </span>
+                          {activity.maxPlayers && activity.type === 'lfg' && (
+                            <span className="text-xs text-cyan-400 font-mono">
+                              {activity.players.length}/{activity.maxPlayers}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Player Avatars and Names */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {activity.players.slice(0, 4).map((player) => (
+                            <div key={player.id} className="flex items-center gap-1.5 bg-gray-800/40 rounded-lg px-2 py-1 border border-gray-700/20">
+                              <img 
+                                src={player.avatar} 
+                                alt={player.username}
+                                className="w-4 h-4 rounded-full bg-gray-600"
+                                onError={(e) => {
+                                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${player.username}&background=6b7280&color=fff&size=16`;
+                                }}
+                              />
+                              <span className="text-xs text-gray-300 font-medium truncate max-w-[60px]">
+                                {player.username}
+                              </span>
+                              {player.level && (
+                                <span className="text-xs text-gray-500 font-mono">
+                                  {player.level}
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                          
+                          {/* Show more indicator if there are more players */}
+                          {activity.players.length > 4 && (
+                            <div className="flex items-center justify-center w-6 h-6 bg-gray-700/40 rounded-full border border-gray-600/30">
+                              <span className="text-xs text-gray-400 font-mono">
+                                +{activity.players.length - 4}
+                              </span>
+                            </div>
+                          )}
+                          
+                          {/* Join button for LFG */}
+                          {activity.type === 'lfg' && activity.status === 'waiting' && activity.maxPlayers && activity.players.length < activity.maxPlayers && (
+                            <button className="flex items-center gap-1 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 rounded-lg px-2 py-1 transition-colors">
+                              <svg className="w-3 h-3 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                              </svg>
+                              <span className="text-xs text-cyan-400 font-medium">Join</span>
+                            </button>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>

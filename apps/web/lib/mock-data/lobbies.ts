@@ -1,4 +1,12 @@
 // Mock data for LFG lobbies
+export interface Player {
+  id: string;
+  username: string;
+  avatar: string;
+  level?: number;
+  rank?: string;
+}
+
 export interface Lobby {
   id: number;
   game: {
@@ -10,6 +18,7 @@ export interface Lobby {
     username: string;
     avatar: string;
   };
+  players?: Player[];
   mode: string;
   region: string;
   currentSize: number;
@@ -24,8 +33,7 @@ export interface Lobby {
   tags: string[];
 }
 
-export const mockLobbies: Lobby[] = [
-  {
+export const mockLobbies: Lobby[] = [  {
     id: 1,
     game: {
       name: "Valorant",
@@ -33,6 +41,29 @@ export const mockLobbies: Lobby[] = [
       color: "#ff4655",
     },
     owner: { username: "ProGamer123", avatar: "/avatars/user1.jpg" },
+    players: [
+      {
+        id: "1",
+        username: "ProGamer123",
+        avatar: "https://ui-avatars.com/api/?name=ProGamer123&background=ff4655&color=fff&size=32",
+        level: 87,
+        rank: "Gold"
+      },
+      {
+        id: "2", 
+        username: "ShadowNinja",
+        avatar: "https://ui-avatars.com/api/?name=ShadowNinja&background=3b82f6&color=fff&size=32",
+        level: 76,
+        rank: "Gold"
+      },
+      {
+        id: "3",
+        username: "DragonSlayer",
+        avatar: "https://ui-avatars.com/api/?name=DragonSlayer&background=10b981&color=fff&size=32", 
+        level: 92,
+        rank: "Platinum"
+      }
+    ],
     mode: "Competitive",
     region: "EU West",
     currentSize: 3,
@@ -45,8 +76,7 @@ export const mockLobbies: Lobby[] = [
     note: "Looking for chill players, no rage pls",
     createdAt: "2024-06-13T10:30:00Z",
     tags: ["English", "18+", "Chill"],
-  },
-  {
+  },  {
     id: 2,
     game: {
       name: "Counter Strike 2",
@@ -54,6 +84,36 @@ export const mockLobbies: Lobby[] = [
       color: "#f7941d",
     },
     owner: { username: "AWPMaster", avatar: "/avatars/user2.jpg" },
+    players: [
+      {
+        id: "4",
+        username: "AWPMaster",
+        avatar: "https://ui-avatars.com/api/?name=AWPMaster&background=f7941d&color=fff&size=32",
+        level: 156,
+        rank: "Master Guardian"
+      },
+      {
+        id: "5",
+        username: "FlashGod",
+        avatar: "https://ui-avatars.com/api/?name=FlashGod&background=8b5cf6&color=fff&size=32",
+        level: 134,
+        rank: "Master Guardian"
+      },
+      {
+        id: "6",
+        username: "SmokeKing",
+        avatar: "https://ui-avatars.com/api/?name=SmokeKing&background=ef4444&color=fff&size=32",
+        level: 167,
+        rank: "Legendary Eagle"
+      },
+      {
+        id: "7",
+        username: "BombDefuser",
+        avatar: "https://ui-avatars.com/api/?name=BombDefuser&background=06b6d4&color=fff&size=32",
+        level: 143,
+        rank: "Master Guardian"
+      }
+    ],
     mode: "Competitive",
     region: "EU East",
     currentSize: 4,

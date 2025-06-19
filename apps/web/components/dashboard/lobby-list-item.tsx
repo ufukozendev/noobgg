@@ -25,6 +25,13 @@ interface LobbyListItemProps {
     id: number;
     game: { name: string; icon: string; logo?: string };
     owner: { username: string; avatar?: string };
+    players?: Array<{
+      id: string;
+      username: string;
+      avatar: string;
+      level?: number;
+      rank?: string;
+    }>;
     mode: string;
     region: string;
     currentSize: number;
@@ -126,135 +133,163 @@ export function LobbyListItem({
         return "Unknown";
     }
   };
-
   return (
     <div className="relative group">
       {/* Subtle hover glow */}
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-white/5 via-white/2 to-white/5 rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>{" "}
-      <div className="relative bg-white/[0.01] backdrop-blur-2xl rounded-[16px] p-4 border border-white/8 hover:border-white/15 transition-all duration-300 group-hover:bg-white/[0.02]">
-        {/* Desktop View */}
-        <div className="hidden md:grid grid-cols-12 gap-4 items-center">
-          {/* Game - Col 1-3 */}{" "}
-          <div className="col-span-3 flex items-center space-x-2">
-            <div className="w-8 h-8 bg-white/10 backdrop-blur rounded-[12px] p-1.5 flex items-center justify-center border border-white/20">
-              {!imageError ? (
-                <img
-                  src={lobby.game.icon}
-                  alt={lobby.game.name}
-                  className="w-full h-full object-contain"
-                  onError={() => setImageError(true)}
-                />
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-white/5 via-white/2 to-white/5 rounded-[16px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      
+      <div className="relative bg-white/[0.01] backdrop-blur-2xl rounded-[16px] p-4 border border-white/8 hover:border-white/15 transition-all duration-300 group-hover:bg-white/[0.02]">        {/* Desktop View - Clean Layout with Bigger Avatars */}
+        <div className="hidden md:flex items-center justify-between">
+          {/* Left Section: Game + Owner - More Space */}
+          <div className="flex items-center space-x-4 flex-1 min-w-0">
+            {/* Game Icon + Info - Bigger */}
+            <div className="flex items-center space-x-4 w-[240px] pl-2">
+              <div className="w-12 h-12 bg-white/10 backdrop-blur rounded-lg p-1.5 flex items-center justify-center border border-white/20">
+                {!imageError ? (
+                  <img
+                    src={lobby.game.icon}
+                    alt={lobby.game.name}
+                    className="w-full h-full object-contain"
+                    onError={() => setImageError(true)}
+                  />
+                ) : (
+                  <span className="text-sm font-bold text-white">
+                    {lobby.game.name[0]}
+                  </span>
+                )}
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-white font-medium text-base truncate">
+                  {lobby.game.name}
+                </h3>
+                <p className="text-gray-400 text-sm truncate">{lobby.mode}</p>
+              </div>
+            </div>
+            
+            {/* Owner - Bigger */}
+            <div className="flex items-center space-x-3 px-4 py-2 bg-white/5 rounded-lg border border-white/10 w-[180px]">
+              <Avatar className="w-7 h-7">
+                <AvatarImage src={lobby.owner.avatar} />
+                <AvatarFallback className="bg-black/40 text-white text-sm">
+                  {lobby.owner.username[0]}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-gray-300 text-sm truncate max-w-[100px]">
+                {lobby.owner.username}
+              </span>
+              <Crown className="w-5 h-5 text-yellow-500" />
+            </div>
+          </div>
+
+          {/* Center Section: Players + Region - Bigger Avatars */}
+          <div className="flex items-center space-x-8 px-4">
+            {/* Players - Much Bigger Avatars */}
+            <div className="w-[140px] flex items-center justify-center">
+              {lobby.players && lobby.players.length > 0 ? (
+                <div className="flex items-center space-x-3">
+                  <div className="flex -space-x-2">
+                    {lobby.players.slice(0, 3).map((player) => (
+                      <Avatar key={player.id} className="w-8 h-8 border-2 border-gray-800">
+                        <AvatarImage src={player.avatar} />
+                        <AvatarFallback className="bg-black/50 text-white text-sm">
+                          {player.username[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
+                    {lobby.players.length > 3 && (
+                      <div className="w-8 h-8 bg-gray-700/80 rounded-full border-2 border-gray-800 flex items-center justify-center">
+                        <span className="text-xs text-gray-300 font-medium">
+                          +{lobby.players.length - 3}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-white text-sm font-medium">
+                    {lobby.currentSize}/{lobby.maxSize}
+                  </span>
+                </div>
               ) : (
-                <span className="text-sm font-bold text-white">
-                  {lobby.game.name[0]}
-                </span>
+                <div className="flex items-center space-x-2">
+                  <Users className="w-6 h-6 text-gray-400" />
+                  <span className="text-white text-sm font-medium">
+                    {lobby.currentSize}/{lobby.maxSize}
+                  </span>
+                </div>
               )}
             </div>
-            <div className="min-w-0">
-              <h3 className="text-white font-medium text-sm truncate">
-                {lobby.game.name}
-              </h3>
-              <p className="text-gray-400 text-sm truncate">{lobby.mode}</p>
-            </div>
-          </div>{" "}
-          {/* Owner - Col 4-5 */}
-          <div className="col-span-2 flex items-center space-x-2 min-w-0">
-            <Avatar className="w-6 h-6 border border-white/20">
-              <AvatarImage src={lobby.owner.avatar} />
-              <AvatarFallback className="bg-black/20 backdrop-blur text-white text-sm border border-white/20">
-                {lobby.owner.username[0]}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-gray-300 text-sm truncate">
-              {lobby.owner.username}
-            </span>
-            <Crown className="w-5 h-5 text-yellow-400/80 flex-shrink-0" />
-          </div>{" "}
-          {/* Players - Col 6 */}
-          <div className="col-span-1 flex items-center justify-center space-x-1">
-            <Users className="w-5 h-5 text-gray-400" />
-            <span className="text-white text-sm font-medium">
-              {lobby.currentSize}/{lobby.maxSize}
-            </span>
-          </div>{" "}
-          {/* Region - Col 7 */}
-          <div className="col-span-1 text-center">
-            <span className="text-white text-sm font-medium">
-              {lobby.region}
-            </span>
-          </div>{" "}
-          {/* Rank Range - Col 8-9 */}
-          <div className="col-span-2 flex flex-col items-center justify-center space-y-1">
-            {/* Min Rank */}
-            <div className="flex items-center space-x-1.5">
-              {React.createElement(getRankIcon(lobby.minRank), {
-                className: `w-4 h-4 ${getRankColor(lobby.minRank)}`,
-              })}
-              <span className="text-white text-xs font-medium leading-tight truncate">
-                {lobby.minRank}
+
+            {/* Region */}
+            <div className="w-[100px] text-center">
+              <span className="text-white text-sm font-medium">
+                {lobby.region}
               </span>
             </div>
-            {/* Max Rank */}
-            <div className="flex items-center space-x-1.5">
-              {React.createElement(getRankIcon(lobby.maxRank), {
-                className: `w-4 h-4 ${getRankColor(lobby.maxRank)}`,
-              })}
-              <span className="text-gray-400 text-xs leading-tight truncate">
-                {lobby.maxRank}
-              </span>
-            </div>
-          </div>{" "}
-          {/* Status - Col 10 */}
-          <div className="col-span-1 flex items-center justify-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${getStatusColor()}`}></div>
-            <span className="text-gray-300 text-sm">
-              {getStatusText()}
-            </span>{" "}
           </div>
-          {/* Actions - Col 11-12 */}
-          <div className="col-span-2 flex items-center justify-end space-x-2">
-            {" "}
-            {lobby.isMicRequired ? (
-              <Mic className="w-5 h-5 text-green-500" />
-            ) : (
-              <MicOff className="w-5 h-5 text-gray-500" />
-            )}
-            {/* Comment icon with hover tooltip */}
-            {lobby.note && (
-              <div className="relative group/note">
-                <MessageCircle className="w-5 h-5 text-blue-400 cursor-help" />
-                <div className="absolute bottom-6 right-0 bg-black/90 backdrop-blur border border-white/20 rounded-lg p-2 text-sm text-gray-300 max-w-xs opacity-0 group-hover/note:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-                  {lobby.note}
-                  <div className="absolute top-full right-2 w-0 h-0 border-l-2 border-r-2 border-t-4 border-l-transparent border-r-transparent border-t-black/90"></div>
-                </div>
+
+          {/* Right Section: Rank Range + Status + Actions */}
+          <div className="flex items-center space-x-6">
+            {/* Rank Range */}
+            <div className="w-[140px] flex items-center justify-center space-x-1">
+              <div className="flex items-center space-x-1">
+                {React.createElement(getRankIcon(lobby.minRank), {
+                  className: `w-4 h-4 ${getRankColor(lobby.minRank)}`,
+                })}
+                <span className="text-white text-xs font-medium">
+                  {lobby.minRank}
+                </span>
               </div>
-            )}
-            {isJoinable ? (
-              <Button
-                size="sm"
-                onClick={() => onJoin(lobby.id)}
-                className="h-9 px-4 bg-blue-600/80 backdrop-blur hover:bg-blue-700/90 text-white border border-blue-500/30 transition-all duration-300 rounded-[12px] text-sm font-medium"
-              >
-                Join
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                disabled
-                className="h-9 px-4 bg-gray-600/50 backdrop-blur text-gray-400 border border-gray-500/30 rounded-[12px] text-sm"
-              >
-                {lobby.status === "full" ? "Full" : "In Game"}
-              </Button>
-            )}
+              <span className="text-gray-500 text-xs">-</span>
+              <div className="flex items-center space-x-1">
+                {React.createElement(getRankIcon(lobby.maxRank), {
+                  className: `w-4 h-4 ${getRankColor(lobby.maxRank)}`,
+                })}
+                <span className="text-white text-xs font-medium">
+                  {lobby.maxRank}
+                </span>
+              </div>
+            </div>
+
+            {/* Status Indicator */}
+            <div className="w-[80px] flex items-center justify-center space-x-2">
+              <div className={`w-2 h-2 rounded-full ${getStatusColor()}`}></div>
+              <span className="text-gray-400 text-xs">
+                {getStatusText()}
+              </span>
+            </div>
+            
+            {/* Actions */}
+            <div className="w-[120px] flex items-center justify-center space-x-2">
+              {/* Mic Indicator */}
+              {lobby.isMicRequired && (
+                <Mic className="w-4 h-4 text-green-500" />
+              )}
+              
+              {/* Join Button */}
+              {isJoinable ? (
+                <Button
+                  size="sm"
+                  onClick={() => onJoin(lobby.id)}
+                  className="h-8 px-4 bg-blue-600/90 hover:bg-blue-700 text-white border-0 transition-all duration-200 rounded-lg text-sm font-medium"
+                >
+                  Join
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  disabled
+                  className="h-8 px-4 bg-gray-600/50 text-gray-400 border-0 rounded-lg text-sm"
+                >
+                  {lobby.status === "full" ? "Full" : "In Game"}
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-        {/* Mobile View */}
+        </div>        {/* Mobile View - Clean Compact Layout with Bigger Avatars */}
         <div className="md:hidden space-y-3">
-          {/* Top Row - Game, Status and Join Button */}
+          {/* Top Row - Game + Status + Join */}
           <div className="flex items-center justify-between">
-            {/* Game */}
-            <div className="flex items-center space-x-2 flex-1 min-w-0">
-              <div className="w-10 h-10 bg-white/10 backdrop-blur rounded-[12px] p-1.5 flex items-center justify-center border border-white/20">
+            <div className="flex items-center space-x-4 flex-1 min-w-0">
+              <div className="w-12 h-12 bg-white/10 backdrop-blur rounded-lg p-1.5 flex items-center justify-center border border-white/20">
                 {!imageError ? (
                   <img
                     src={lobby.game.icon}
@@ -269,26 +304,20 @@ export function LobbyListItem({
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-white font-medium text-sm truncate">
+                <h3 className="text-white font-medium text-base truncate">
                   {lobby.game.name}
                 </h3>
-                <p className="text-gray-400 text-sm truncate">{lobby.mode}</p>
+                <p className="text-gray-400 text-sm truncate">{lobby.mode} • {lobby.region}</p>
               </div>
             </div>
-
-            {/* Status and Join Button */}
+            
             <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-1">
-                <div className={`w-3 h-3 rounded-full ${getStatusColor()}`}></div>
-                <span className="text-gray-300 text-xs hidden sm:inline">
-                  {getStatusText()}
-                </span>
-              </div>
+              <div className={`w-2 h-2 rounded-full ${getStatusColor()}`}></div>
               {isJoinable ? (
                 <Button
                   size="sm"
                   onClick={() => onJoin(lobby.id)}
-                  className="h-9 px-3 bg-blue-600/80 backdrop-blur hover:bg-blue-700/90 text-white border border-blue-500/30 transition-all duration-300 rounded-[12px] text-sm font-medium"
+                  className="h-8 px-3 bg-blue-600/90 hover:bg-blue-700 text-white border-0 transition-all duration-200 rounded-lg text-sm font-medium"
                 >
                   Join
                 </Button>
@@ -296,7 +325,7 @@ export function LobbyListItem({
                 <Button
                   size="sm"
                   disabled
-                  className="h-9 px-3 bg-gray-600/50 backdrop-blur text-gray-400 border border-gray-500/30 rounded-[12px] text-sm"
+                  className="h-8 px-3 bg-gray-600/50 text-gray-400 border-0 rounded-lg text-sm"
                 >
                   {lobby.status === "full" ? "Full" : "In Game"}
                 </Button>
@@ -304,101 +333,89 @@ export function LobbyListItem({
             </div>
           </div>
 
-          {/* Middle Row - Owner, Players, Region, Mic */}
-          <div className="flex items-center justify-between">
+          {/* Bottom Row - Owner + Players + Rank Range + Mic */}
+          <div className="flex items-center justify-between pt-2 border-t border-white/10">
             {/* Owner */}
-            <div className="flex items-center space-x-1.5 min-w-0 flex-1">
-              <Avatar className="w-5 h-5 border border-white/20">
+            <div className="flex items-center space-x-2 bg-white/5 rounded-lg px-2 py-1.5">
+              <Avatar className="w-6 h-6">
                 <AvatarImage src={lobby.owner.avatar} />
-                <AvatarFallback className="bg-black/20 backdrop-blur text-white text-xs border border-white/20">
+                <AvatarFallback className="bg-black/40 text-white text-xs">
                   {lobby.owner.username[0]}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-gray-300 text-xs truncate max-w-[80px]">
+              <span className="text-gray-300 text-xs truncate max-w-[70px]">
                 {lobby.owner.username}
               </span>
-              <Crown className="w-4 h-4 text-yellow-400/80 flex-shrink-0" />
+              <Crown className="w-3 h-3 text-yellow-500" />
             </div>
-
-            {/* Players */}
-            <div className="flex items-center space-x-1 mr-3">
-              <Users className="w-4 h-4 text-gray-400" />
-              <span className="text-white text-xs font-medium">
-                {lobby.currentSize}/{lobby.maxSize}
-              </span>
-            </div>
-
-            {/* Region */}
-            <div className="mr-3">
-              <span className="text-white text-xs font-medium">
-                {lobby.region}
-              </span>
-            </div>
-
-            {/* Mic */}
-            <div>
-              {lobby.isMicRequired ? (
-                <Mic className="w-4 h-4 text-green-500" />
+            
+            {/* Players - Bigger Avatars */}
+            <div className="flex items-center space-x-2">
+              {lobby.players && lobby.players.length > 0 ? (
+                <div className="flex items-center space-x-2">
+                  <div className="flex -space-x-1">
+                    {lobby.players.slice(0, 2).map((player) => (
+                      <Avatar key={player.id} className="w-6 h-6 border border-gray-700">
+                        <AvatarImage src={player.avatar} />
+                        <AvatarFallback className="bg-black/50 text-white text-xs">
+                          {player.username[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
+                    {lobby.players.length > 2 && (
+                      <div className="w-6 h-6 bg-gray-700/80 rounded-full border border-gray-700 flex items-center justify-center">
+                        <span className="text-xs text-gray-300">
+                          +{lobby.players.length - 2}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-white text-xs font-medium">
+                    {lobby.currentSize}/{lobby.maxSize}
+                  </span>
+                </div>
               ) : (
-                <MicOff className="w-4 h-4 text-gray-500" />
+                <div className="flex items-center space-x-1">
+                  <Users className="w-4 h-4 text-gray-400" />
+                  <span className="text-white text-xs font-medium">
+                    {lobby.currentSize}/{lobby.maxSize}
+                  </span>
+                </div>
               )}
             </div>
-          </div>
 
-          {/* Rank Range Row */}
-          <div className="flex items-center justify-between border-t border-white/10 pt-2">
-            <div className="text-gray-400 text-xs">Rank Range:</div>
-            <div className="flex items-center space-x-3">
-              {/* Min Rank */}
-              <div className="flex items-center space-x-1.5">
+            {/* Rank Range */}
+            <div className="flex items-center space-x-1 bg-white/5 rounded-lg px-2 py-1">
+              <div className="flex items-center space-x-1">
                 {React.createElement(getRankIcon(lobby.minRank), {
-                  className: `w-4 h-4 ${getRankColor(lobby.minRank)}`,
+                  className: `w-3 h-3 ${getRankColor(lobby.minRank)}`,
                 })}
-                <span className="text-white text-xs font-medium leading-tight">
+                <span className="text-white text-xs">
                   {lobby.minRank}
                 </span>
               </div>
-              <span className="text-gray-500">-</span>
-              {/* Max Rank */}
-              <div className="flex items-center space-x-1.5">
+              <span className="text-gray-500 text-xs">-</span>
+              <div className="flex items-center space-x-1">
                 {React.createElement(getRankIcon(lobby.maxRank), {
-                  className: `w-4 h-4 ${getRankColor(lobby.maxRank)}`,
+                  className: `w-3 h-3 ${getRankColor(lobby.maxRank)}`,
                 })}
-                <span className="text-white text-xs font-medium leading-tight">
+                <span className="text-white text-xs">
                   {lobby.maxRank}
                 </span>
               </div>
             </div>
-          </div>
-
-          {/* Note (if exists) */}
-          {lobby.note && (
-            <div className="border-t border-white/10 pt-2">
-              <div className="text-gray-400 text-xs mb-1">Note:</div>
-              <div className="bg-black/30 backdrop-blur border border-white/10 rounded-lg p-2 text-xs text-gray-300">
-                {lobby.note}
-              </div>
+            
+            {/* Mic */}
+            <div>
+              {lobby.isMicRequired && (
+                <Mic className="w-4 h-4 text-green-500" />
+              )}
             </div>
-          )}
-
-          {/* Created Time */}
-          <div className="text-gray-400 text-xs">
-            Created: {formatTimeAgo(lobby.createdAt)}
           </div>
-        </div>
-
-        {/* Tags - Always visible */}
-        {lobby.tags && lobby.tags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {lobby.tags.map((tag, index) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="bg-black/20 backdrop-blur text-gray-300 text-sm border border-white/10 px-2 py-1 rounded-full"
-              >
-                {tag}
-              </Badge>
-            ))}
+        </div>        {/* Optional Note - Only show if critical */}
+        {lobby.note && (
+          <div className="mt-2 p-2 bg-black/20 backdrop-blur rounded-lg border border-white/10 text-xs text-gray-300">
+            {lobby.note}
           </div>
         )}
       </div>

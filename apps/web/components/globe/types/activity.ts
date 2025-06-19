@@ -1,6 +1,13 @@
+export interface Player {
+  id: string;
+  username: string;
+  avatar: string;
+  level?: number;
+}
+
 export interface CommunityActivity {
   id: string;
-  type: 'matchmaking' | 'tournament' | 'squad_formation' | 'game_session' | 'event';
+  type: 'matchmaking' | 'tournament' | 'squad_formation' | 'game_session' | 'event' | 'lfg';
   city: string;
   country: string;
   playerCount: number;
@@ -10,6 +17,8 @@ export interface CommunityActivity {
   status: 'active' | 'waiting' | 'completed';
   gameType?: string;
   priority: 'low' | 'medium' | 'high';
+  players?: Player[];
+  maxPlayers?: number;
 }
 
 export interface ActivityTypeConfig {
@@ -49,5 +58,11 @@ export const ACTIVITY_TYPES: Record<CommunityActivity['type'], ActivityTypeConfi
     color: '#EF4444', // red
     highlightColor: '#F87171',
     label: 'Special Event'
+  },
+  lfg: {
+    icon: '🔍',
+    color: '#06B6D4', // cyan
+    highlightColor: '#22D3EE',
+    label: 'LFG'
   }
 };
