@@ -8,6 +8,7 @@ import {
   updateDistributorDto,
 } from "@repo/shared/dto/distributor.dto";
 import { getTranslation } from "src/utils/translation";
+import { convertBigIntToString } from "src/utils/bigint-serializer";
 export const getAllDistributorsController = async (c: Context) => {
   const distributors = await db.select().from(distributorsTable);
   return c.json(distributors);
@@ -24,7 +25,9 @@ export const getDistributorByIdController = async (c: Context) => {
     .where(eq(distributorsTable.id, BigInt(id)));
   if (distributor.length === 0)
     throw new ApiError(getTranslation(c, "distributor_not_found"), 404);
-  return c.json(distributor[0]);
+  return c.json(
+    convertBigIntToString(distributor[0]) as Record<string, unknown>
+  );
 };
 
 export const createDistributorController = async (c: Context) => {
