@@ -21,7 +21,7 @@ export const getDistributorByIdController = async (c: Context) => {
   const distributor = await db
     .select()
     .from(distributorsTable)
-    .where(eq(distributorsTable.id, id));
+    .where(eq(distributorsTable.id, BigInt(id)));
   if (distributor.length === 0)
     throw new ApiError(getTranslation(c, "distributor_not_found"), 404);
   return c.json(distributor[0]);
@@ -70,7 +70,7 @@ export const updateDistributorController = async (c: Context) => {
   const [distributor] = await db
     .update(distributorsTable)
     .set(values)
-    .where(eq(distributorsTable.id, id))
+    .where(eq(distributorsTable.id, BigInt(id)))
     .returning();
   if (!distributor)
     throw new ApiError(getTranslation(c, "distributor_not_found"), 404);
@@ -91,7 +91,7 @@ export const deleteDistributorController = async (c: Context) => {
   }
   const [distributor] = await db
     .delete(distributorsTable)
-    .where(eq(distributorsTable.id, id))
+    .where(eq(distributorsTable.id, BigInt(id)))
     .returning();
   if (!distributor)
     throw new ApiError(getTranslation(c, "distributor_not_found"), 404);

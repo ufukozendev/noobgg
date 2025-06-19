@@ -6,7 +6,7 @@ import {
   createPlatformDto,
   updatePlatformDto,
 } from "@repo/shared/dto/platform.dto";
-import { convertBigIntToNumber } from "../../utils/bigint-serializer";
+import { convertBigIntToString } from "../../utils/bigint-serializer";
 import { ApiError } from "../../middleware/errorHandler";
 import { getTranslation } from "../../utils/translation";
 export const getAllPlatformsController = async (c: Context) => {
@@ -23,7 +23,7 @@ export const getPlatformByIdController = async (c: Context) => {
   const result = await db.select().from(platforms).where(eq(platforms.id, id));
   if (result.length === 0)
     throw new ApiError(getTranslation(c, "platform_not_found"), 404);
-  return c.json(convertBigIntToNumber(result[0]) as Record<string, unknown>);
+  return c.json(convertBigIntToString(result[0]) as Record<string, unknown>);
 };
 
 export const createPlatformController = async (c: Context) => {
@@ -40,7 +40,7 @@ export const createPlatformController = async (c: Context) => {
     {
       success: true,
       message: getTranslation(c, "platform_created_successfully"),
-      data: convertBigIntToNumber(platform) as Record<string, unknown>,
+      data: convertBigIntToString(platform) as Record<string, unknown>,
     },
     200
   );
@@ -73,7 +73,7 @@ export const updatePlatformController = async (c: Context) => {
     {
       success: true,
       message: getTranslation(c, "platform_updated_successfully"),
-      data: convertBigIntToNumber(platform) as Record<string, unknown>,
+      data: convertBigIntToString(platform) as Record<string, unknown>,
     },
     200
   );
@@ -95,7 +95,7 @@ export const deletePlatformController = async (c: Context) => {
     {
       success: true,
       message: getTranslation(c, "platform_deleted_successfully"),
-      data: convertBigIntToNumber(platform) as Record<string, unknown>,
+      data: convertBigIntToString(platform) as Record<string, unknown>,
     },
     200
   );

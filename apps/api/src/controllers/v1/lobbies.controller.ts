@@ -4,7 +4,9 @@ import { Context } from "hono";
 import { db } from "../../db";
 import { lobbies } from "../../db/schemas/lobbies.drizzle";
 import { ApiError } from "../../middleware/errorHandler";
-import { convertBigIntToString } from "../../utils/bigint-serializer";
+import {
+  convertBigIntToString,
+} from "../../utils/bigint-serializer";
 
 export const getAllLobbiesController = async (c: Context) => {
   const result = await db.select().from(lobbies);
@@ -19,7 +21,7 @@ export const getLobbyByIdController = async (c: Context) => {
   const id = BigInt(idParam);
   const result = await db.select().from(lobbies).where(eq(lobbies.id, id));
   if (result.length === 0) throw new ApiError("Lobby not found", 404);
-  return c.json(convertBigIntToNumber(result[0]) as Record<string, unknown>);
+  return c.json(convertBigIntToString(result[0]) as Record<string, unknown>);
 };
 
 export const createLobbyController = async (c: Context) => {
@@ -47,7 +49,7 @@ export const createLobbyController = async (c: Context) => {
     {
       success: true,
       message: "Lobby created successfully",
-      data: convertBigIntToNumber(lobby) as Record<string, unknown>,
+      data: convertBigIntToString(lobby) as Record<string, unknown>,
     },
     201
   );
@@ -93,7 +95,7 @@ export const updateLobbyController = async (c: Context) => {
     {
       success: true,
       message: "Lobby updated successfully",
-      data: convertBigIntToNumber(lobby) as Record<string, unknown>,
+      data: convertBigIntToString(lobby) as Record<string, unknown>,
     },
     201
   );
@@ -114,7 +116,7 @@ export const deleteLobbyController = async (c: Context) => {
     {
       success: true,
       message: "Lobby deleted successfully",
-      data: convertBigIntToNumber(lobby) as Record<string, unknown>,
+      data: convertBigIntToString(lobby) as Record<string, unknown>,
     },
     200
   );
