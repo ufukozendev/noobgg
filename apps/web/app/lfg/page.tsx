@@ -344,17 +344,27 @@ export default function LobbiesPage() {
             )}
           </div>
         ) : (
-          <div className="space-y-3">
-            {/* List Header */}
-            <div className="hidden md:block bg-white/[0.02] backdrop-blur-3xl rounded-2xl p-3 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-              <div className="grid grid-cols-12 gap-4 items-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                <div className="col-span-3">Game</div>
-                <div className="col-span-2">Owner</div>
-                <div className="col-span-1 text-center">Players</div>
-                <div className="col-span-1 text-center">Region</div>
-                <div className="col-span-2 text-center">Rank Range</div>
-                <div className="col-span-1 text-center">Status</div>
-                <div className="col-span-2 text-center">Actions</div>
+          <div className="space-y-3">            {/* List Header */}
+            <div className="hidden md:block bg-white/[0.02] backdrop-blur-3xl rounded-2xl p-4 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+              <div className="flex items-center justify-between text-xs font-medium text-gray-400 uppercase tracking-wider">
+                {/* Left Section: Game + Owner */}
+                <div className="flex items-center space-x-4 flex-1 min-w-0">
+                  <div className="w-[240px] pl-2">Game</div>
+                  <div className="w-[180px]">Owner</div>
+                </div>
+                
+                {/* Center Section: Players + Region */}
+                <div className="flex items-center space-x-8 px-4">
+                  <div className="w-[140px] text-center">Players</div>
+                  <div className="w-[100px] text-center">Region</div>
+                </div>
+                
+                {/* Right Section: Rank Range + Status + Actions */}
+                <div className="flex items-center space-x-6">
+                  <div className="w-[140px] text-center">Rank Range</div>
+                  <div className="w-[80px] text-center">Status</div>
+                  <div className="w-[120px] text-center">Actions</div>
+                </div>
               </div>
             </div>
 
