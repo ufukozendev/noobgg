@@ -13,6 +13,7 @@ import { CountryMarker } from './CountryMarker';
 import { Atmosphere } from './Atmosphere';
 import { Starfield } from './Starfield';
 import { MAJOR_CITIES } from '../data/cities';
+import { useCityZoom } from '../hooks/useCityZoom';
 
 export const Scene = React.memo(({
   onCountryHover,
@@ -23,15 +24,26 @@ export const Scene = React.memo(({
   countries = [],
   onCityClick,
   selectedCity,
-  isMouseOverRef
+  isMouseOverRef,
+  clickedCity,
+  onZoomComplete,
+  onZoomStart,
+  highlightedCity
 }: SceneProps) => {
   const orbitControlsRef = useRef<OrbitControlsImpl>(null);
+  // Use the city zoom hook
+  useCityZoom({
+    orbitControlsRef,
+    clickedCity: clickedCity || null,
+    onZoomComplete: onZoomComplete || (() => {}),
+    onZoomStart: onZoomStart || (() => {})
+  });
 
-  // Directly manipulate OrbitControls to avoid re-renders on hover
+  // Auto-rotate control
   useFrame(() => {
     if (orbitControlsRef.current) {
       const controls = orbitControlsRef.current;
-      const shouldAutoRotate = !isMouseOverRef.current && !selectedCountry && !selectedCity;
+      const shouldAutoRotate = !isMouseOverRef.current && !selectedCountry && !selectedCity && !clickedCity;
       if (controls.autoRotate !== shouldAutoRotate) {
         controls.autoRotate = shouldAutoRotate;
       }
@@ -40,7 +52,7 @@ export const Scene = React.memo(({
 
   return (
     <group>
-      {/* Stars first - rendered in background */}
+      {/* Stars in background - behind the Earth */}
       <Starfield />
 
       <ambientLight intensity={0.4} />
@@ -53,7 +65,13 @@ export const Scene = React.memo(({
       {showCountries && countries.length > 0 && (
         <RealCountries orbitControlsRef={orbitControlsRef} countries={countries} />
       )}      {/* Render city hubs */}
-      <CityHubs orbitControlsRef={orbitControlsRef} onCityClick={onCityClick} />      {/* Laser connections between cities */}
+      <CityHubs 
+        orbitControlsRef={orbitControlsRef} 
+        onCityClick={onCityClick}
+        highlightedCity={highlightedCity}
+      />
+
+      {/* Laser connections between cities */}
       <LaserConnections 
         cities={MAJOR_CITIES} 
         maxConnections={100} 
