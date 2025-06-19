@@ -8,6 +8,7 @@ import {
   updateDistributorDto,
 } from "@repo/shared/dto/distributor.dto";
 import { getTranslation } from "src/utils/translation";
+import { convertBigIntToString } from "src/utils/bigint-serializer";
 export const getAllDistributorsController = async (c: Context) => {
   const distributors = await db.select().from(distributorsTable);
   return c.json(distributors);
@@ -21,10 +22,12 @@ export const getDistributorByIdController = async (c: Context) => {
   const distributor = await db
     .select()
     .from(distributorsTable)
-    .where(eq(distributorsTable.id, id));
+    .where(eq(distributorsTable.id, BigInt(id)));
   if (distributor.length === 0)
     throw new ApiError(getTranslation(c, "distributor_not_found"), 404);
-  return c.json(distributor[0]);
+  return c.json(
+    convertBigIntToString(distributor[0]) as Record<string, unknown>
+  );
 };
 
 export const createDistributorController = async (c: Context) => {
@@ -70,7 +73,7 @@ export const updateDistributorController = async (c: Context) => {
   const [distributor] = await db
     .update(distributorsTable)
     .set(values)
-    .where(eq(distributorsTable.id, id))
+    .where(eq(distributorsTable.id, BigInt(id)))
     .returning();
   if (!distributor)
     throw new ApiError(getTranslation(c, "distributor_not_found"), 404);
@@ -91,7 +94,7 @@ export const deleteDistributorController = async (c: Context) => {
   }
   const [distributor] = await db
     .delete(distributorsTable)
-    .where(eq(distributorsTable.id, id))
+    .where(eq(distributorsTable.id, BigInt(id)))
     .returning();
   if (!distributor)
     throw new ApiError(getTranslation(c, "distributor_not_found"), 404);
