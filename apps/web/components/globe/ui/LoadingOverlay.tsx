@@ -12,7 +12,7 @@ export const LoadingOverlay = React.memo(({ isLoading, message, description }: L
   if (!isLoading) return null;
 
   return (
-    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
+    <div className="absolute inset-0 bg-black/80 z-40 flex items-center justify-center">
       <div className="text-center">
         <div className="text-blue-400 text-lg mb-4">{message}</div>
         <p className="text-white text-sm mb-2 sm:mb-3">{description}</p>

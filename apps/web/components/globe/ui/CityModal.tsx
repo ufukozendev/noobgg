@@ -12,11 +12,11 @@ interface CityModalProps {
 export const CityModal = React.memo(({ city, onClose }: CityModalProps) => {
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
-        className="bg-black/90 backdrop-blur-xl text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
+        className="bg-black/95 text-white rounded-2xl p-6 border border-purple-500/50 w-full max-w-md sm:max-w-lg"
         style={{ boxShadow: '0 20px 40px rgba(123, 31, 162, 0.4)' }}
         onClick={(e) => e.stopPropagation()}
       >

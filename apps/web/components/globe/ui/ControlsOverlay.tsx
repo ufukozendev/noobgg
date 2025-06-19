@@ -9,7 +9,7 @@ interface ControlsOverlayProps {
 
 export const ControlsOverlay = React.memo(({ isMobile }: ControlsOverlayProps) => {
   return (
-    <div className="absolute bottom-16 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-2.5 border border-purple-500/30 shadow-lg"
+    <div className="absolute bottom-16 sm:bottom-6 left-1/2 transform -translate-x-1/2 bg-black/80 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 border border-purple-500/30 shadow-lg"
       style={{ touchAction: 'pan-y', boxShadow: '0 4px 20px rgba(123, 31, 162, 0.2)' }}>
       <p className="text-gray-200 text-xs sm:textsm text-center flex items-center justify-center gap-3 sm:gap-4">
         <span className="flex items-center gap-1.5">

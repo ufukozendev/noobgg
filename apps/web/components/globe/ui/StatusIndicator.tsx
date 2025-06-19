@@ -19,7 +19,7 @@ export const StatusIndicator = React.memo(({
         ${isMobile
           ? 'left-1/2 transform -translate-x-1/2'
           : 'right-4 left-auto transform-none'
-        } flex items-center gap-2 bg-black/60 backdrop-blur-xl rounded-full px-3 py-1.5 sm:px-3.5 sm:py-1.5 border border-purple-500/30 shadow-md z-30`}
+        } flex items-center gap-2 bg-black/80 rounded-full px-3 py-1.5 sm:px-3.5 sm:py-1.5 border border-purple-500/30 shadow-md z-30`}
       style={{ touchAction: 'pan-y', boxShadow: '0 4px 12px rgba(123, 31, 162, 0.15)' }}
     >
       <div className={`w-2 h-2 rounded-full 

@@ -11,7 +11,7 @@ interface CountryInfoPanelProps {
 
 export const CountryInfoPanel = React.memo(({ country }: CountryInfoPanelProps) => {
   return (
-    <div className="absolute bottom-20 left-4 right-4 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 bg-black/75 backdrop-blur-xl text-white rounded-xl p-3.5 sm:p-4 border border-purple-500/50 sm:w-80 sm:max-w-sm"
+    <div className="absolute bottom-20 left-4 right-4 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 bg-black/90 text-white rounded-xl p-3.5 sm:p-4 border border-purple-500/50 sm:w-80 sm:max-w-sm"
       style={{ touchAction: 'pan-y', boxShadow: '0 8px 32px rgba(123, 31, 162, 0.25)' }}>
       
       <div className="flex items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">

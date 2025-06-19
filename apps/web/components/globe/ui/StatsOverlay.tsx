@@ -31,23 +31,19 @@ export const StatsOverlay = React.memo(({
       ${isMobile
         ? 'top-4 left-4 right-4 p-3'
         : 'top-6 left-6 p-3 w-[280px]'
-      }`}style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+      }`}      style={{
+        background: 'rgba(0, 0, 0, 0.8)',
         border: '1px solid rgba(255, 255, 255, 0.2)',
         borderRadius: '16px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 16px rgba(255, 255, 255, 0.1) inset',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
       }}>{/* Header with toggle */}
       <div 
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"
-            style={{
+          <div className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"            style={{
               background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.8), rgba(59, 130, 246, 0.8))',
-              backdropFilter: 'blur(10px)',
               border: '1px solid rgba(255, 255, 255, 0.3)',
             }}>
             <img 
@@ -65,8 +61,7 @@ export const StatsOverlay = React.memo(({
           </div>
         </div>
         
-        <div className="w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-white/10"
-          style={{
+        <div className="w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-white/10"          style={{
             background: 'rgba(255, 255, 255, 0.1)',
             border: '1px solid rgba(255, 255, 255, 0.2)',
           }}>

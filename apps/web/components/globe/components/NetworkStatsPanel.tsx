@@ -98,7 +98,7 @@ export const NetworkStatsPanel = React.memo(({
       </button>
 
       {/* Stats Panel */}
-      <div className="bg-gradient-to-b from-gray-900/95 to-black/95 backdrop-blur-lg border-l border-gray-700 p-4 w-64 rounded-l-xl shadow-2xl">
+      <div className="bg-gradient-to-b from-gray-900/95 to-black/95 border-l border-gray-700 p-4 w-64 rounded-l-xl shadow-2xl">
         <div className="space-y-4">
           {/* Header */}
           <div className="text-center border-b border-gray-700 pb-3">

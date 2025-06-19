@@ -19,6 +19,7 @@ import {
   CityData,
   LaserConnections
 } from './globe';
+import { ActivityPanel } from './globe/ui/ActivityPanel';
 
 interface OptimizedGamingGlobeProps {
   showCountries?: boolean;
@@ -28,12 +29,18 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
   const [hoveredCountry, setHoveredCountry] = useState<CountryData | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
+  const [clickedCity, setClickedCity] = useState<CityData | null>(null); // For handling zoom then modal
   const [webglError, setWebglError] = useState(false);
   const [isContextLost, setIsContextLost] = useState(false);
   const [canvasKey, setCanvasKey] = useState(0);
   const [countries, setCountries] = useState<CountryData[]>([]);
-  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
-  const [totalPlayers, setTotalPlayers] = useState(65000);  // Network stats
+  const [isLoadingCountries, setIsLoadingCountries] = useState(true);  const [totalPlayers, setTotalPlayers] = useState(65000);
+  const [isZoomedToCity, setIsZoomedToCity] = useState(false);
+  const [showCityModal, setShowCityModal] = useState(false);
+  
+  // Activity Panel state
+  const [isActivityPanelOpen, setIsActivityPanelOpen] = useState(false);
+  const [highlightedCity, setHighlightedCity] = useState<string | null>(null);// Network stats
   const [activeHubs, setActiveHubs] = useState(34);
   const [connectionStatus, setConnectionStatus] = useState<'Live' | 'Connecting' | 'Offline'>('Live');
 
@@ -96,10 +103,28 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
   // Event handlers
   const handleCountryHover = useCallback((country: CountryData | null) => {
     setHoveredCountry(country);
+  }, []);  const handleCityClick = useCallback((city: CityData) => {
+    setClickedCity(city);
+    setSelectedCity(city);
+    setIsZoomedToCity(true);
+    setShowCityModal(false); // Hide modal initially
+  }, []);
+  const handleCityModalClose = useCallback(() => {
+    setSelectedCity(null);
+    setClickedCity(null);
+    setIsZoomedToCity(false);
+    setShowCityModal(false);
   }, []);
 
-  const handleCityClick = useCallback((city: CityData) => {
-    setSelectedCity(city);
+  const handleZoomComplete = useCallback(() => {
+    // Zoom animation completed, now show modal
+    setShowCityModal(true);
+  }, []);
+
+  const handleZoomOutComplete = useCallback(() => {
+    // Zoom out completed, reset states
+    setIsZoomedToCity(false);
+    setClickedCity(null);
   }, []);
 
   const handleWebGLError = useCallback(() => {
@@ -141,8 +166,7 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
   }, [canvasKey]);  // Memoized props and settings
   const sceneProps = useMemo(() => ({
     onCountryHover: handleCountryHover,
-    isMobile: isMobile,
-    selectedCountry: selectedCountry,
+    isMobile: isMobile,    selectedCountry: selectedCountry,
     setSelectedCountry: setSelectedCountry,
     showCountries: showCountries,
     countries: countries,
@@ -150,6 +174,11 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
     onCityClick: handleCityClick,
     selectedCity: selectedCity,
     isMouseOverRef: isMouseOverRef,
+    isZoomedToCity: isZoomedToCity,
+    clickedCity: clickedCity,
+    onZoomComplete: handleZoomComplete,
+    onZoomOutComplete: handleZoomOutComplete,
+    highlightedCity: highlightedCity,
   }), [
     handleCountryHover, 
     handleCityClick, 
@@ -158,7 +187,12 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
     selectedCity, 
     showCountries, 
     countries, 
-    isLoadingCountries
+    isLoadingCountries,
+    isZoomedToCity,
+    clickedCity,
+    handleZoomComplete,
+    handleZoomOutComplete,
+    highlightedCity
   ]);
 
   const cameraSettings = useMemo(() => ({
@@ -202,10 +236,42 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
     };
   }, []);
 
+  // Show modal after zoom animation completes
+  useEffect(() => {
+    if (clickedCity && isZoomedToCity && !showCityModal) {
+      // Delay to ensure zoom animation is complete
+      const timer = setTimeout(() => {
+        setShowCityModal(true);
+      }, 1600); // Slightly longer than zoom animation duration
+      
+      return () => clearTimeout(timer);
+    }
+  }, [clickedCity, isZoomedToCity, showCityModal]);
+
+  // Activity Panel handlers
+  const handleActivityHover = useCallback((city: string | null) => {
+    setHighlightedCity(city);
+  }, []);
+
+  const handleActivityClick = useCallback((city: string) => {
+    // Find the city in MAJOR_CITIES data
+    const cityData = MAJOR_CITIES.find(c => c.name === city);
+    if (cityData) {
+      handleCityClick(cityData);
+    }
+  }, [handleCityClick]);
+
+  const handleActivityPanelToggle = useCallback(() => {
+    setIsActivityPanelOpen(prev => !prev);
+  }, []);
+
   return (
-    <WebGLErrorBoundary>
-      <div
-        className="relative w-full h-[800px] bg-transparent"
+    <WebGLErrorBoundary>      <div
+        className={`relative w-full h-[1000px] transition-all duration-500 ${
+          isZoomedToCity 
+            ? 'bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-indigo-900/30' 
+            : 'bg-transparent'
+        }`}
         onMouseEnter={() => (isMouseOverRef.current = true)}
         onMouseLeave={() => (isMouseOverRef.current = false)}
       >
@@ -268,14 +334,21 @@ export default function OptimizedGamingGlobe({ showCountries = true }: Optimized
             country={selectedCountry}
             onClose={() => setSelectedCountry(null)}
           />
-        )}
-
-        {selectedCity && (
+        )}        {selectedCity && showCityModal && (
           <CityModal
             city={selectedCity}
-            onClose={() => setSelectedCity(null)}
+            onClose={handleCityModalClose}
           />
-        )}        {/* Controls and Status */}
+        )}        {/* Activity Panel */}
+        <ActivityPanel
+          isOpen={isActivityPanelOpen}
+          onToggle={handleActivityPanelToggle}
+          onActivityHover={handleActivityHover}
+          onActivityClick={handleActivityClick}
+          highlightedCity={highlightedCity}
+        />
+
+        {/* Controls and Status */}
         <ControlsOverlay isMobile={isMobile} />
         <StatusIndicator
           isMobile={isMobile}

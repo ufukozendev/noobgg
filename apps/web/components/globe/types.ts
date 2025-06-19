@@ -49,4 +49,10 @@ export interface SceneProps {
   onCityClick?: (city: CityData) => void;
   selectedCity?: CityData | null;
   isMouseOverRef: React.RefObject<boolean>;
+  isZoomedToCity?: boolean;
+  clickedCity?: CityData | null;
+  onZoomComplete?: () => void;
+  onZoomStart?: () => void;
+  onZoomOutComplete?: () => void;
+  highlightedCity?: string | null;
 }
