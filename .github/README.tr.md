@@ -1,7 +1,7 @@
 # noob.gg 🎮
 
 <div align="center">
-  <img src="../docs/noobgg-logo.png" alt="noob.gg logo" height="150" />
+  <img src="../docs/Noob_GG_Version_1_Schematic_kor-oglan.png" alt="noob.gg kor oglan roadmap"/>
   
   [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/repo)
   [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
