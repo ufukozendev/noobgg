@@ -22,6 +22,7 @@ export const userProfiles = pgTable('user_profiles', {
   bannerImageUrl: varchar('banner_image_url', { length: 255 }),
   bio: text('bio'),
   
+  
   // Enums
   gender: genderEnum('gender').notNull().default('unknown'),
   regionType: regionTypeEnum('region_type').notNull().default('unknown'),
