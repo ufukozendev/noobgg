@@ -2,7 +2,17 @@ import { pgTable, bigint, timestamp, text, pgEnum,varchar } from 'drizzle-orm/pg
 
 // Enums
 export const genderEnum = pgEnum('gender', ['male', 'female', 'unknown']);
-export const regionTypeEnum = pgEnum('region_type', ['north_america','south_america','europe', 'asia', 'oceania',  'middle_east', 'africa', 'russia_cis', 'unknown']);
+export const regionEnum = pgEnum('region', [
+  'north_america',
+  'south_america',
+  'europe',
+  'asia',
+  'oceania',
+  'middle_east',
+  'africa',
+  'russia_cis',
+  'unknown',
+]);
 
 
 // UserProfile table
@@ -25,7 +35,7 @@ export const userProfiles = pgTable('user_profiles', {
   
   // Enums
   gender: genderEnum('gender').notNull().default('unknown'),
-  regionType: regionTypeEnum('region_type').notNull().default('unknown'),
+  region: regionEnum('region').notNull().default('unknown'),
   
   // Timestamps
   lastOnline: timestamp('last_online', { withTimezone: true }).notNull().defaultNow(),
