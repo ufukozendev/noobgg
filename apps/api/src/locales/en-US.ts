@@ -31,4 +31,5 @@ export default {
   platform_code_exists: "Platform code already exists.",
   platform_invalid_id: "Invalid platform id.",
   no_data_provided: "No data provided for update.",
+  user_social_link_not_found: "User social link not found.",
 };

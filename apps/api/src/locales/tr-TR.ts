@@ -31,4 +31,5 @@ export default {
   platform_code_exists: "Platform kodu zaten mevcut.",
   platform_invalid_id: "Geçersiz platform id.",
   no_data_provided: "Güncelleme için veri sağlanmadı.",
+  user_social_link_not_found: "Kullanıcı sosyal bağlantısı bulunamadı.",
 };
