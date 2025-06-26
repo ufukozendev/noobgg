@@ -13,6 +13,7 @@ export const regionEnum = pgEnum('region', [
   'russia_cis',
   'unknown',
 ]);
+export { regionEnum as regionTypeEnum };
 
 
 // UserProfile table

@@ -10,6 +10,7 @@ import languagesRouter from "./languages";
 import lobbiesRoutes from "./lobbies";
 import platformsRoutes from "./platforms";
 import userProfilesRoutes from "./user-profiles";
+import userSocialLinks from "./user-social-links";
 
 const v1Router = new Hono();
 
@@ -24,6 +25,7 @@ v1Router.route("/event-invitations", eventInvitationsRouter);
 v1Router.route("/events", eventsRouter);
 v1Router.route('/languages', languagesRouter);
 v1Router.route('/lobbies', lobbiesRoutes);
+v1Router.route("/user-social-links", userSocialLinks);
 
 export default v1Router;
 
