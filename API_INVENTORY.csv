@@ -1,0 +1,70 @@
+Endpoint,Method,Purpose,Controller,Auth Required,Validation Schema,Frontend Usage,Implementation Status,Security Risk
+/,GET,Home/Health check,homeController,No,None,System,Implemented,Low
+/health,GET,Health check endpoint,homeController,No,None,System,Implemented,Low
+/docs,GET,Swagger UI documentation,Built-in,No,None,Developers,Implemented,Low
+/docs/openapi.json,GET,OpenAPI specification,Built-in,No,None,API Documentation,Implemented,Low
+/api/v1/games,GET,Get all games,gamesController.getAll,No,Query params,Games Dashboard,Implemented,High
+/api/v1/games/:id,GET,Get game by ID,gamesController.getById,No,None,Game Details,Implemented,Medium
+/api/v1/games,POST,Create new game,gamesController.create,No,createGameDto,Games Dashboard,Implemented,Critical
+/api/v1/games/:id,PUT,Update game,gamesController.update,No,updateGameDto,Games Dashboard,Implemented,Critical
+/api/v1/games/:id,DELETE,Delete game,gamesController.delete,No,None,Games Dashboard,Implemented,Critical
+/api/v1/game-modes,GET,Get all game modes,gameModesController.getAll,No,Query params,Not implemented,Backend Only,High
+/api/v1/game-modes/:id,GET,Get game mode by ID,gameModesController.getById,No,None,Not implemented,Backend Only,Medium
+/api/v1/game-modes,POST,Create game mode,gameModesController.create,No,createGameModeDto,Not implemented,Backend Only,Critical
+/api/v1/game-modes/:id,PUT,Update game mode,gameModesController.update,No,updateGameModeDto,Not implemented,Backend Only,Critical
+/api/v1/game-modes/:id,DELETE,Delete game mode,gameModesController.delete,No,None,Not implemented,Backend Only,Critical
+/api/v1/game-ranks,GET,Get all game ranks,gameRanksController.getAll,No,Query params,GameRanks Dashboard,Implemented,High
+/api/v1/game-ranks/:id,GET,Get game rank by ID,gameRanksController.getById,No,None,GameRank Details,Implemented,Medium
+/api/v1/game-ranks,POST,Create game rank,gameRanksController.create,No,createGameRankDto,GameRanks Dashboard,Implemented,Critical
+/api/v1/game-ranks/:id,PUT,Update game rank,gameRanksController.update,No,updateGameRankDto,GameRanks Dashboard,Implemented,Critical
+/api/v1/game-ranks/:id,DELETE,Delete game rank,gameRanksController.delete,No,None,GameRanks Dashboard,Implemented,Critical
+/api/v1/platforms,GET,Get all platforms,platformsController.getAll,No,Query params,Platforms Dashboard,Implemented,High
+/api/v1/platforms/:id,GET,Get platform by ID,platformsController.getById,No,None,Platform Details,Implemented,Medium
+/api/v1/platforms,POST,Create platform,platformsController.create,No,createPlatformDto,Platforms Dashboard,Implemented,Critical
+/api/v1/platforms/:id,PUT,Update platform,platformsController.update,No,updatePlatformDto,Platforms Dashboard,Implemented,Critical
+/api/v1/platforms/:id,DELETE,Delete platform,platformsController.delete,No,None,Platforms Dashboard,Implemented,Critical
+/api/v1/distributors,GET,Get all distributors,distributorsController.getAll,No,Query params,Not implemented,Backend Only,High
+/api/v1/distributors/:id,GET,Get distributor by ID,distributorsController.getById,No,None,Not implemented,Backend Only,Medium
+/api/v1/distributors,POST,Create distributor,distributorsController.create,No,createDistributorDto,Not implemented,Backend Only,Critical
+/api/v1/distributors/:id,PUT,Update distributor,distributorsController.update,No,updateDistributorDto,Not implemented,Backend Only,Critical
+/api/v1/distributors/:id,DELETE,Delete distributor,distributorsController.delete,No,None,Not implemented,Backend Only,Critical
+/api/v1/user-profiles/:id,GET,Get user profile,userProfilesController.getById,No,None,Profile Pages,Implemented,High
+/api/v1/user-profiles,POST,Create user profile,userProfilesController.create,No,createUserProfileDto,Not implemented,Backend Only,Critical
+/api/v1/user-profiles/:id,PATCH,Update user profile,userProfilesController.update,No,updateUserProfileDto,Not implemented,Backend Only,Critical
+/api/v1/user-profiles/:id,DELETE,Delete user profile,userProfilesController.delete,No,None,Not implemented,Backend Only,Critical
+/api/v1/user-social-links,GET,Get user social links,userSocialLinksController.getAll,No,Query params,Not implemented,Backend Only,High
+/api/v1/user-social-links/:id,GET,Get social link by ID,userSocialLinksController.getById,No,None,Not implemented,Backend Only,Medium
+/api/v1/user-social-links,POST,Create social link,userSocialLinksController.create,No,createUserSocialLinkDto,Not implemented,Backend Only,Critical
+/api/v1/user-social-links/:id,PUT,Update social link,userSocialLinksController.update,No,updateUserSocialLinkDto,Not implemented,Backend Only,Critical
+/api/v1/user-social-links/:id,DELETE,Delete social link,userSocialLinksController.delete,No,None,Not implemented,Backend Only,Critical
+/api/v1/events,GET,Get all events,eventsController.getAll,No,Query params,Not implemented,Backend Only,High
+/api/v1/events/:id,GET,Get event by ID,eventsController.getById,No,None,Not implemented,Backend Only,Medium
+/api/v1/events/upcoming,GET,Get upcoming events,eventsController.getUpcoming,No,Query params,Not implemented,Backend Only,Medium
+/api/v1/events/popular,GET,Get popular events,eventsController.getPopular,No,Query params,Not implemented,Backend Only,Medium
+/api/v1/events,POST,Create event,eventsController.create,No,createEventDto,Not implemented,Backend Only,Critical
+/api/v1/events/:id,PUT,Update event,eventsController.update,No,updateEventDto,Not implemented,Backend Only,Critical
+/api/v1/events/:id/attendees-count,PUT,Update attendee count,eventsController.updateAttendeesCount,No,Body,Not implemented,Backend Only,Critical
+/api/v1/events/:id,DELETE,Delete event,eventsController.delete,No,None,Not implemented,Backend Only,Critical
+/api/v1/event-attendees,GET,Get all attendees,eventAttendeesController.getAll,No,getEventAttendeesSchema,Not implemented,Backend Only,High
+/api/v1/event-attendees/:id,GET,Get attendee by ID,eventAttendeesController.getById,No,None,Not implemented,Backend Only,Medium
+/api/v1/event-attendees/events/:eventId/attendees,GET,Get event attendees,eventAttendeesController.getByEventId,No,Query params,Not implemented,Backend Only,Medium
+/api/v1/event-attendees,POST,Join event,eventAttendeesController.create,No,createEventAttendeeDto,Not implemented,Backend Only,Critical
+/api/v1/event-attendees/:id,DELETE,Leave event,eventAttendeesController.delete,No,None,Not implemented,Backend Only,Critical
+/api/v1/event-invitations,GET,Get invitations,eventInvitationsController.getAll,No,getEventInvitationsSchema,Not implemented,Backend Only,High
+/api/v1/event-invitations/:id,GET,Get invitation by ID,eventInvitationsController.getById,No,None,Not implemented,Backend Only,Medium
+/api/v1/event-invitations/users/:userId/invitations,GET,Get user invitations,eventInvitationsController.getByUserId,No,Query params,Not implemented,Backend Only,Medium
+/api/v1/event-invitations/events/:eventId/invitations,GET,Get event invitations,eventInvitationsController.getByEventId,No,Query params,Not implemented,Backend Only,Medium
+/api/v1/event-invitations,POST,Create invitation,eventInvitationsController.create,No,createEventInvitationSchema,Not implemented,Backend Only,Critical
+/api/v1/event-invitations/:id/respond,PUT,Respond to invitation,eventInvitationsController.respond,No,respondToInvitationSchema,Not implemented,Backend Only,Critical
+/api/v1/event-invitations/:id,DELETE,Delete invitation,eventInvitationsController.delete,No,None,Not implemented,Backend Only,Critical
+/api/v1/languages,GET,Get languages (paginated),languagesController.getAll,No,getLanguagesSchema,Languages Dashboard,Implemented,High
+/api/v1/languages/all,GET,Get all languages,languagesController.getAllLanguages,No,None,Language Selectors,Implemented,Low
+/api/v1/languages/:id,GET,Get language by ID,languagesController.getById,No,None,Language Details,Implemented,Medium
+/api/v1/languages,POST,Create language,languagesController.create,No,createLanguageDto,Languages Dashboard,Implemented,Critical
+/api/v1/languages/:id,PUT,Update language,languagesController.update,No,updateLanguageDto,Languages Dashboard,Implemented,Critical
+/api/v1/languages/:id,DELETE,Delete language,languagesController.delete,No,None,Languages Dashboard,Implemented,Critical
+/api/v1/lobbies,GET,Get all lobbies,lobbiesController.getAll,No,Query params,Not implemented,Backend Only,High
+/api/v1/lobbies/:id,GET,Get lobby by ID,lobbiesController.getById,No,None,Not implemented,Backend Only,Medium
+/api/v1/lobbies,POST,Create lobby,lobbiesController.create,No,createLobbyDto,Not implemented,Backend Only,Critical
+/api/v1/lobbies/:id,PUT,Update lobby,lobbiesController.update,No,updateLobbyDto,Not implemented,Backend Only,Critical
+/api/v1/lobbies/:id,DELETE,Delete lobby,lobbiesController.delete,No,None,Not implemented,Backend Only,Critical
