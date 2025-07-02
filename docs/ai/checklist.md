@@ -27,3 +27,8 @@ Tasks remaining:
 2. Add pages for Events (+ invitations & attendees flows).
 3. Implement Game Modes, Game Platforms, and Game Regions UIs.
 4. Enhance Profile UI to fully manage social links. 
+
+ranks
+competative,arena,casual
+ranks
+-
