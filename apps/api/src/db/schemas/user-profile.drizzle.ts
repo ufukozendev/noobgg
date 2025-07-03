@@ -13,8 +13,62 @@ export const regionEnum = pgEnum('region', [
   'russia_cis',
   'unknown',
 ]);
+export const gameGenreEnum = pgEnum('game_genre', [
+  'fps',
+  'adventure',
+  'mmorpg',
+  'sports',
+  'racing',
+  'simulation',
+  'strategy',
+  'puzzle',
+  'fighting',
+  'survival',
+  'battle_royale',
+  'sandbox',
+  'unknown',
+]);
 export { regionEnum as regionTypeEnum };
+export { gameGenreEnum as gameGenreTypeEnum };
 
+// Player types
+export const playerTypeEnum = pgEnum('player_type', [
+  'casual',
+  'competitive',
+  'pro',
+  'unknown',
+]);
+export { playerTypeEnum as playerTypeTypeEnum };
+
+// Roles/Relations to the gaming industry
+export const industryRoleEnum = pgEnum('industry_role', [
+  'streamer',
+  'designer',
+  'developer',
+  'gamer',
+  'content_creator',
+  'unknown',
+]);
+export { industryRoleEnum as industryRoleTypeEnum };
+
+// Looking-for preferences (LFG, LFM, etc.)
+export const lookingForEnum = pgEnum('looking_for', [
+  'lfg', // Looking for Group
+  'lfm', // Looking for Members (recruiting)
+  'lfc', // Looking for Clan/Team/Guild
+  'unknown',
+]);
+export { lookingForEnum as lookingForTypeEnum };
+
+// Presence / activity status
+export const presenceStatusEnum = pgEnum('presence_status', [
+  'offline',
+  'online',
+  'in_game',
+  'in_lobby',
+  'unknown',
+]);
+export { presenceStatusEnum as presenceStatusTypeEnum };
 
 // UserProfile table
 export const userProfiles = pgTable('user_profiles', {
@@ -37,6 +91,12 @@ export const userProfiles = pgTable('user_profiles', {
   // Enums
   gender: genderEnum('gender').notNull().default('unknown'),
   region: regionEnum('region').notNull().default('unknown'),
+  favoriteGameGenre: gameGenreEnum('favorite_game_genre').notNull().default('unknown'),
+  playerType: playerTypeEnum('player_type').notNull().default('unknown'),
+  industryRole: industryRoleEnum('industry_role').notNull().default('unknown'),
+  lookingFor: lookingForEnum('looking_for').notNull().default('unknown'),
+  presenceStatus: presenceStatusEnum('presence_status').notNull().default('unknown'),
+  
   
   // Timestamps
   lastOnline: timestamp('last_online', { withTimezone: true }).notNull().defaultNow(),
